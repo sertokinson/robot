@@ -1,12 +1,13 @@
-package hook;
+package ru.sertok.hook;
 
+import ru.sertok.data.KeyboardPassed;
+import ru.sertok.data.MousePassed;
 import org.jnativehook.GlobalScreen;
 import org.jnativehook.NativeHookException;
 import org.jnativehook.keyboard.NativeKeyEvent;
 import org.jnativehook.keyboard.NativeKeyListener;
 import org.jnativehook.mouse.NativeMouseEvent;
 import org.jnativehook.mouse.NativeMouseInputListener;
-
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,14 +20,13 @@ public class EventListener implements NativeMouseInputListener, NativeKeyListene
     }
 
     public void nativeMousePressed(NativeMouseEvent e) {
-        System.out.println("hook.MousePassed: "+e.getX()+" "+e.getY());
+        System.out.println("ru.sertok.data.MousePassed: " + e.getX() + " " + e.getY());
         steps.add(new MousePassed(e.getX(), e.getY()));
     }
 
     public void nativeMouseReleased(NativeMouseEvent e) {
         // System.out.println("Mouse Released: " + e.getButton());
     }
-
 
 
     public void nativeKeyPressed(NativeKeyEvent e) {
@@ -38,7 +38,7 @@ public class EventListener implements NativeMouseInputListener, NativeKeyListene
             }
         }
         try {
-            System.out.println(new String(NativeKeyEvent.getKeyText(e.getKeyCode()).getBytes(),"UTF-8"));
+            System.out.println(new String(NativeKeyEvent.getKeyText(e.getKeyCode()).getBytes(), "UTF-8"));
         } catch (UnsupportedEncodingException ex) {
             ex.printStackTrace();
         }
@@ -46,11 +46,11 @@ public class EventListener implements NativeMouseInputListener, NativeKeyListene
     }
 
     public void nativeKeyReleased(NativeKeyEvent e) {
-        //  System.out.println("Key Released: " + NativeKeyEvent.getKeyText(e.getKeyCode()));
+        System.out.println("Key Released: " + NativeKeyEvent.getKeyText(e.getKeyCode()));
     }
 
     public void nativeKeyTyped(NativeKeyEvent e) {
-        //  System.out.println("Key Typed: " + e.getKeyText(e.getKeyCode()));
+        System.out.println("Key Typed: " + e.getKeyText(e.getKeyCode()));
     }
 
     public void nativeMouseMoved(NativeMouseEvent var1) {

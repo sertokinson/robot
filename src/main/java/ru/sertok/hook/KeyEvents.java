@@ -1,4 +1,4 @@
-package hook;
+package ru.sertok.hook;
 
 import java.awt.event.KeyEvent;
 import java.lang.reflect.Field;
