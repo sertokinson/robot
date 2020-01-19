@@ -14,6 +14,8 @@ import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.UnsupportedFlavorException;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.io.File;
@@ -48,7 +50,10 @@ public class RobotWindow extends JFrame implements Window {
 
 
         JButton start = new JButton("start");
+        JButton stop = new JButton("stop");
         container.add(start);
+        container.add(stop);
+        stop.addActionListener(e -> System.exit(1));
         start.addActionListener(actionEvent -> {
             String testCase = selectBox.getSelectedItem().toString();
             for (File file : filterFiles(testCase)) {
@@ -65,48 +70,49 @@ public class RobotWindow extends JFrame implements Window {
                 LinkedTreeMap object = data.get(i);
                 Object x = object.get("x");
                 if (x != null) {
-                    robot.delay(1000);
+                    robot.delay(900);
                     robot.mouseMove(((Double) x).intValue(), ((Double) object.get("y")).intValue());
-                    robot.delay(1000);
-                    robot.mousePress(InputEvent.BUTTON1_MASK);
-                    robot.mouseRelease(InputEvent.BUTTON1_MASK);
-                    if (i + 1 < data.size()) {
-                        Object time = data.get(i + 1).get("time");
+                    robot.delay(900);
+
+                    if (i + 2 < data.size()) {
+                        Object time = data.get(i + 2).get("time");
                         if (time != null) {
                             Double firstClick = (Double) object.get("time");
-                            Double secondClick = (Double) data.get(i + 1).get("time");
-                            if (secondClick - firstClick < 500) {
+                            Double secondClick = (Double) time;
+                            if (secondClick - firstClick < 400) {
                                 robot.mousePress(InputEvent.BUTTON1_MASK);
                                 robot.mouseRelease(InputEvent.BUTTON1_MASK);
-                                i++;
+                                robot.mousePress(InputEvent.BUTTON1_MASK);
+                                robot.mouseRelease(InputEvent.BUTTON1_MASK);
+                                i += 3;
+                                continue;
                             }
                         }
                     }
+                    if (i + 1 < data.size()) {
+                        if (data.get(i + 1).get("time") != null) {
+                            Double firstClick = (Double) object.get("time");
+                            Double secondClick = (Double) data.get(i + 1).get("time");
+                            if (secondClick - firstClick < 400) {
+                                robot.mousePress(InputEvent.BUTTON1_MASK);
+                                robot.mouseRelease(InputEvent.BUTTON1_MASK);
+                                i++;
+                                continue;
+                            }
+                        }
+                    }
+                    if (object.get("type").equals("pressed"))
+                        robot.mousePress(InputEvent.BUTTON1_MASK);
+                    else robot.mouseRelease(InputEvent.BUTTON1_MASK);
                 }
                 Object key = object.get("key");
                 if (key != null) {
                     robot.delay(100);
                     try {
                         int keyEvent = new KeyEvents().getKey(key.toString());
-                        if (key.toString().contains("Meta")) {
-                            if (i + 1 < data.size()) {
-                                Object nextKey = data.get(i + 1).get("key");
-                                if (nextKey != null) {
-                                    int nextKeyEvent = new KeyEvents().getKey(nextKey.toString());
-                                    robot.keyPress(keyEvent);
-                                    robot.delay(100);
-                                    robot.keyPress(nextKeyEvent);
-                                    robot.delay(100);
-                                    robot.keyRelease(nextKeyEvent);
-                                    robot.delay(100);
-                                    robot.keyRelease(keyEvent);
-                                    i++;
-                                }
-                            }
-                        } else {
+                        if (object.get("type").equals("pressed")) {
                             robot.keyPress(keyEvent);
-                            robot.keyRelease(keyEvent);
-                        }
+                        } else robot.keyRelease(keyEvent);
                     } catch (IllegalAccessException e) {
                         e.printStackTrace();
                     }

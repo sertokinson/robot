@@ -1,9 +1,9 @@
 package ru.sertok.listener;
 
 import org.jnativehook.GlobalScreen;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import ru.sertok.listener.gui.RecordWindow;
+import ru.sertok.robot.config.Config;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -14,7 +14,7 @@ public class RobotListener {
 
     public static void main(String[] args) {
         logger.setLevel(Level.OFF);
-        ApplicationContext context = new ClassPathXmlApplicationContext("context.xml");
+        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(Config.class);
         context.getBean("recordWindow", RecordWindow.class).getComponent().setVisible(true);
     }
 }

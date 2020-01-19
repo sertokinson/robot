@@ -15,7 +15,11 @@ public class KeyEvents {
                 break;
             case "Left Meta":
             case "Right Meta":
-                newKey="Meta";
+                newKey = "Meta";
+                break;
+            case "Left Control":
+            case "Right Control":
+                newKey = "Control";
                 break;
             default:
                 newKey = key;

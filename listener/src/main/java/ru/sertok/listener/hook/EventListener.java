@@ -6,8 +6,8 @@ import org.jnativehook.keyboard.NativeKeyEvent;
 import org.jnativehook.keyboard.NativeKeyListener;
 import org.jnativehook.mouse.NativeMouseEvent;
 import org.jnativehook.mouse.NativeMouseInputListener;
-import ru.sertok.listener.data.KeyboardPassed;
-import ru.sertok.listener.data.MousePassed;
+import ru.sertok.listener.data.Keyboard;
+import ru.sertok.listener.data.Mouse;
 import ru.sertok.listener.gui.RecordWindow;
 
 import java.io.UnsupportedEncodingException;
@@ -23,11 +23,11 @@ public class EventListener implements NativeMouseInputListener, NativeKeyListene
 
     public void nativeMousePressed(NativeMouseEvent e) {
         System.out.println("ru.sertok.data.MousePassed: " + e.getX() + " " + e.getY());
-        steps.add(new MousePassed(e.getX(), e.getY(), (double) (System.currentTimeMillis() - RecordWindow.startTime)));
+        steps.add(new Mouse("pressed",e.getX(), e.getY(), (double) (System.currentTimeMillis() - RecordWindow.startTime)));
     }
 
     public void nativeMouseReleased(NativeMouseEvent e) {
-        // System.out.println("Mouse Released: " + e.getButton());
+        steps.add(new Mouse("released",e.getX(), e.getY(), (double) (System.currentTimeMillis() - RecordWindow.startTime)));
     }
 
 
@@ -44,11 +44,11 @@ public class EventListener implements NativeMouseInputListener, NativeKeyListene
         } catch (UnsupportedEncodingException ex) {
             ex.printStackTrace();
         }
-        steps.add(new KeyboardPassed(NativeKeyEvent.getKeyText(e.getKeyCode())));
+        steps.add(new Keyboard("pressed",NativeKeyEvent.getKeyText(e.getKeyCode())));
     }
 
     public void nativeKeyReleased(NativeKeyEvent e) {
-        System.out.println("Key Released: " + NativeKeyEvent.getKeyText(e.getKeyCode()));
+        steps.add(new Keyboard("released",NativeKeyEvent.getKeyText(e.getKeyCode())));
     }
 
     public void nativeKeyTyped(NativeKeyEvent e) {
