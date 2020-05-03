@@ -1,7 +1,7 @@
 package ru.sertok.robot.api;
-
-        import javax.swing.*;
+import javax.swing.*;
+import java.io.IOException;
 
 public interface Window {
-    JFrame getComponent();
+    JFrame getComponent() throws IOException;
 }

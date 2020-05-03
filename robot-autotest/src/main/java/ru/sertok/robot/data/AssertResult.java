@@ -1,19 +1,11 @@
 package ru.sertok.robot.data;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@Getter
+@AllArgsConstructor
 public class AssertResult {
     private String[] messages;
     private int type;
-
-    public String[] getMessages() {
-        return messages;
-    }
-
-    public int getType() {
-        return type;
-    }
-
-    public AssertResult(String[] messages, int type) {
-        this.messages = messages;
-        this.type = type;
-    }
 }

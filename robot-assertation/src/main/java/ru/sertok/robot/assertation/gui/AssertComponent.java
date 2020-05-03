@@ -63,8 +63,7 @@ public class AssertComponent extends JFrame implements Window {
 
         @Override
         public void actionPerformed(ActionEvent actionEvent) {
-            database.writeJson(new AssertData(expected.getText(), actual.getText()),
-                     input.getText(),  "assert" + (count++));
+            //database.writeJson(new AssertData(expected.getText(), actual.getText()), input.getText(),  "assert" + (count++));
 
             Container container = jFrame.getContentPane();
             container.remove(add);

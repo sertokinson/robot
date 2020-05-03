@@ -1,153 +1,192 @@
 package ru.sertok.robot.gui;
 
-import com.google.gson.internal.LinkedTreeMap;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import ru.sertok.robot.api.ExecuteApp;
 import ru.sertok.robot.api.ScreenShot;
-import ru.sertok.robot.data.AssertData;
+import ru.sertok.robot.data.Image;
+import ru.sertok.robot.data.Keyboard;
+import ru.sertok.robot.data.Mouse;
+import ru.sertok.robot.data.TestCase;
+import ru.sertok.robot.data.Type;
 import ru.sertok.robot.database.Database;
 import ru.sertok.robot.hook.KeyEvents;
-import ru.sertok.robot.data.AssertResult;
-import ru.sertok.robot.api.Window;
-import ru.sertok.robot.utils.Utils;
+import ru.sertok.robot.storage.LocalStorage;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.InputEvent;
-import java.io.File;
-import java.util.Arrays;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 @Component
-public class RobotWindow extends JFrame implements Window {
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
+public class RobotWindow {
+    private final Database database;
+    private final ExecuteApp executeApp;
+    private final ScreenShot screenShot;
+    private final LocalStorage localStorage;
 
-    @Autowired
-    private Database database;
-    @Autowired
-    private ScreenShot screenShot;
 
-    public RobotWindow() throws HeadlessException {
-        super("Robot");
+    private JComboBox selectBox;
+
+    public void create(Container container) {
+        JLabel label = new JLabel("Выберите тест кейс: ");
+        selectBox = new JComboBox(database.getAll().toArray());
+        JButton start = new JButton("start");
+        container.add(label);
+        container.add(selectBox);
+        container.add(start);
+        start.addActionListener(actionEvent -> startAction(container));
+
     }
 
-    @Override
-    public JFrame getComponent() {
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        Container container = this.getContentPane();
-        container.setLayout(new GridLayout(2, 2));
-
-        JLabel label = new JLabel("Выберите тест кейс: ");
-        container.add(label);
-        File dir = new File("database");
-        List<File> files = Arrays.asList(dir.listFiles());
-        JComboBox selectBox = new JComboBox(files.stream().map(f -> f.getName().split(".json")[0]).toArray());
-        container.add(selectBox);
-
-
-        JButton start = new JButton("start");
-        JButton stop = new JButton("stop");
-        container.add(start);
-        container.add(stop);
-        stop.addActionListener(e -> System.exit(1));
-        start.addActionListener(actionEvent -> {
-            String testCase = selectBox.getSelectedItem().toString();
-
-            for (File file : Utils.filterFiles(testCase)) {
-                database.delete(file);
+    private void startAction(Container container) {
+        String testCaseName = selectBox.getSelectedItem().toString();
+        TestCase testCase = database.get(testCaseName);
+        List<Object> data = testCase.getSteps();
+        Robot robot = null;
+        try {
+            robot = new Robot();
+        } catch (AWTException e) {
+            e.printStackTrace();
+        }
+        executeApp.execute(testCase.getUrl());
+        robot.delay(900);
+        for (int i = 0; i < data.size(); i++) {
+            if (data.get(i) instanceof Mouse) {
+                Mouse mouse = (Mouse) data.get(i);
+                if (mouse.getType() == Type.MOVED) {
+                    robot.mouseMove(mouse.getX(), mouse.getY());
+                    if (i + 1 < data.size() && data.get(i + 1) instanceof Mouse) {
+                        robot.delay(((Mouse) data.get(i + 1)).getTime() - mouse.getTime());
+                    }
+                    continue;
+                }
+              /*  if (i + 2 < data.size()) {
+                    if (data.get(i + 2) instanceof Mouse) {
+                        int firstClick = mouse.getTime();
+                        int secondClick = ((Mouse) data.get(i + 2)).getTime();
+                        if (secondClick - firstClick < 400) {
+                            robot.mousePress(InputEvent.BUTTON1_MASK);
+                            robot.mouseRelease(InputEvent.BUTTON1_MASK);
+                            robot.mousePress(InputEvent.BUTTON1_MASK);
+                            robot.mouseRelease(InputEvent.BUTTON1_MASK);
+                            i += 3;
+                            continue;
+                        }
+                    }
+                }
+                if (i + 1 < data.size()) {
+                    if (data.get(i + 1) instanceof Mouse) {
+                        int firstClick = mouse.getTime();
+                        int secondClick = ((Mouse) data.get(i + 1)).getTime();
+                        if (secondClick - firstClick < 400) {
+                            robot.mousePress(InputEvent.BUTTON1_MASK);
+                            robot.mouseRelease(InputEvent.BUTTON1_MASK);
+                            i++;
+                            continue;
+                        }
+                    }
+                }*/
+                if (mouse.getType() == Type.PRESSED) {
+                    robot.mousePress(InputEvent.BUTTON1_MASK);
+                } else {
+                    robot.mouseRelease(InputEvent.BUTTON1_MASK);
+                }
             }
-            List<LinkedTreeMap> data = database.read(testCase);
-            Robot robot = null;
+            if (data.get(i) instanceof Keyboard) {
+                Keyboard keyboard = (Keyboard) data.get(i);
+                robot.delay(200);
+                try {
+                    int keyEvent = new KeyEvents().getKey(keyboard.getKey());
+                    if (keyboard.getType() == Type.PRESSED) {
+                        robot.keyPress(keyEvent);
+                    } else {
+                        robot.keyRelease(keyEvent);
+                    }
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (data.get(i) instanceof Image) {
+                screenShot.makeRobot(testCaseName);
+                if (i < data.size() && data.get(i + 1) instanceof Mouse) {
+                    robot.delay(((Mouse)data.get(i+1)).getTime()-(((Image) data.get(i)).getTime()));
+                }
+            }
+        }
+        boolean success = true;
+        List<Image> images = database.getImages(testCaseName);
+        for (int i = 0; i < images.size(); i++) {
+            InputStream actualImage = new ByteArrayInputStream(images.get(i).getActualImage());
+            InputStream expectedImage = new ByteArrayInputStream(images.get(i).getExpectedImage());
             try {
-                robot = new Robot();
-            } catch (AWTException e) {
+                if (!compare(ImageIO.read(actualImage), ImageIO.read(expectedImage))) {
+                    JOptionPane.showMessageDialog(container,
+                            new String[]{"ERROR!!!" + i},
+                            "Результат теста",
+                            JOptionPane.ERROR_MESSAGE);
+                    success = false;
+                    break;
+                }
+            } catch (IOException e) {
                 e.printStackTrace();
             }
-            for (int i = 0; i < data.size(); i++) {
-                LinkedTreeMap object = data.get(i);
-                Object x = object.get("x");
-                if (x != null) {
-                    robot.delay(900);
-                    robot.mouseMove(((Double) x).intValue(), ((Double) object.get("y")).intValue());
-                    robot.delay(900);
-
-                    if (i + 2 < data.size()) {
-                        Object time = data.get(i + 2).get("time");
-                        if (time != null) {
-                            Double firstClick = (Double) object.get("time");
-                            Double secondClick = (Double) time;
-                            if (secondClick - firstClick < 400) {
-                                robot.mousePress(InputEvent.BUTTON1_MASK);
-                                screenShot.make(testCase + "/robot");
-                                robot.mouseRelease(InputEvent.BUTTON1_MASK);
-                                screenShot.make(testCase + "/robot");
-                                robot.mousePress(InputEvent.BUTTON1_MASK);
-                                screenShot.make(testCase + "/robot");
-                                robot.mouseRelease(InputEvent.BUTTON1_MASK);
-                                screenShot.make(testCase + "/robot");
-                                i += 3;
-                                continue;
-                            }
-                        }
-                    }
-                    if (i + 1 < data.size()) {
-                        if (data.get(i + 1).get("time") != null) {
-                            Double firstClick = (Double) object.get("time");
-                            Double secondClick = (Double) data.get(i + 1).get("time");
-                            if (secondClick - firstClick < 400) {
-                                robot.mousePress(InputEvent.BUTTON1_MASK);
-                                screenShot.make(testCase + "/robot");
-                                robot.mouseRelease(InputEvent.BUTTON1_MASK);
-                                screenShot.make(testCase + "/robot");
-                                i++;
-                                continue;
-                            }
-                        }
-                    }
-                    if (object.get("type").equals("pressed")) {
-                        robot.mousePress(InputEvent.BUTTON1_MASK);
-                        screenShot.make(testCase + "/robot");
-
-                    } else{
-                        robot.mouseRelease(InputEvent.BUTTON1_MASK);
-                        screenShot.make(testCase + "/robot");
-                    }
-                }
-                Object key = object.get("key");
-                if (key != null) {
-                    robot.delay(100);
-                    try {
-                        int keyEvent = new KeyEvents().getKey(key.toString());
-                        if (object.get("type").equals("pressed")) {
-                            robot.keyPress(keyEvent);
-                            screenShot.make(testCase + "/robot");
-                        } else{
-                            robot.keyRelease(keyEvent);
-                            screenShot.make(testCase + "/robot");
-                        }
-                    } catch (IllegalAccessException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-            System.exit(1);
+        }
+        if (success) {
+            JOptionPane.showMessageDialog(container,
+                    new String[]{"SUCCESS!!!"},
+                    "Результат теста",
+                    JOptionPane.INFORMATION_MESSAGE);
+        }
           /*  AssertResult result = assertation(Utils.filterFiles(testCase));
 
             JOptionPane.showMessageDialog(this,
                     result.getMessages(),
                     "Результат теста",
                     result.getType());*/
-        });
-
-        this.pack();
-
-        return this;
     }
 
-    private void keyPressed() {
+    private boolean compare(BufferedImage actual, BufferedImage expected) {
+
+        if (actual.getWidth() != expected.getWidth() || expected.getHeight() != actual.getHeight()) {
+            System.out.println("dimensions must be the same");
+            return false;
+        }
+
+        int countIsNotIdentic = 0;
+        for (int i = 0; i < actual.getWidth(); i++) {
+            for (int j = 0; j < actual.getHeight(); j++) {
+                int actualRGB = actual.getRGB(i, j);
+                int expectedRGB = expected.getRGB(i, j);
+                Color color1 = new Color((actualRGB >> 16) & 0xFF, (actualRGB >> 8) & 0xFF, (actualRGB) & 0xFF);
+                Color color2 = new Color((expectedRGB >> 16) & 0xFF, (expectedRGB >> 8) & 0xFF, (expectedRGB) & 0xFF);
+                if (!compareColor(color1, color2)) {
+                    countIsNotIdentic++;
+                }
+            }
+        }
+        return (countIsNotIdentic * 100) / (actual.getWidth() * actual.getHeight()) <= 10;
+    }
+
+    private boolean compareColor(Color color1, Color color2) {
+        if (Math.abs(color1.getRed() - color2.getRed()) > 10) {
+            return false;
+        }
+        if (Math.abs(color1.getBlue() - color2.getBlue()) > 10) {
+            return false;
+        }
+        return Math.abs(color1.getGreen() - color2.getGreen()) <= 10;
 
     }
 
-    private AssertResult assertation(List<File> files) {
+   /* private AssertResult assertation(List<File> files) {
         if (files.isEmpty()) {
             return new AssertResult(new String[]{"Произошла ошибка!", "рекомендуется перезаписать тест"}, JOptionPane.ERROR_MESSAGE);
         }
@@ -162,5 +201,5 @@ public class RobotWindow extends JFrame implements Window {
             }
         }
         return new AssertResult(new String[]{"SUCCESS!!!"}, JOptionPane.INFORMATION_MESSAGE);
-    }
+    }*/
 }
