@@ -6,7 +6,6 @@ import org.jnativehook.NativeHookException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.sertok.robot.api.ExecuteApp;
-import ru.sertok.robot.api.ScreenShot;
 import ru.sertok.robot.data.TestCase;
 import ru.sertok.robot.database.Database;
 import ru.sertok.robot.entity.ImageEntity;
@@ -34,8 +33,6 @@ import java.util.List;
 public class RecordWindow extends JFrame implements Window {
     private final Database database;
     private final EventListener eventListener;
-    private final RecordButtons recordButtons;
-    private final ScreenShot screenShot;
     private final RobotWindow robotWindow;
     private final LocalStorage localStorage;
     private final ExecuteApp executeApp;
@@ -48,9 +45,17 @@ public class RecordWindow extends JFrame implements Window {
         List<ImageEntity> images = testCaseEntity.getImages();
         images.sort(Comparator.comparingInt(ImageEntity::getPosition));
         for (int i = 0; i < images.size(); i++) {
+            InputStream in = new ByteArrayInputStream(images.get(i).getPhotoExpected());
+            try {
+                database.writePng(ImageIO.read(in), "recorder", "test" + i);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        for (int i = 0; i < images.size(); i++) {
             InputStream in = new ByteArrayInputStream(images.get(i).getPhotoActual());
             try {
-                database.writePng(ImageIO.read(in), "test", "test" + i);
+                database.writePng(ImageIO.read(in), "robot", "test" + i);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -70,8 +75,6 @@ public class RecordWindow extends JFrame implements Window {
         this.setAlwaysOnTop(true);
         this.setUndecorated(true);
         this.pack();
-        localStorage.setSize(this.getSize());
-        localStorage.setLocation(this.getLocation());
         return this;
     }
 
@@ -130,13 +133,7 @@ public class RecordWindow extends JFrame implements Window {
     private void startAction() {
         localStorage.setStartTime(System.currentTimeMillis());
         String url = input.getUrl().getText();
-        String testCase = input.getTestCase().getText();
         executeApp.execute(url);
-        recordButtons.getStartButton().addActionListener(action -> {
-            localStorage.getSteps().add(screenShot.getImage());
-            screenShot.make(testCase);
-        });
-
         try {
             GlobalScreen.registerNativeHook();
         } catch (NativeHookException ex) {
@@ -155,12 +152,16 @@ public class RecordWindow extends JFrame implements Window {
         } catch (NativeHookException e) {
             e.printStackTrace();
         }
-        database.save(TestCase.builder()
+        TestCase testCase = TestCase.builder()
                 .steps(localStorage.getSteps())
                 .name(input.getTestCase().getText())
                 .url(input.getUrl().getText())
-                .build()
-        );
+                .build();
+        database.save(testCase);
+        JComboBox selectBox = robotWindow.getSelectBox();
+        selectBox.addItem(testCase.getName());
+        selectBox.repaint();
+        this.pack();
     }
 
 

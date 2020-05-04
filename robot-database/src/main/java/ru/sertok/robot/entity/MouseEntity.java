@@ -45,10 +45,16 @@ public class MouseEntity {
     private Integer time;
 
     /**
-     * порядок в катором было событие
+     * порядок в котором было событие
      */
     @Column(name = "position", nullable = false)
     private int position;
+
+    /**
+     * Признак что есть скриншот у этого события
+     */
+    @Column(name = "screenshot", nullable = false)
+    private boolean screenshot;
 
     /**
      * Тест кейс к которому относится данное событие

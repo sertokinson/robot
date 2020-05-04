@@ -24,8 +24,8 @@ public class PhotoTest {
     }
 
     private boolean compare() throws IOException {
-        BufferedImage image2 = loadPNG("/Users/sergejstahanov/Desktop/robot/robot-autotest/src/test/resources/test2.png");
-        BufferedImage image1 = loadPNG("/Users/sergejstahanov/Desktop/robot/robot-autotest/src/test/resources/test3.png");
+        BufferedImage image2 = loadPNG("/Users/sergejstahanov/Desktop/robot/robot-autotest/src/test/resources/test1.png");
+        BufferedImage image1 = loadPNG("/Users/sergejstahanov/Desktop/robot/robot-autotest/src/test/resources/test2.png");
 
         if (image1.getWidth() != image2.getWidth() || image2.getHeight() != image1.getHeight()) {
             System.out.println("dimensions must be the same");

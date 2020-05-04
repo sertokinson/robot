@@ -29,21 +29,6 @@ public class ScreenShotEntity {
     @Column(name = "HEIGHT")
     private int height;
 
-    @Column(name = "SIZE")
-    private Integer size;
-
-    /**
-     * порядок в катором было событие
-     */
-    @Column(name = "position", nullable = false)
-    private int position;
-
-    /**
-     * время отсчета от старта
-     */
-    @Column(name = "TIME")
-    private Integer time;
-
     /**
      * Тест кейс к которому относится данное событие
      */

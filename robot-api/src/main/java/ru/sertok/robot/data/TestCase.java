@@ -13,4 +13,5 @@ public class TestCase {
     private String name;
     private String url;
     private List<Object> steps;
+    private Image image;
 }

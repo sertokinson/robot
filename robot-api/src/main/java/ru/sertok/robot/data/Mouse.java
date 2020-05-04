@@ -12,4 +12,5 @@ public class Mouse {
     private int x;
     private int y;
     private Integer time;
+    private boolean screenshot;
 }

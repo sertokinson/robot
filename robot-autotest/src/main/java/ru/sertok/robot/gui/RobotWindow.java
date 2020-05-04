@@ -6,12 +6,11 @@ import org.springframework.stereotype.Component;
 import ru.sertok.robot.api.ExecuteApp;
 import ru.sertok.robot.api.ScreenShot;
 import ru.sertok.robot.data.Image;
-import ru.sertok.robot.data.Keyboard;
 import ru.sertok.robot.data.Mouse;
 import ru.sertok.robot.data.TestCase;
 import ru.sertok.robot.data.Type;
 import ru.sertok.robot.database.Database;
-import ru.sertok.robot.hook.KeyEvents;
+import ru.sertok.robot.entity.ImageEntity;
 import ru.sertok.robot.storage.LocalStorage;
 
 import javax.imageio.ImageIO;
@@ -22,6 +21,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -31,7 +31,6 @@ public class RobotWindow {
     private final ExecuteApp executeApp;
     private final ScreenShot screenShot;
     private final LocalStorage localStorage;
-
 
     private JComboBox selectBox;
 
@@ -46,10 +45,16 @@ public class RobotWindow {
 
     }
 
+    public JComboBox getSelectBox() {
+        return selectBox;
+    }
+
     private void startAction(Container container) {
         String testCaseName = selectBox.getSelectedItem().toString();
         TestCase testCase = database.get(testCaseName);
         List<Object> data = testCase.getSteps();
+        screenShot.setSize(new Point(testCase.getImage().getX(), testCase.getImage().getY()), new Dimension(testCase.getImage().getWidth(), testCase.getImage().getHeight()));
+        localStorage.setImages(new ArrayList<>());
         Robot robot = null;
         try {
             robot = new Robot();
@@ -63,10 +68,17 @@ public class RobotWindow {
                 Mouse mouse = (Mouse) data.get(i);
                 if (mouse.getType() == Type.MOVED) {
                     robot.mouseMove(mouse.getX(), mouse.getY());
-                    if (i + 1 < data.size() && data.get(i + 1) instanceof Mouse) {
+                } else if (mouse.getType() == Type.PRESSED) {
+                    robot.mousePress(InputEvent.BUTTON1_MASK);
+                } else {
+                    robot.mouseRelease(InputEvent.BUTTON1_MASK);
+                }
+                if (mouse.isScreenshot())
+                    screenShot.makeRobot();
+                if (i + 1 < data.size()) {
+                    if (data.get(i + 1) instanceof Mouse) {
                         robot.delay(((Mouse) data.get(i + 1)).getTime() - mouse.getTime());
                     }
-                    continue;
                 }
               /*  if (i + 2 < data.size()) {
                     if (data.get(i + 2) instanceof Mouse) {
@@ -94,13 +106,9 @@ public class RobotWindow {
                         }
                     }
                 }*/
-                if (mouse.getType() == Type.PRESSED) {
-                    robot.mousePress(InputEvent.BUTTON1_MASK);
-                } else {
-                    robot.mouseRelease(InputEvent.BUTTON1_MASK);
-                }
+
             }
-            if (data.get(i) instanceof Keyboard) {
+           /* if (data.get(i) instanceof Keyboard) {
                 Keyboard keyboard = (Keyboard) data.get(i);
                 robot.delay(200);
                 try {
@@ -113,30 +121,27 @@ public class RobotWindow {
                 } catch (IllegalAccessException e) {
                     e.printStackTrace();
                 }
-            }
-            if (data.get(i) instanceof Image) {
-                screenShot.makeRobot(testCaseName);
-                if (i < data.size() && data.get(i + 1) instanceof Mouse) {
-                    robot.delay(((Mouse)data.get(i+1)).getTime()-(((Image) data.get(i)).getTime()));
-                }
-            }
+            }*/
         }
-        boolean success = true;
         List<Image> images = database.getImages(testCaseName);
+        List<ImageEntity> actualImages = localStorage.getImages();
+        boolean success = true;
         for (int i = 0; i < images.size(); i++) {
-            InputStream actualImage = new ByteArrayInputStream(images.get(i).getActualImage());
-            InputStream expectedImage = new ByteArrayInputStream(images.get(i).getExpectedImage());
-            try {
-                if (!compare(ImageIO.read(actualImage), ImageIO.read(expectedImage))) {
-                    JOptionPane.showMessageDialog(container,
-                            new String[]{"ERROR!!!" + i},
-                            "Результат теста",
-                            JOptionPane.ERROR_MESSAGE);
-                    success = false;
+            success = false;
+            byte[] expectedImage = images.get(i).getExpectedImage();
+            for (ImageEntity image : actualImages) {
+                byte[] actualImage = image.getPhotoActual();
+                if (compare(actualImage, expectedImage)) {
+                    success = true;
                     break;
                 }
-            } catch (IOException e) {
-                e.printStackTrace();
+            }
+            if (!success) {
+                JOptionPane.showMessageDialog(container,
+                        new String[]{"ERROR!!!" + i},
+                        "Результат теста",
+                        JOptionPane.ERROR_MESSAGE);
+                break;
             }
         }
         if (success) {
@@ -145,6 +150,7 @@ public class RobotWindow {
                     "Результат теста",
                     JOptionPane.INFORMATION_MESSAGE);
         }
+        database.save(actualImages);
           /*  AssertResult result = assertation(Utils.filterFiles(testCase));
 
             JOptionPane.showMessageDialog(this,
@@ -153,26 +159,32 @@ public class RobotWindow {
                     result.getType());*/
     }
 
-    private boolean compare(BufferedImage actual, BufferedImage expected) {
-
-        if (actual.getWidth() != expected.getWidth() || expected.getHeight() != actual.getHeight()) {
-            System.out.println("dimensions must be the same");
-            return false;
-        }
-
-        int countIsNotIdentic = 0;
-        for (int i = 0; i < actual.getWidth(); i++) {
-            for (int j = 0; j < actual.getHeight(); j++) {
-                int actualRGB = actual.getRGB(i, j);
-                int expectedRGB = expected.getRGB(i, j);
-                Color color1 = new Color((actualRGB >> 16) & 0xFF, (actualRGB >> 8) & 0xFF, (actualRGB) & 0xFF);
-                Color color2 = new Color((expectedRGB >> 16) & 0xFF, (expectedRGB >> 8) & 0xFF, (expectedRGB) & 0xFF);
-                if (!compareColor(color1, color2)) {
-                    countIsNotIdentic++;
+    private boolean compare(byte[] actual, byte[] expected) {
+        try {
+            BufferedImage expectedImage = ImageIO.read(new ByteArrayInputStream(expected));
+            BufferedImage actualImage = ImageIO.read(new ByteArrayInputStream(actual));
+            if (actualImage.getWidth() != expectedImage.getWidth() || expectedImage.getHeight() != actualImage.getHeight()) {
+                System.out.println("dimensions must be the same");
+                return false;
+            }
+            int countIsNotIdentic = 0;
+            for (int i = 0; i < actualImage.getWidth(); i++) {
+                for (int j = 0; j < actualImage.getHeight(); j++) {
+                    int actualRGB = actualImage.getRGB(i, j);
+                    int expectedRGB = expectedImage.getRGB(i, j);
+                    Color color1 = new Color((actualRGB >> 16) & 0xFF, (actualRGB >> 8) & 0xFF, (actualRGB) & 0xFF);
+                    Color color2 = new Color((expectedRGB >> 16) & 0xFF, (expectedRGB >> 8) & 0xFF, (expectedRGB) & 0xFF);
+                    if (!compareColor(color1, color2)) {
+                        countIsNotIdentic++;
+                    }
                 }
             }
+            return (countIsNotIdentic * 100) / (actualImage.getWidth() * actualImage.getHeight()) <= 10;
+
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        return (countIsNotIdentic * 100) / (actual.getWidth() * actual.getHeight()) <= 10;
+        return false;
     }
 
     private boolean compareColor(Color color1, Color color2) {

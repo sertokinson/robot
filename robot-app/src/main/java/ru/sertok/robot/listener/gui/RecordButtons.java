@@ -7,6 +7,7 @@ import ru.sertok.robot.storage.LocalStorage;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
 
 @Component
 public class RecordButtons extends JFrame {
@@ -14,18 +15,22 @@ public class RecordButtons extends JFrame {
     private LocalStorage localStorage;
     @Autowired
     private TranslucentWindow tw;
+    @Autowired
+    private ScreenShot screenShot;
 
-
-    private JButton start;
-
-    public RecordButtons(ScreenShot screenShot) {
+    public RecordButtons() {
         setLayout(new GridBagLayout());
         Container container = this.getContentPane();
         container.setLayout(new GridLayout(2, 1));
-        start = new JButton("start");
+        JButton start = new JButton("start");
+        start.addActionListener(action -> {
+            localStorage.setImage(screenShot.getImage());
+            localStorage.setScreenshot(true);
+            localStorage.setImages(new ArrayList<>());
+        });
         JButton stop = new JButton("stop");
         stop.addActionListener(action -> {
-            screenShot.stop();
+            localStorage.setScreenshot(false);
             this.setVisible(false);
             localStorage.setActiveCrop(false);
             tw.dispose();
@@ -38,7 +43,4 @@ public class RecordButtons extends JFrame {
         this.setUndecorated(true);
     }
 
-    JButton getStartButton() {
-        return start;
-    }
 }

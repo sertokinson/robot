@@ -13,12 +13,19 @@ import ru.sertok.robot.api.ScreenShot;
 import ru.sertok.robot.data.Keyboard;
 import ru.sertok.robot.data.Mouse;
 import ru.sertok.robot.data.Type;
+import ru.sertok.robot.entity.ImageEntity;
 import ru.sertok.robot.listener.gui.RecordButtons;
 import ru.sertok.robot.listener.gui.TranslucentWindow;
 import ru.sertok.robot.storage.LocalStorage;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 
 @Component
@@ -35,24 +42,88 @@ public class EventListener implements NativeMouseInputListener, NativeKeyListene
     public void nativeMouseClicked(NativeMouseEvent e) {
     }
 
+    private boolean compare(BufferedImage actual, BufferedImage expected) {
+
+        if (actual.getWidth() != expected.getWidth() || expected.getHeight() != actual.getHeight()) {
+            System.out.println("dimensions must be the same");
+            return false;
+        }
+
+        int countIsNotIdentic = 0;
+        for (int i = 0; i < actual.getWidth(); i++) {
+            for (int j = 0; j < actual.getHeight(); j++) {
+                int actualRGB = actual.getRGB(i, j);
+                int expectedRGB = expected.getRGB(i, j);
+                Color color1 = new Color((actualRGB >> 16) & 0xFF, (actualRGB >> 8) & 0xFF, (actualRGB) & 0xFF);
+                Color color2 = new Color((expectedRGB >> 16) & 0xFF, (expectedRGB >> 8) & 0xFF, (expectedRGB) & 0xFF);
+                if (!compareColor(color1, color2)) {
+                    countIsNotIdentic++;
+                }
+            }
+        }
+        return (countIsNotIdentic * 100) / (actual.getWidth() * actual.getHeight()) <= 10;
+    }
+
+    private boolean compareColor(Color color1, Color color2) {
+        if (Math.abs(color1.getRed() - color2.getRed()) > 10) {
+            return false;
+        }
+        if (Math.abs(color1.getBlue() - color2.getBlue()) > 10) {
+            return false;
+        }
+        return Math.abs(color1.getGreen() - color2.getGreen()) <= 10;
+
+    }
+
     public void nativeMousePressed(NativeMouseEvent e) {
+        boolean screenshot = localStorage.isScreenshot();
+        if (screenshot) {
+            screenShot.make();
+            /*List<ImageEntity> images = localStorage.getImages();
+            if (images.size() > 1) {
+                InputStream actualImage = new ByteArrayInputStream(images.get(images.size() - 1).getPhotoExpected());
+                InputStream expectedImage = new ByteArrayInputStream(images.get(images.size() - 2).getPhotoExpected());
+                try {
+                    if (compare(ImageIO.read(actualImage), ImageIO.read(expectedImage))) {
+                        localStorage.getImages().remove(images.size() - 1);
+                        screenshot = false;
+                    }
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+            }*/
+        }
         if (!screenShot.isStarted())
             componentCrop(e);
-        if (isListenedZone(e.getX(), e.getY()))
-            localStorage.getSteps().add(
-                    new Mouse(Type.PRESSED, e.getX(), e.getY(),
-                            (int) (System.currentTimeMillis() - localStorage.getStartTime()))
-            );
+        localStorage.getSteps().add(
+                new Mouse(Type.PRESSED, e.getX(), e.getY(),
+                        (int) (System.currentTimeMillis() - localStorage.getStartTime()), screenshot)
+        );
+
     }
 
     public void nativeMouseReleased(NativeMouseEvent e) {
-        if (isListenedZone(e.getX(), e.getY()))
-            localStorage.getSteps().add(new Mouse(
-                    Type.RELEASED,
-                    e.getX(),
-                    e.getY(),
-                    (int) (System.currentTimeMillis() - localStorage.getStartTime()))
-            );
+        boolean screenshot = localStorage.isScreenshot();
+        if (screenshot) {
+            screenShot.make();
+           /* List<ImageEntity> images = localStorage.getImages();
+            if (images.size() > 1) {
+                InputStream actualImage = new ByteArrayInputStream(images.get(images.size() - 1).getPhotoExpected());
+                InputStream expectedImage = new ByteArrayInputStream(images.get(images.size() - 2).getPhotoExpected());
+                try {
+                    if (compare(ImageIO.read(actualImage), ImageIO.read(expectedImage))) {
+                        localStorage.getImages().remove(images.size() - 1);
+                        screenshot = false;
+                    }
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+            }*/
+        }
+        localStorage.getSteps().add(
+                new Mouse(Type.RELEASED, e.getX(), e.getY(),
+                        (int) (System.currentTimeMillis() - localStorage.getStartTime()), screenshot)
+        );
     }
 
 
@@ -77,12 +148,26 @@ public class EventListener implements NativeMouseInputListener, NativeKeyListene
     }
 
     public void nativeMouseMoved(NativeMouseEvent e) {
-        localStorage.getSteps().add(Mouse.builder()
-                .x(e.getX())
-                .y(e.getY())
-                .time((int) (System.currentTimeMillis() - localStorage.getStartTime()))
-                .type(Type.MOVED)
-                .build()
+        boolean screenshot = localStorage.isScreenshot();
+        if (screenshot) {
+            screenShot.make();
+           /* List<ImageEntity> images = localStorage.getImages();
+            if (images.size() > 1) {
+                InputStream actualImage = new ByteArrayInputStream(images.get(images.size() - 1).getPhotoExpected());
+                InputStream expectedImage = new ByteArrayInputStream(images.get(images.size() - 2).getPhotoExpected());
+                try {
+                    if (compare(ImageIO.read(actualImage), ImageIO.read(expectedImage))) {
+                        localStorage.getImages().remove(images.size() - 1);
+                        screenshot = false;
+                    }
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+            }*/
+        }
+        localStorage.getSteps().add(
+                new Mouse(Type.MOVED, e.getX(), e.getY(),
+                        (int) (System.currentTimeMillis() - localStorage.getStartTime()), screenshot)
         );
     }
 
@@ -103,12 +188,6 @@ public class EventListener implements NativeMouseInputListener, NativeKeyListene
             recordButtons.setVisible(true);
             tw.dispose();
         }
-    }
-
-    private boolean isListenedZone(int x, int y) {
-        Point location = localStorage.getLocation();
-        Dimension size = localStorage.getSize();
-        return x > location.getX() + size.getWidth() && y > location.getY() + size.getHeight();
     }
 
 }

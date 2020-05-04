@@ -5,10 +5,9 @@ import ru.sertok.robot.data.Image;
 import java.awt.*;
 
 public interface ScreenShot {
-    void make(String testCase);
-    void makeRobot(String testCase);
+    void make();
+    void makeRobot();
     void setSize(Point point, Dimension dimension);
     Image getImage();
-    void stop();
     boolean isStarted();
 }
