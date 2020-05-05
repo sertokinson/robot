@@ -1,0 +1,29 @@
+// Путь до запускаемого приложения
+POST http://localhost:8080/autotest/settings/pathToApp/
+Content-Type: application/json
+
+{
+  "pathToApp": "/Applications/Google Chrome.app"
+}
+
+###
+
+// Проверяем запущено ли приложение
+GET http://localhost:8080/autotest/ping/
+
+###
+
+// Получить текущий уровень логгирования
+GET http://localhost:8080/autotest/actuator/loggers/ru.sertok.robot
+
+###
+
+// Изменить уровень логгирования
+POST http://localhost:8080/autotest/actuator/loggers/ru.sertok.robot
+Content-Type: application/json
+
+{
+  "configuredLevel": "debug"
+}
+
+###
