@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import ru.sertok.robot.data.Type;
 
 import javax.persistence.*;
@@ -44,7 +46,23 @@ public class KeyboardEntity {
      * Тест кейс к которому относится данное событие
      */
     @ManyToOne
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "TEST_CASE_ID", nullable = false)
     private TestCaseEntity testCase;
 
+    /**
+     * Это переопределениме нужно чтоб получить только id тест-кейса
+     * З.Ы.: Как это сделать через lombok не знаю
+     * @return строку
+     */
+    @Override
+    public String toString() {
+        return "KeyboardEntity{" +
+                "id=" + id +
+                ", type=" + type +
+                ", key='" + key + '\'' +
+                ", position=" + position +
+                ", testCaseId=" + testCase.getId() +
+                '}';
+    }
 }

@@ -9,29 +9,30 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>robot-impl</artifactId>
+    <artifactId>robot-core</artifactId>
     <dependencies>
         <dependency>
             <groupId>ru.sertok.robot</groupId>
             <artifactId>robot-api</artifactId>
-            <version>${parent.version}</version>
+            <version>${project.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>ru.sertok.robot</groupId>
             <artifactId>robot-database</artifactId>
-            <version>${parent.version}</version>
+            <version>${project.version}</version>
             <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
         </dependency>
         <dependency>
             <groupId>com.1stleg</groupId>
             <artifactId>jnativehook</artifactId>
             <version>${jnativehook.version}</version>
         </dependency>
-        <dependency>
-            <groupId>ru.sertok.robot</groupId>
-            <artifactId>robot-core</artifactId>
-            <version>0.7</version>
-        </dependency>
     </dependencies>
+
+
 </project>

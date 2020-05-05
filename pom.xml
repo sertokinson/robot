@@ -7,11 +7,12 @@
     <groupId>ru.sertok.robot</groupId>
     <artifactId>robot</artifactId>
     <packaging>pom</packaging>
-    <version>0.5</version>
+    <version>0.7</version>
     <properties>
         <spring.version>4.3.11.RELEASE</spring.version>
         <lombok.version>1.18.4</lombok.version>
         <mapstruct.version>1.3.0.Beta2</mapstruct.version>
+        <jnativehook.version>2.0.2</jnativehook.version>
     </properties>
     <build>
         <plugins>
@@ -58,12 +59,12 @@
         </dependencies>
     </dependencyManagement>
     <modules>
-        <module>robot-assertation</module>
-        <module>robot-autotest</module>
         <module>robot-app</module>
         <module>robot-api</module>
         <module>robot-impl</module>
         <module>robot-database</module>
+        <module>robot-gui</module>
+        <module>robot-core</module>
     </modules>
     <repositories>
         <repository>

@@ -1,6 +1,8 @@
 package ru.sertok.robot.entity;
 
 import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import ru.sertok.robot.data.Type;
 
 import javax.persistence.*;
@@ -60,6 +62,26 @@ public class MouseEntity {
      * Тест кейс к которому относится данное событие
      */
     @ManyToOne
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "TEST_CASE_ID")
     private TestCaseEntity testCase;
+
+    /**
+     * Это переопределениме нужно чтоб получить только id тест-кейса
+     * З.Ы.: Как это сделать через lombok не знаю
+     * @return строку
+     */
+    @Override
+    public String toString() {
+        return "MouseEntity{" +
+                "id=" + id +
+                ", type=" + type +
+                ", x=" + x +
+                ", y=" + y +
+                ", time=" + time +
+                ", position=" + position +
+                ", screenshot=" + screenshot +
+                ", testCaseId=" + testCase.getId() +
+                '}';
+    }
 }

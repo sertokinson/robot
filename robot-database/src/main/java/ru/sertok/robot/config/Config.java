@@ -2,49 +2,28 @@ package ru.sertok.robot.config;
 
 import org.apache.tomcat.dbcp.dbcp2.BasicDataSource;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
-import org.springframework.orm.jpa.JpaTransactionManager;
-import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
-import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 import java.util.Properties;
 
 @Configuration
-@ComponentScan("ru.sertok")
 @EnableTransactionManagement
 @EnableJpaRepositories(basePackages = "ru.sertok.robot.repository")
 public class Config {
 
-    @Bean
+    @Bean(name = "entityManagerFactory")
     public LocalSessionFactoryBean sessionFactory() {
         LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
         sessionFactory.setDataSource(dataSource());
         sessionFactory.setPackagesToScan("ru.sertok.robot.entity");
         sessionFactory.setHibernateProperties(hibernateProperties());
         return sessionFactory;
-    }
-
-    @Bean
-    public EntityManagerFactory entityManagerFactory() {
-
-        HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
-        vendorAdapter.setGenerateDdl(true);
-
-        LocalContainerEntityManagerFactoryBean factory = new LocalContainerEntityManagerFactoryBean();
-        factory.setJpaVendorAdapter(vendorAdapter);
-        factory.setPackagesToScan("ru.sertok.robot.entity");
-        factory.setDataSource(dataSource());
-        factory.afterPropertiesSet();
-
-        return factory.getObject();
     }
 
     @Bean
@@ -57,7 +36,7 @@ public class Config {
         return dataSource;
     }
 
-    @Bean
+    @Bean("transactionManager")
     public PlatformTransactionManager hibernateTransactionManager() {
         HibernateTransactionManager transactionManager
                 = new HibernateTransactionManager();
@@ -65,13 +44,6 @@ public class Config {
         return transactionManager;
     }
 
-    @Bean
-    public PlatformTransactionManager transactionManager() {
-
-        JpaTransactionManager txManager = new JpaTransactionManager();
-        txManager.setEntityManagerFactory(entityManagerFactory());
-        return txManager;
-    }
 
     private Properties hibernateProperties() {
         Properties hibernateProperties = new Properties();
@@ -81,6 +53,8 @@ public class Config {
                 "hibernate.jdbc.use_streams_for_binary", "false");
         hibernateProperties.setProperty(
                 "hibernate.dialect", "org.hibernate.dialect.PostgreSQL94Dialect");
+        hibernateProperties.setProperty(
+                "hibernate.jdbc.lob.non_contextual_creation", "true");
 
         return hibernateProperties;
     }

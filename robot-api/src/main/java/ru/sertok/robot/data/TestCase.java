@@ -5,10 +5,11 @@ import lombok.*;
 import java.util.List;
 
 @Getter
+@Setter
 @Builder
+@ToString
 @AllArgsConstructor
 @NoArgsConstructor
-@Setter
 public class TestCase {
     private String name;
     private String url;

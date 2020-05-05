@@ -1,0 +1,8 @@
+POST http://localhost:8080/autotest/settings/pathToApp/
+Content-Type: application/json
+
+{
+  "pathToApp": "/Applications/Google Chrome.app"
+}
+
+###

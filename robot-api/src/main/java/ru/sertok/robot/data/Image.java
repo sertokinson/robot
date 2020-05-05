@@ -12,6 +12,5 @@ public class Image {
     private int y;
     private int width;
     private int height;
-    private byte[] expectedImage;
-    private byte[] actualImage;
+    private byte[] image;
 }
