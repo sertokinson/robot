@@ -3,40 +3,19 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.1.1.RELEASE</version>
+        <artifactId>robot</artifactId>
+        <groupId>ru.sertok.robot</groupId>
+        <version>0.7</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <packaging>jar</packaging>
-    <properties>
-        <robot.version>0.7</robot.version>
-    </properties>
 
     <artifactId>robot-app</artifactId>
     <dependencies>
         <dependency>
             <groupId>ru.sertok.robot</groupId>
-            <artifactId>robot-gui</artifactId>
-            <version>${robot.version}</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>ru.sertok.robot</groupId>
-            <artifactId>robot-api</artifactId>
-            <version>${robot.version}</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>ru.sertok.robot</groupId>
             <artifactId>robot-impl</artifactId>
-            <version>${robot.version}</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>ru.sertok.robot</groupId>
-            <artifactId>robot-database</artifactId>
-            <version>${robot.version}</version>
+            <version>${project.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>

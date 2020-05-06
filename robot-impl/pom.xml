@@ -13,23 +13,6 @@
     <dependencies>
         <dependency>
             <groupId>ru.sertok.robot</groupId>
-            <artifactId>robot-api</artifactId>
-            <version>${parent.version}</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>ru.sertok.robot</groupId>
-            <artifactId>robot-database</artifactId>
-            <version>${parent.version}</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.1stleg</groupId>
-            <artifactId>jnativehook</artifactId>
-            <version>${jnativehook.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>ru.sertok.robot</groupId>
             <artifactId>robot-core</artifactId>
             <version>0.7</version>
         </dependency>

@@ -30,9 +30,9 @@ public class TestCaseService {
                 .collect(Collectors.toList());
     }
 
-    public void delete(String name) {
-        log.debug("Удаляем тест кейс по имени: {}", name);
-        testCaseRepository.deleteByName(name);
+    public void delete(TestCaseEntity testCaseEntity) {
+        log.debug("Удаляем тест кейс: {}", testCaseEntity.getName());
+        testCaseRepository.delete(testCaseEntity);
     }
 
     public void save(TestCaseEntity testCaseEntity) {

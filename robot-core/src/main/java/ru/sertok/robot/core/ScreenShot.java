@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.sertok.robot.data.Image;
-import ru.sertok.robot.entity.ImageEntity;
 import ru.sertok.robot.storage.LocalStorage;
 
 import javax.imageio.ImageIO;
@@ -13,6 +12,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 
 @Slf4j
 @Component
@@ -22,11 +22,9 @@ public class ScreenShot {
 
     private Dimension dimension;
     private Point point;
-    private boolean start = false;
 
     public void make() {
         log.debug("Создаем скриншот");
-        start = true;
         if (dimension.width > 0 && dimension.height > 0) {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             BufferedImage bufferedImage = grabScreen();
@@ -40,28 +38,17 @@ public class ScreenShot {
                 localStorage.getImages().add(Image.builder().image(baos.toByteArray()).build());
             }
         } else {
-            log.error("Не удалось сделать скриншот, т.к. ширина или высота раны нулю");
+            log.error("Не удалось сделать скриншот, т.к. ширина или высота равны нулю");
         }
     }
 
-    public void setSize(Point point, Dimension dimension) {
+    public void setSize(Image image) {
+        localStorage.setImage(image);
+        localStorage.setImages(new ArrayList<>());
+        this.point = new Point(image.getX(), image.getY());
         log.debug("Задаем начальную позицию скриншота x: {} y:{}", point.getX(), point.getY());
-        this.point = point;
+        this.dimension = new Dimension(image.getWidth(), image.getHeight());
         log.debug("Задаем ширину и высоту скриншота width: {} height:{}", dimension.getWidth(), dimension.getHeight());
-        this.dimension = dimension;
-    }
-
-    public Image getImage() {
-        return Image.builder()
-                .x((int) point.getX())
-                .y((int) point.getY())
-                .width((int) dimension.getWidth())
-                .height((int) dimension.getHeight())
-                .build();
-    }
-
-    public boolean isStarted() {
-        return start;
     }
 
     private BufferedImage grabScreen() {

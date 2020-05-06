@@ -6,11 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import ru.sertok.robot.api.ScreenShotController;
 import ru.sertok.robot.core.ScreenShot;
-import ru.sertok.robot.request.RobotRequest;
+import ru.sertok.robot.mapper.ScreenShotMapper;
+import ru.sertok.robot.request.ScreenShotRequest;
+import ru.sertok.robot.response.ResponseBuilder;
 import ru.sertok.robot.storage.LocalStorage;
 
 import javax.ws.rs.core.Response;
-import java.util.ArrayList;
 
 @Slf4j
 @Controller
@@ -18,20 +19,20 @@ import java.util.ArrayList;
 public class ScreenShotControllerImpl implements ScreenShotController {
     private final LocalStorage localStorage;
     private final ScreenShot screenShot;
+    private final ScreenShotMapper screenShotMapper;
 
     @Override
-    public Response start(RobotRequest robotRequest) {
-        log.debug("REST-запрос ../screenshot/start со значением {}", robotRequest);
-        localStorage.setImage(screenShot.getImage());
-        localStorage.setScreenshot(true);
-        localStorage.setImages(new ArrayList<>());
-        return Response.ok().build();
+    public Response start(ScreenShotRequest screenShotRequest) {
+        log.debug("REST-запрос ../screenshot/start со значением {}", screenShotRequest);
+        screenShot.setSize(screenShotMapper.toImage(screenShotRequest));
+        localStorage.setScreenshotStart(true);
+        return ResponseBuilder.ok();
     }
 
     @Override
     public Response stop() {
         log.debug("REST-запрос ../screenshot/stop");
-        localStorage.setScreenshot(false);
-        return Response.ok().build();
+        localStorage.setScreenshotStart(false);
+        return ResponseBuilder.ok();
     }
 }

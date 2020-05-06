@@ -13,6 +13,7 @@ import java.util.List;
 public class TestCase {
     private String name;
     private String url;
-    private List<Object> steps;
+    private List<BaseData> steps;
     private Image image;
+    private String path;
 }

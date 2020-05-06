@@ -34,6 +34,12 @@ public class TestCaseEntity {
     private String url;
 
     /**
+     * путь до приложения которое тестируется
+     */
+    @Column(name = "PATH")
+    private String path;
+
+    /**
      * Все события мыши
      */
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "testCase", cascade = CascadeType.ALL)

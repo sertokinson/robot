@@ -1,9 +1,6 @@
 package ru.sertok.robot.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import ru.sertok.robot.data.Type;
@@ -13,6 +10,7 @@ import javax.persistence.*;
 @Entity
 @Builder
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "KEYBOARD")
@@ -49,6 +47,18 @@ public class KeyboardEntity {
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "TEST_CASE_ID", nullable = false)
     private TestCaseEntity testCase;
+
+    /**
+     * время отсчета от старта
+     */
+    @Column(name = "TIME")
+    private Integer time;
+
+    /**
+     * Признак что есть скриншот у этого события
+     */
+    @Column(name = "screenshot", nullable = false)
+    private boolean screenshot;
 
     /**
      * Это переопределениме нужно чтоб получить только id тест-кейса

@@ -2,6 +2,7 @@ package ru.sertok.robot.storage;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import ru.sertok.robot.data.BaseData;
 import ru.sertok.robot.data.Image;
 import ru.sertok.robot.data.TestCase;
 
@@ -12,9 +13,9 @@ import java.util.List;
 @Component
 public class LocalStorage {
     private long startTime;
-    private List<Object> steps = new ArrayList<>();
+    private List<BaseData> steps = new ArrayList<>();
     private List<Image> images;
-    private boolean screenshot = false;
+    private boolean screenshotStart = false;
     private Image image;
     private TestCase testCase;
 
@@ -23,18 +24,14 @@ public class LocalStorage {
         this.startTime = startTime;
     }
 
-    public void setSteps(List<Object> steps) {
-        this.steps = steps;
-    }
-
     public void setImages(List<Image> images) {
         log.debug("Записываем в локальное хранилище информацию о изображениях: {}", images);
         this.images = images;
     }
 
-    public void setScreenshot(boolean screenshot) {
-        log.debug("Активация скриншота: {}", screenshot);
-        this.screenshot = screenshot;
+    public void setScreenshotStart(boolean start) {
+        log.debug("Активация скриншота: {}", start);
+        this.screenshotStart = start;
     }
 
     public void setImage(Image image) {
@@ -51,7 +48,7 @@ public class LocalStorage {
         return startTime;
     }
 
-    public List<Object> getSteps() {
+    public List<BaseData> getSteps() {
         log.debug("Вычитываем из локального хранилища данные о шагах: {}", steps);
         return steps;
     }
@@ -61,8 +58,8 @@ public class LocalStorage {
         return images;
     }
 
-    public boolean isScreenshot() {
-        return screenshot;
+    public boolean isScreenshotStart() {
+        return screenshotStart;
     }
 
     public Image getImage() {

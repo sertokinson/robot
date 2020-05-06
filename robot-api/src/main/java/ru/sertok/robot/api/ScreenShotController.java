@@ -1,6 +1,6 @@
 package ru.sertok.robot.api;
 
-import ru.sertok.robot.request.RobotRequest;
+import ru.sertok.robot.request.ScreenShotRequest;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
@@ -16,7 +16,7 @@ public interface ScreenShotController {
 
     @POST
     @Path("/start")
-    Response start(RobotRequest robotRequest);
+    Response start(ScreenShotRequest screenShotRequest);
 
     @POST
     @Path("/stop")

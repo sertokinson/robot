@@ -8,12 +8,12 @@ import org.springframework.util.CollectionUtils;
 import ru.sertok.robot.api.RobotController;
 import ru.sertok.robot.core.ExecuteApp;
 import ru.sertok.robot.core.ScreenShot;
+import ru.sertok.robot.core.hook.KeyEvents;
+import ru.sertok.robot.data.*;
 import ru.sertok.robot.data.Image;
-import ru.sertok.robot.data.Mouse;
-import ru.sertok.robot.data.Status;
-import ru.sertok.robot.data.TestCase;
 import ru.sertok.robot.database.Database;
 import ru.sertok.robot.request.RobotRequest;
+import ru.sertok.robot.response.ResponseBuilder;
 import ru.sertok.robot.response.RobotResponse;
 import ru.sertok.robot.storage.LocalStorage;
 
@@ -24,9 +24,8 @@ import java.awt.event.InputEvent;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @Slf4j
@@ -42,27 +41,27 @@ public class RobotControllerImpl implements RobotController {
         String testCaseName = robotRequest.getTestCase();
         log.debug("REST-запрос ../robot/start со значением {}", testCaseName);
         TestCase testCase = database.get(testCaseName);
-        List<Object> data = testCase.getSteps();
-        Image image = testCase.getImage();
-        if (image != null) {
-            screenShot.setSize(new Point(image.getX(), image.getY()), new Dimension(image.getWidth(), image.getHeight()));
-            localStorage.setImages(new ArrayList<>());
-        }
+        List<BaseData> data = testCase.getSteps();
+        Optional.ofNullable(testCase.getImage()).ifPresent(screenShot::setSize);
         Robot robot;
         try {
             robot = new Robot();
         } catch (AWTException e) {
-            log.error("Ошибка при создании робота", e);
-            return Response.serverError().build();
+            String error = "Ошибка при создании робота";
+            log.error(error, e);
+            return ResponseBuilder.error(error);
         }
-        if (!executeApp.execute(testCase.getUrl())) {
-            log.error("Не удалось запустить приложение!");
-            return Response.serverError().build();
+        executeApp.setPathToApp(testCase.getPath());
+        if (executeApp.execute(testCase.getUrl()) == Status.ERROR) {
+            String error = "Не удалось запустить приложение!";
+            log.error(error);
+            return ResponseBuilder.error(error);
         }
         robot.delay(900);
         for (int i = 0; i < data.size(); i++) {
-            if (data.get(i) instanceof Mouse) {
-                Mouse mouse = (Mouse) data.get(i);
+            BaseData baseData = data.get(i);
+            if (baseData instanceof Mouse) {
+                Mouse mouse = (Mouse) baseData;
                 switch (mouse.getType()) {
                     case PRESSED:
                         robot.mousePress(InputEvent.BUTTON1_MASK);
@@ -73,44 +72,9 @@ public class RobotControllerImpl implements RobotController {
                     case RELEASED:
                         robot.mouseRelease(InputEvent.BUTTON1_MASK);
                 }
-                if (mouse.isScreenshot())
-                    screenShot.make();
-                if (i + 1 < data.size()) {
-                    if (data.get(i + 1) instanceof Mouse) {
-                        robot.delay(((Mouse) data.get(i + 1)).getTime() - mouse.getTime());
-                    }
-                }
-              /*  if (i + 2 < data.size()) {
-                    if (data.get(i + 2) instanceof Mouse) {
-                        int firstClick = mouse.getTime();
-                        int secondClick = ((Mouse) data.get(i + 2)).getTime();
-                        if (secondClick - firstClick < 400) {
-                            robot.mousePress(InputEvent.BUTTON1_MASK);
-                            robot.mouseRelease(InputEvent.BUTTON1_MASK);
-                            robot.mousePress(InputEvent.BUTTON1_MASK);
-                            robot.mouseRelease(InputEvent.BUTTON1_MASK);
-                            i += 3;
-                            continue;
-                        }
-                    }
-                }
-                if (i + 1 < data.size()) {
-                    if (data.get(i + 1) instanceof Mouse) {
-                        int firstClick = mouse.getTime();
-                        int secondClick = ((Mouse) data.get(i + 1)).getTime();
-                        if (secondClick - firstClick < 400) {
-                            robot.mousePress(InputEvent.BUTTON1_MASK);
-                            robot.mouseRelease(InputEvent.BUTTON1_MASK);
-                            i++;
-                            continue;
-                        }
-                    }
-                }*/
-
             }
-           /* if (data.get(i) instanceof Keyboard) {
-                Keyboard keyboard = (Keyboard) data.get(i);
-                robot.delay(200);
+            if (baseData instanceof Keyboard) {
+                Keyboard keyboard = (Keyboard) baseData;
                 try {
                     int keyEvent = new KeyEvents().getKey(keyboard.getKey());
                     if (keyboard.getType() == Type.PRESSED) {
@@ -119,13 +83,19 @@ public class RobotControllerImpl implements RobotController {
                         robot.keyRelease(keyEvent);
                     }
                 } catch (IllegalAccessException e) {
-                    e.printStackTrace();
+                    log.error("Нет такой клавиши в KeyEvents {}", keyboard.getKey(), e);
+                    return ResponseBuilder.error("Ошибка при считывании клавиши");
                 }
-            }*/
+            }
+            if (baseData.isScreenshot())
+                screenShot.make();
+            if (i + 1 < data.size()) {
+                    robot.delay((data.get(i + 1)).getTime() - baseData.getTime());
+            }
         }
         if (checkResult(testCaseName)) {
-            return Response.ok(Status.SUCCESS).build();
-        } else return Response.ok(Status.ERROR).build();
+            return Response.ok(Status.TEST_SUCCESS).build();
+        } else return Response.ok(Status.TEST_ERROR).build();
     }
 
     private boolean checkResult(String testCaseName) {
@@ -207,6 +177,6 @@ public class RobotControllerImpl implements RobotController {
     @Override
     public Response get() {
         log.debug("REST-запрос ../robot/get");
-        return Response.ok(new RobotResponse(database.getAll())).build();
+        return ResponseBuilder.ok(new RobotResponse(database.getAll()));
     }
 }

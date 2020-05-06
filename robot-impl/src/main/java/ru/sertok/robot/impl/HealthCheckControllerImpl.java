@@ -2,6 +2,7 @@ package ru.sertok.robot.impl;
 
 import org.springframework.stereotype.Controller;
 import ru.sertok.robot.api.HealthCheckController;
+import ru.sertok.robot.response.ResponseBuilder;
 
 import javax.ws.rs.core.Response;
 
@@ -9,6 +10,6 @@ import javax.ws.rs.core.Response;
 public class HealthCheckControllerImpl implements HealthCheckController {
     @Override
     public Response ping() {
-        return Response.ok("PONG").build();
+        return ResponseBuilder.ok("PONG");
     }
 }

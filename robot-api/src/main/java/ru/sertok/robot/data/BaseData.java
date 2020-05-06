@@ -5,7 +5,7 @@ import lombok.experimental.SuperBuilder;
 
 @Getter
 @SuperBuilder
-public class Keyboard extends BaseData {
-    private Type type;
-    private String key;
+public class BaseData {
+    private Integer time;
+    private boolean screenshot;
 }

@@ -1,20 +1,23 @@
 package ru.sertok.robot.core;
 
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
+import ru.sertok.robot.data.Status;
 
 import java.io.IOException;
 
 @Slf4j
+@Getter
 @Component
 public class ExecuteApp {
     private String pathToApp;
 
-    public boolean execute(String url) {
+    public Status execute(String url) {
         if (pathToApp == null) {
             log.error("Не задан путь до приложения!");
-            return false;
+            return Status.ERROR;
         }
         log.debug("Запускаем приложение: {}", pathToApp);
         if (!StringUtils.isEmpty(url)) {
@@ -23,14 +26,14 @@ public class ExecuteApp {
                     Runtime.getRuntime().exec(new String[]{"/usr/bin/open", "-a", pathToApp, url});
                 else
                     new ProcessBuilder(pathToApp, url).start();
-                return true;
+                return Status.SUCCESS;
             } catch (IOException e) {
                 log.error("Приложение по заданному пути не найдено: {}", pathToApp, e);
-                return false;
+                return Status.ERROR;
             }
         } else {
             log.error("Не задан url!");
-            return false;
+            return Status.ERROR;
         }
     }
 

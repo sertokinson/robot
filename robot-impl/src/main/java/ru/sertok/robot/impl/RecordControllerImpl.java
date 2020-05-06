@@ -9,9 +9,11 @@ import org.springframework.stereotype.Controller;
 import ru.sertok.robot.api.RecordController;
 import ru.sertok.robot.core.ExecuteApp;
 import ru.sertok.robot.core.hook.EventListener;
+import ru.sertok.robot.data.Status;
 import ru.sertok.robot.data.TestCase;
 import ru.sertok.robot.database.Database;
 import ru.sertok.robot.request.RecordRequest;
+import ru.sertok.robot.response.ResponseBuilder;
 import ru.sertok.robot.storage.LocalStorage;
 
 import javax.ws.rs.core.Response;
@@ -34,15 +36,17 @@ public class RecordControllerImpl implements RecordController {
                 .name(recordRequest.getTestCaseName())
                 .url(recordRequest.getUrl())
                 .build());
-        if (!executeApp.execute(url)) {
-            log.error("Не удалось запустить приложение!");
-            return Response.serverError().build();
+
+        if (executeApp.execute(url) == Status.ERROR) {
+            String error = "Не удалось запустить приложение!";
+            log.error(error);
+            return ResponseBuilder.error(error);
         }
         try {
             GlobalScreen.registerNativeHook();
         } catch (NativeHookException e) {
             log.error("There was a problem registering the native ru.sertok.hook.", e);
-            return Response.serverError().build();
+            return ResponseBuilder.error("Проблемы со считывания устройства мыши или клавиатуры");
         }
         GlobalScreen.addNativeMouseListener(eventListener);
         GlobalScreen.addNativeMouseMotionListener(eventListener);
@@ -57,11 +61,12 @@ public class RecordControllerImpl implements RecordController {
             GlobalScreen.unregisterNativeHook();
         } catch (NativeHookException e) {
             log.error("There was a problem unregistering the native ru.sertok.hook.", e);
-            return Response.serverError().build();
+            return ResponseBuilder.error("Проблемы с остановкой устройства мыши или клавиатуры");
         }
         TestCase testCase = localStorage.getTestCase();
         testCase.setSteps(localStorage.getSteps());
+        testCase.setPath(executeApp.getPathToApp());
         database.save(testCase);
-        return Response.ok().build();
+        return ResponseBuilder.ok();
     }
 }

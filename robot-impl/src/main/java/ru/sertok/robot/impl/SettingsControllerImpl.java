@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import ru.sertok.robot.api.SettingsController;
 import ru.sertok.robot.core.ExecuteApp;
 import ru.sertok.robot.request.SettingsRequest;
+import ru.sertok.robot.response.ResponseBuilder;
 
 import javax.ws.rs.core.Response;
 
@@ -21,6 +22,6 @@ public class SettingsControllerImpl implements SettingsController {
         String pathToApp = settingsRequest.getPathToApp();
         log.debug("REST-запрос ../settings/pathToApp со значением {}", pathToApp);
         executeApp.setPathToApp(pathToApp);
-        return Response.ok().build();
+        return ResponseBuilder.ok();
     }
 }
