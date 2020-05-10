@@ -1,5 +1,9 @@
 package ru.sertok.robot.api;
 
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import ru.sertok.robot.request.RobotRequest;
 
 import javax.ws.rs.*;
@@ -17,5 +21,10 @@ public interface RobotController {
 
     @GET
     @Path("/get")
+    @ApiResponses(@ApiResponse(
+            responseCode = "200",
+            content = @Content(examples = @ExampleObject("[test1, test2]")),
+            description = "Список наименований тест кейсов"
+    ))
     Response get();
 }
