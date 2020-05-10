@@ -17,9 +17,4 @@ public class ScreenShotService {
         log.debug("Сохраняем размеры скриншота в бд: {}", screenShotEntity);
         screenShotRepository.save(screenShotEntity);
     }
-
-    void deleteAll() {
-        log.debug("Удаляем все данные о скриншоте из бд");
-        screenShotRepository.deleteAll();
-    }
 }

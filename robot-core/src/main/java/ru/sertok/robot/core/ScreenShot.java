@@ -2,6 +2,7 @@ package ru.sertok.robot.core;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.coobird.thumbnailator.Thumbnails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.sertok.robot.data.Image;
@@ -10,9 +11,11 @@ import ru.sertok.robot.storage.LocalStorage;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Optional;
 
 @Slf4j
 @Component
@@ -26,17 +29,8 @@ public class ScreenShot {
     public void make() {
         log.debug("Создаем скриншот");
         if (dimension.width > 0 && dimension.height > 0) {
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            BufferedImage bufferedImage = grabScreen();
-            if (bufferedImage != null) {
-                try {
-                    ImageIO.write(bufferedImage, "png", baos);
-                    baos.flush();
-                } catch (IOException e) {
-                    log.error("ошибка при создании скриншота", e);
-                }
-                localStorage.getImages().add(Image.builder().image(baos.toByteArray()).build());
-            }
+            Optional.ofNullable(grabScreen()).ifPresent(image ->
+                    localStorage.getImages().add(Image.builder().image(resizePhoto(image)).build()));
         } else {
             log.error("Не удалось сделать скриншот, т.к. ширина или высота равны нулю");
         }
@@ -58,6 +52,18 @@ public class ScreenShot {
             log.error("ошибка при создании скриншота", e);
         }
         return null;
+    }
+
+    private byte[] resizePhoto(BufferedImage bufferedImage) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        Thumbnails.of(bufferedImage).size(bufferedImage.getWidth() / 2, bufferedImage.getHeight() / 2);
+        try {
+            ImageIO.write(bufferedImage, "png", baos);
+            baos.flush();
+        } catch (IOException e) {
+            log.error("ошибка при создании скриншота", e);
+        }
+        return baos.toByteArray();
     }
 
 }

@@ -20,10 +20,12 @@ public class ImageEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(name = "photo_expected")
+    @Lob
+    @Column(name = "photo_expected", length = 10000)
     private byte[] photoExpected;
 
-    @Column(name = "photo_actual")
+    @Lob
+    @Column(name = "photo_actual", length = 10000)
     private byte[] photoActual;
 
     /**
@@ -43,6 +45,7 @@ public class ImageEntity {
     /**
      * Это переопределениме нужно чтоб получить только id тест-кейса
      * З.Ы.: Как это сделать через lombok не знаю
+     *
      * @return строку
      */
     @Override

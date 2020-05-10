@@ -22,9 +22,4 @@ public class ImageService {
         log.debug("Сохраняем изображение в БД {}", imageEntity);
         imageRepository.save(imageEntity);
     }
-
-    void deleteAll() {
-        log.debug("Удаляем все изображения из бд");
-        imageRepository.deleteAll();
-    }
 }

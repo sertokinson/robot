@@ -17,9 +17,4 @@ public class KeyboardService {
         log.debug("Сохраняем событе клавиатуры в БД: {}", keyboardEntity);
         keyboardRepository.save(keyboardEntity);
     }
-
-    void deleteAll() {
-        log.debug("Удаляем все события клавиатуры из бд");
-        keyboardRepository.deleteAll();
-    }
 }

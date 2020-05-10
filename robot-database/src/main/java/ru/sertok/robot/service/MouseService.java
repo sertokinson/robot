@@ -17,9 +17,4 @@ public class MouseService {
         log.debug("Сохраняем событие мыши в БД: {}", mouseEntity);
         mouseRepository.save(mouseEntity);
     }
-
-    void deleteAll() {
-        log.debug("Удаляем все события мыши из бд");
-        mouseRepository.deleteAll();
-    }
 }
