@@ -40,6 +40,12 @@ public class TestCaseEntity {
     private String path;
 
     /**
+     *  Время выполнения теста
+     */
+    @Column(name = "TIME")
+    private Integer time;
+
+    /**
      * Все события мыши
      */
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "testCase", cascade = CascadeType.ALL)

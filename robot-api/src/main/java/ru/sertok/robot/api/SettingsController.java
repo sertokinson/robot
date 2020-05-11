@@ -1,5 +1,6 @@
 package ru.sertok.robot.api;
 
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import ru.sertok.robot.request.SettingsRequest;
 
 import javax.ws.rs.*;
@@ -13,6 +14,6 @@ public interface SettingsController {
 
     @POST
     @Path("/pathToApp")
-    Response pathToApp(SettingsRequest settingsRequest);
+    Response pathToApp(@RequestBody(required = true) SettingsRequest settingsRequest);
 
 }

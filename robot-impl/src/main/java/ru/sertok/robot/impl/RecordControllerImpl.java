@@ -64,9 +64,13 @@ public class RecordControllerImpl implements RecordController {
             return ResponseBuilder.error("Проблемы с остановкой устройства мыши или клавиатуры");
         }
         TestCase testCase = localStorage.getTestCase();
-        testCase.setSteps(localStorage.getSteps());
-        testCase.setPath(executeApp.getPathToApp());
-        database.save(testCase);
+        database.save(TestCase.builder()
+                .image(testCase.getImage())
+                .url(testCase.getUrl())
+                .name(testCase.getName())
+                .steps(localStorage.getSteps())
+                .time((int) (System.currentTimeMillis() - localStorage.getStartTime()))
+                .path(executeApp.getPathToApp()).build());
         return ResponseBuilder.ok();
     }
 }

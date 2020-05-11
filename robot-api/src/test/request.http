@@ -82,3 +82,8 @@ Content-Type: application/json
 }
 
 ###
+
+// Выгрузка тест-кейсов
+GET http://localhost:8080/autotest/robot/get
+
+###

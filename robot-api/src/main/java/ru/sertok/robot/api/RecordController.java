@@ -1,5 +1,6 @@
 package ru.sertok.robot.api;
 
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import ru.sertok.robot.request.RecordRequest;
 
 import javax.ws.rs.Consumes;
@@ -16,7 +17,7 @@ public interface RecordController {
 
     @POST
     @Path("/start")
-    Response start(RecordRequest recordRequest);
+    Response start(@RequestBody(required = true) RecordRequest recordRequest);
 
     @POST
     @Path("/stop")

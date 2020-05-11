@@ -1,19 +1,15 @@
 package ru.sertok.robot.data;
 
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.util.List;
 
-@Getter
-@Setter
-@Builder
+
 @ToString
-@AllArgsConstructor
-@NoArgsConstructor
-public class TestCase {
-    private String name;
-    private String url;
+@Getter
+@SuperBuilder
+public class TestCase extends BaseTestCase {
     private List<BaseData> steps;
     private Image image;
-    private String path;
 }

@@ -1,5 +1,6 @@
 package ru.sertok.robot.api;
 
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import ru.sertok.robot.request.ImageOutputRequest;
 
 import javax.ws.rs.Consumes;
@@ -15,5 +16,5 @@ import javax.ws.rs.core.Response;
 public interface ImageOutputController {
     @POST
     @Path("/output")
-    Response output(ImageOutputRequest imageOutputRequest);
+    Response output(@RequestBody(required = true) ImageOutputRequest imageOutputRequest);
 }

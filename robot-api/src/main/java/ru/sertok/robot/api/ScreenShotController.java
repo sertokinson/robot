@@ -1,5 +1,6 @@
 package ru.sertok.robot.api;
 
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import ru.sertok.robot.request.ScreenShotRequest;
 
 import javax.ws.rs.Consumes;
@@ -16,7 +17,7 @@ public interface ScreenShotController {
 
     @POST
     @Path("/start")
-    Response start(ScreenShotRequest screenShotRequest);
+    Response start(@RequestBody(required = true) ScreenShotRequest screenShotRequest);
 
     @POST
     @Path("/stop")
