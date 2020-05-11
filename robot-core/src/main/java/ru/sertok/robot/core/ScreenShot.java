@@ -56,13 +56,13 @@ public class ScreenShot {
 
     private byte[] resizePhoto(BufferedImage bufferedImage) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        Thumbnails.of(bufferedImage).size(bufferedImage.getWidth() / 2, bufferedImage.getHeight() / 2);
-        try {
-            ImageIO.write(bufferedImage, "png", baos);
-            baos.flush();
-        } catch (IOException e) {
-            log.error("ошибка при создании скриншота", e);
-        }
+        if (bufferedImage.getHeight() > 100 || bufferedImage.getWidth() > 100)
+            try {
+                ImageIO.write(Thumbnails.of(bufferedImage).size(100, 100).asBufferedImage(), "png", baos);
+                baos.flush();
+            } catch (IOException e) {
+                log.error("ошибка при создании скриншота", e);
+            }
         return baos.toByteArray();
     }
 

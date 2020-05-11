@@ -60,37 +60,39 @@ public class RobotControllerImpl implements RobotController {
         robot.delay(900);
         for (int i = 0; i < data.size(); i++) {
             BaseData baseData = data.get(i);
-            if (baseData instanceof Mouse) {
-                Mouse mouse = (Mouse) baseData;
-                switch (mouse.getType()) {
-                    case PRESSED:
-                        robot.mousePress(InputEvent.BUTTON1_MASK);
-                        break;
-                    case MOVED:
-                        robot.mouseMove(mouse.getX(), mouse.getY());
-                        break;
-                    case RELEASED:
-                        robot.mouseRelease(InputEvent.BUTTON1_MASK);
-                }
-            }
-            if (baseData instanceof Keyboard) {
-                Keyboard keyboard = (Keyboard) baseData;
-                try {
-                    int keyEvent = new KeyEvents().getKey(keyboard.getKey());
-                    if (keyboard.getType() == Type.PRESSED) {
-                        robot.keyPress(keyEvent);
-                    } else {
-                        robot.keyRelease(keyEvent);
+            if (baseData != null) {
+                if (baseData instanceof Mouse) {
+                    Mouse mouse = (Mouse) baseData;
+                    switch (mouse.getType()) {
+                        case PRESSED:
+                            robot.mousePress(InputEvent.BUTTON1_MASK);
+                            break;
+                        case MOVED:
+                            robot.mouseMove(mouse.getX(), mouse.getY());
+                            break;
+                        case RELEASED:
+                            robot.mouseRelease(InputEvent.BUTTON1_MASK);
                     }
-                } catch (IllegalAccessException e) {
-                    log.error("Нет такой клавиши в KeyEvents {}", keyboard.getKey(), e);
-                    return ResponseBuilder.error("Ошибка при считывании клавиши");
                 }
-            }
-            if (baseData.isScreenshot())
-                screenShot.make();
-            if (i + 1 < data.size()) {
+                if (baseData instanceof Keyboard) {
+                    Keyboard keyboard = (Keyboard) baseData;
+                    try {
+                        int keyEvent = new KeyEvents().getKey(keyboard.getKey());
+                        if (keyboard.getType() == Type.PRESSED) {
+                            robot.keyPress(keyEvent);
+                        } else {
+                            robot.keyRelease(keyEvent);
+                        }
+                    } catch (IllegalAccessException e) {
+                        log.error("Нет такой клавиши в KeyEvents {}", keyboard.getKey(), e);
+                        return ResponseBuilder.error("Ошибка при считывании клавиши");
+                    }
+                }
+                if (baseData.isScreenshot())
+                    screenShot.make();
+                if (i + 1 < data.size() && data.get(i + 1) != null) {
                     robot.delay((data.get(i + 1)).getTime() - baseData.getTime());
+                }
             }
         }
         if (checkResult(testCaseName)) {
@@ -128,8 +130,8 @@ public class RobotControllerImpl implements RobotController {
             }
         }
         database.save(actualImages);
-        // допускаем максимум 10 не совпадений
-        return countError <= 10;
+        // допускаем максимум 10% не совпадений
+        return ((countError * 100) / expectedImages.size()) <= 10;
     }
 
     private boolean compare(byte[] actual, byte[] expected) {
