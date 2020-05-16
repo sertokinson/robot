@@ -6,6 +6,7 @@ import org.jnativehook.GlobalScreen;
 import org.jnativehook.NativeHookException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import ru.sertok.robot.api.RecordController;
 import ru.sertok.robot.core.ExecuteApp;
 import ru.sertok.robot.core.hook.EventListener;
@@ -31,6 +32,11 @@ public class RecordControllerImpl implements RecordController {
     @Override
     public Response start(RecordRequest recordRequest) {
         log.debug("REST-запрос ../record/start с параметрами {}", recordRequest);
+        if (StringUtils.isEmpty(recordRequest.getTestCaseName())) {
+            String error = "Пустое название тест кейса!";
+            log.error(error);
+            return ResponseBuilder.error(error);
+        }
         String url = recordRequest.getUrl();
         localStorage.setStartTime(System.currentTimeMillis());
         localStorage.setTestCase(TestCase.builder()

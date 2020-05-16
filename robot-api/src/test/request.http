@@ -13,7 +13,7 @@ POST http://localhost:8080/autotest/record/start/
 Content-Type: application/json
 
 {
-  "testCaseName": "test",
+  "testCaseName": "",
   "url": "file:///Users/sergejstahanov/Desktop/robot_test/index.html"
 }
 
