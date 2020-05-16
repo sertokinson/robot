@@ -13,9 +13,7 @@ import javax.persistence.*;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "MOUSE",
-        uniqueConstraints = {@UniqueConstraint(columnNames = {"position"})}
-)
+@Table(name = "MOUSE")
 public class MouseEntity {
     @Id
     @Column(name = "ID")
@@ -71,7 +69,6 @@ public class MouseEntity {
     /**
      * Это переопределениме нужно чтоб получить только id тест-кейса
      * З.Ы.: Как это сделать через lombok не знаю
-     *
      * @return строку
      */
     @Override

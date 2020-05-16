@@ -43,6 +43,11 @@ public class RobotControllerImpl implements RobotController {
         String testCaseName = robotRequest.getTestCase();
         log.debug("REST-запрос ../robot/start со значением {}", testCaseName);
         TestCase testCase = database.get(testCaseName);
+        if (testCase == null) {
+            String error = "Не найден testCast по наименованию: " + testCaseName;
+            log.error(error);
+            return ResponseBuilder.error(error);
+        }
         List<BaseData> data = testCase.getSteps();
         Optional.ofNullable(testCase.getImage()).ifPresent(screenShot::setSize);
         Robot robot;
@@ -142,7 +147,7 @@ public class RobotControllerImpl implements RobotController {
                 countError++;
             }
         }
-        database.save(actualImages);
+        database.save(actualImages, testCaseName);
         // допускаем максимум 10% не совпадений
         return ((countError * 100) / expectedImages.size()) <= 10;
     }

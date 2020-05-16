@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.sertok.robot.entity.ImageEntity;
+import ru.sertok.robot.entity.TestCaseEntity;
 import ru.sertok.robot.repository.ImageRepository;
 
 @Slf4j
@@ -13,9 +14,9 @@ import ru.sertok.robot.repository.ImageRepository;
 public class ImageService {
     private final ImageRepository imageRepository;
 
-    public ImageEntity get(int position) {
+    public ImageEntity get(int position, TestCaseEntity testCaseEntity) {
         log.debug("Получаем изображение из БД по позиции: {}", position);
-        return imageRepository.findByPosition(position).orElse(null);
+        return imageRepository.findByPositionAndTestCase(position, testCaseEntity).orElse(null);
     }
 
     public void save(ImageEntity imageEntity) {

@@ -13,9 +13,7 @@ import java.util.Arrays;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "IMAGE",
-        uniqueConstraints = {@UniqueConstraint(columnNames = {"position"})}
-)
+@Table(name = "IMAGE")
 public class ImageEntity {
     @Id
     @Column(name = "ID")
