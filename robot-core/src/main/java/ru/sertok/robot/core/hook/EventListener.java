@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 import ru.sertok.robot.core.ScreenShot;
 import ru.sertok.robot.data.Keyboard;
 import ru.sertok.robot.data.Mouse;
-import ru.sertok.robot.data.Type;
+import ru.sertok.robot.data.enumerate.Type;
 import ru.sertok.robot.storage.LocalStorage;
 
 @Component

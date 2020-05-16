@@ -9,7 +9,8 @@ import org.springframework.stereotype.Controller;
 import ru.sertok.robot.api.RecordController;
 import ru.sertok.robot.core.ExecuteApp;
 import ru.sertok.robot.core.hook.EventListener;
-import ru.sertok.robot.data.Status;
+import ru.sertok.robot.data.Browser;
+import ru.sertok.robot.data.enumerate.Status;
 import ru.sertok.robot.data.TestCase;
 import ru.sertok.robot.database.Database;
 import ru.sertok.robot.request.RecordRequest;
@@ -55,7 +56,7 @@ public class RecordControllerImpl implements RecordController {
     }
 
     @Override
-    public Response stop() {
+    public Response stop(String userAgent) {
         log.debug("REST-запрос ../record/stop");
         try {
             GlobalScreen.unregisterNativeHook();
@@ -70,7 +71,25 @@ public class RecordControllerImpl implements RecordController {
                 .name(testCase.getName())
                 .steps(localStorage.getSteps())
                 .time((int) (System.currentTimeMillis() - localStorage.getStartTime()))
-                .path(executeApp.getPathToApp()).build());
+                .path(executeApp.getPathToApp())
+                .os(getOS(userAgent))
+                .browser(new Browser(executeApp.getBrowserName().name(), getBrowserVersion(userAgent)))
+                .build()
+        );
         return ResponseBuilder.ok();
+    }
+
+    private String getOS(String userAgent) {
+        return userAgent.split("\\(")[0].split("\\)")[0];
+    }
+
+    private String getBrowserVersion(String userAgent) {
+        String[] strings = userAgent.split("/");
+        for (int i = 0; i < strings.length; i++) {
+            if (strings[i].toUpperCase().contains(executeApp.getBrowserName().toString())) {
+                return strings[i + 1].split(" ")[0];
+            }
+        }
+        return null;
     }
 }

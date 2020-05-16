@@ -11,6 +11,8 @@ import ru.sertok.robot.core.ScreenShot;
 import ru.sertok.robot.core.hook.KeyEvents;
 import ru.sertok.robot.data.*;
 import ru.sertok.robot.data.Image;
+import ru.sertok.robot.data.enumerate.Status;
+import ru.sertok.robot.data.enumerate.Type;
 import ru.sertok.robot.database.Database;
 import ru.sertok.robot.request.RobotRequest;
 import ru.sertok.robot.response.ResponseBuilder;

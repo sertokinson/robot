@@ -2,6 +2,7 @@ package ru.sertok.robot.data;
 
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+import ru.sertok.robot.data.enumerate.Type;
 
 @Getter
 @SuperBuilder

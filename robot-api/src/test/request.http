@@ -59,7 +59,7 @@ POST http://localhost:8080/autotest/screenshot/stop
 ###
 
 // Стоп записи теста
-POST http://localhost:8080/autotest/record/stop
+GET http://localhost:8080/autotest/record/stop
 
 ###
 

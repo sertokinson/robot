@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
+import ru.sertok.robot.data.enumerate.BrowserName;
 
 import javax.persistence.*;
 import java.util.List;
@@ -38,6 +39,24 @@ public class TestCaseEntity {
      */
     @Column(name = "PATH")
     private String path;
+
+    /**
+     * Браузер в котором тестируется приложение
+     */
+    @Column(name = "BROWSER_NAME")
+    private String  browserName;
+
+    /**
+     * версия браузера
+     */
+    @Column(name = "BROWSER_VERSION")
+    private String browserVersion;
+
+    /**
+     * ОС в катором тестируется приложение
+     */
+    @Column(name = "OS")
+    private String os;
 
     /**
      *  Время выполнения теста

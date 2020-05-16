@@ -3,7 +3,7 @@ package ru.sertok.robot.entity;
 import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
-import ru.sertok.robot.data.Type;
+import ru.sertok.robot.data.enumerate.Type;
 
 import javax.persistence.*;
 

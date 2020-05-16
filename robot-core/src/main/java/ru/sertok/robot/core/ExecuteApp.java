@@ -4,7 +4,8 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
-import ru.sertok.robot.data.Status;
+import ru.sertok.robot.data.enumerate.BrowserName;
+import ru.sertok.robot.data.enumerate.Status;
 
 import java.io.IOException;
 
@@ -13,6 +14,7 @@ import java.io.IOException;
 @Component
 public class ExecuteApp {
     private String pathToApp;
+    private BrowserName browserName;
 
     public Status execute(String url) {
         if (pathToApp == null) {
@@ -40,6 +42,16 @@ public class ExecuteApp {
     public void setPathToApp(String pathToApp) {
         log.debug("Установили путь до приложения: {}", pathToApp);
         this.pathToApp = pathToApp;
+        if (pathToApp.toUpperCase().contains(BrowserName.CHROME.toString())) {
+            browserName = BrowserName.CHROME;
+        } else if (pathToApp.toUpperCase().contains(BrowserName.FIREFOX.toString())) {
+            browserName = BrowserName.FIREFOX;
+        } else if (pathToApp.toUpperCase().contains(BrowserName.SAFARI.toString())) {
+            browserName = BrowserName.SAFARI;
+        } else {
+            browserName = BrowserName.UNKNOWN;
+        }
+        log.debug("Установили браузер: {}", browserName);
     }
 
 }

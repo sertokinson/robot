@@ -10,4 +10,6 @@ public class BaseTestCase {
     private String url;
     private String path;
     private Integer time;
+    private String os;
+    private Browser browser;
 }
