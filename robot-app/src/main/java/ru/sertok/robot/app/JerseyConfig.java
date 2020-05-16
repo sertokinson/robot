@@ -12,7 +12,7 @@ public class JerseyConfig extends ResourceConfig {
         register(RobotController.class);
         register(ScreenShotController.class);
         register(SettingsController.class);
-        register(HealthCheckController.class);
+        register(AppController.class);
         register(ImageOutputController.class);
         property(ServletProperties.FILTER_FORWARD_ON_404, true);
     }

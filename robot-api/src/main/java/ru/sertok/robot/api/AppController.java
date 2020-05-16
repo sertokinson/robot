@@ -11,17 +11,25 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-
-@Path("/ping")
+@Path("/")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-public interface HealthCheckController {
+public interface AppController {
     @GET
+    @Path("/ping")
     @ApiResponses(@ApiResponse(
             responseCode = "200",
             content = @Content(examples = @ExampleObject("PONG")),
             description = "Приложение запущено"
     ))
     Response ping();
+
+    @GET
+    @Path("/pathToLog")
+    @ApiResponses(@ApiResponse(
+            responseCode = "200",
+            description = "Путь до логов"
+    ))
+    Response pathToLog();
 
 }
