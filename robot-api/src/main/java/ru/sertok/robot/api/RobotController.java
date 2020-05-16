@@ -21,6 +21,10 @@ public interface RobotController {
     @Path("/start")
     Response start(RobotRequest robotRequest);
 
+    @POST
+    @Path("/delete")
+    Response delete(RobotRequest robotRequest);
+
     @GET
     @Path("/get")
     @ApiResponses(@ApiResponse(

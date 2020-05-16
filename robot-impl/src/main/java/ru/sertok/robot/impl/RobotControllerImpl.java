@@ -106,6 +106,13 @@ public class RobotControllerImpl implements RobotController {
         } else return Response.ok(Status.TEST_ERROR).build();
     }
 
+    @Override
+    public Response delete(RobotRequest robotRequest) {
+        log.debug("REST-запрос ../robot/delete со значением {}", robotRequest);
+        database.delete(robotRequest.getTestCase());
+        return ResponseBuilder.ok();
+    }
+
     private boolean checkResult(String testCaseName) {
         List<Image> expectedImages = database.getImages(testCaseName);
         List<Image> actualImages = localStorage.getImages();

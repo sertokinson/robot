@@ -38,6 +38,11 @@ public class TestCaseService {
         testCaseRepository.delete(testCaseEntity);
     }
 
+    public void delete(String testCase) {
+        log.debug("Удаляем тест кейс: {}", testCase);
+        testCaseRepository.deleteByName(testCase);
+    }
+
     public void save(TestCaseEntity testCaseEntity) {
         testCaseRepository.save(testCaseEntity);
     }

@@ -57,3 +57,13 @@ Content-Type: application/json
 GET http://localhost:8080/autotest/robot/get
 
 ###
+
+// Удалить тест-кейс
+POST http://localhost:8080/autotest/robot/delete
+Content-Type: application/json
+
+{
+  "testCase": "test"
+}
+
+###
