@@ -13,7 +13,9 @@ import javax.persistence.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "KEYBOARD")
+@Table(name = "KEYBOARD",
+        uniqueConstraints = {@UniqueConstraint(columnNames = {"position"})}
+)
 public class KeyboardEntity {
     @Id
     @Column(name = "ID")
@@ -24,7 +26,7 @@ public class KeyboardEntity {
      * PASSED - нажал
      * RELEASED - отпустил
      */
-    @Column(name = "TYPE",nullable = false)
+    @Column(name = "TYPE", nullable = false)
     @Enumerated(EnumType.STRING)
     private Type type;
 
@@ -63,6 +65,7 @@ public class KeyboardEntity {
     /**
      * Это переопределениме нужно чтоб получить только id тест-кейса
      * З.Ы.: Как это сделать через lombok не знаю
+     *
      * @return строку
      */
     @Override

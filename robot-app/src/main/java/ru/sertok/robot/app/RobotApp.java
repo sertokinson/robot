@@ -12,9 +12,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @SpringBootApplication
-@EntityScan("ru.sertok.robot.entity")
-@ComponentScan("ru.sertok.robot")
 @EnableTransactionManagement
+@ComponentScan("ru.sertok.robot")
+@EntityScan("ru.sertok.robot.entity")
 @EnableJpaRepositories(basePackages = "ru.sertok.robot.repository")
 public class RobotApp {
     private static Logger logger = Logger.getLogger(GlobalScreen.class.getPackage().getName());

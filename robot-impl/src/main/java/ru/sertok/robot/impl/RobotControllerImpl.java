@@ -93,7 +93,11 @@ public class RobotControllerImpl implements RobotController {
                 if (baseData.isScreenshot())
                     screenShot.make();
                 if (i + 1 < data.size() && data.get(i + 1) != null) {
-                    robot.delay((data.get(i + 1)).getTime() - baseData.getTime());
+                    try {
+                        robot.delay((data.get(i + 1)).getTime() - baseData.getTime());
+                    } catch (IllegalArgumentException e) {
+                        log.error("Разница во времени между событиями отрицательна {} на позиции {}", (data.get(i + 1)).getTime() - baseData.getTime(), i);
+                    }
                 }
             }
         }

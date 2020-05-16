@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.coobird.thumbnailator.Thumbnails;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import ru.sertok.robot.data.Image;
 import ru.sertok.robot.storage.LocalStorage;
@@ -11,7 +12,6 @@ import ru.sertok.robot.storage.LocalStorage;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -26,6 +26,7 @@ public class ScreenShot {
     private Dimension dimension;
     private Point point;
 
+    @Async
     public void make() {
         log.debug("Создаем скриншот");
         if (dimension.width > 0 && dimension.height > 0) {

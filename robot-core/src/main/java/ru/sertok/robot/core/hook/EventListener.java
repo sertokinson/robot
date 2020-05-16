@@ -18,6 +18,8 @@ import ru.sertok.robot.storage.LocalStorage;
 public class EventListener implements NativeMouseInputListener, NativeKeyListener {
     private final LocalStorage localStorage;
     private final ScreenShot screenShot;
+    private long currentTime;
+    private long screenShotTime;
 
     @Override
     public void nativeKeyPressed(NativeKeyEvent e) {
@@ -42,19 +44,31 @@ public class EventListener implements NativeMouseInputListener, NativeKeyListene
 
     @Override
     public void nativeMouseMoved(NativeMouseEvent e) {
-        localStorage.getSteps().add(getMouse(e, Type.MOVED));
+        if (getCurrentTime() > 0)
+            localStorage.getSteps().add(getMouse(e, Type.MOVED));
     }
 
     private boolean makeScreenshot() {
         boolean screenshot = localStorage.isScreenshotStart();
-        if (screenshot) {
+        if (screenshot && getScreenShotTime() > 100) {
+            screenShotTime = System.currentTimeMillis();
             screenShot.make();
+            return true;
         }
-        return screenshot;
+        return false;
     }
 
     private int getTime() {
+        currentTime = System.currentTimeMillis();
         return (int) (System.currentTimeMillis() - localStorage.getStartTime());
+    }
+
+    private int getCurrentTime() {
+        return (int) (System.currentTimeMillis() - currentTime);
+    }
+
+    private int getScreenShotTime() {
+        return (int) (System.currentTimeMillis() - screenShotTime);
     }
 
     private Keyboard getKeyboard(int key, Type type) {

@@ -45,6 +45,7 @@ public class LocalStorage {
     }
 
     public long getStartTime() {
+        log.debug("Вычитываем из локального хранилища время начала: {}", startTime);
         return startTime;
     }
 
