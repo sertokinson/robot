@@ -12,7 +12,7 @@ import java.util.List;
 @Slf4j
 @Component
 public class LocalStorage {
-    private long startTime;
+    private Long startTime;
     private List<BaseData> steps = new ArrayList<>();
     private List<Image> images;
     private boolean screenshotStart = false;
@@ -70,5 +70,14 @@ public class LocalStorage {
     public TestCase getTestCase() {
         log.debug("Вычитываем из локального хранилища данные о тест кейсе: {}", testCase);
         return testCase;
+    }
+
+    public void invalidateLocalStorage() {
+        startTime = null;
+        steps = new ArrayList<>();
+        images = null;
+        screenshotStart = false;
+        image = null;
+        testCase = null;
     }
 }

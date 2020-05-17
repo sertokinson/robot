@@ -48,7 +48,7 @@ POST http://localhost:8080/autotest/robot/start
 Content-Type: application/json
 
 {
-  "testCase": "test"
+  "testCase": "test1"
 }
 
 ###

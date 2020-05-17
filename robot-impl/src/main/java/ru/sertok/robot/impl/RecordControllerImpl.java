@@ -10,15 +10,21 @@ import org.springframework.util.StringUtils;
 import ru.sertok.robot.api.RecordController;
 import ru.sertok.robot.core.ExecuteApp;
 import ru.sertok.robot.core.hook.EventListener;
+import ru.sertok.robot.data.BaseData;
 import ru.sertok.robot.data.Browser;
+import ru.sertok.robot.data.Mouse;
 import ru.sertok.robot.data.enumerate.Status;
 import ru.sertok.robot.data.TestCase;
+import ru.sertok.robot.data.enumerate.Type;
 import ru.sertok.robot.database.Database;
 import ru.sertok.robot.request.RecordRequest;
 import ru.sertok.robot.response.ResponseBuilder;
 import ru.sertok.robot.storage.LocalStorage;
 
 import javax.ws.rs.core.Response;
+import java.util.List;
+
+import static ru.sertok.robot.utils.Utils.deleteLastMousePressed;
 
 @Slf4j
 @Controller
@@ -68,22 +74,27 @@ public class RecordControllerImpl implements RecordController {
             GlobalScreen.unregisterNativeHook();
         } catch (NativeHookException e) {
             log.error("There was a problem unregistering the native ru.sertok.hook.", e);
-            return ResponseBuilder.error("Проблемы с остановкой устройства мыши или клавиатуры");
+            return ResponseBuilder.error("Проблемы с остановкой слушателя устройства мыши или клавиатуры");
         }
         TestCase testCase = localStorage.getTestCase();
+        List<BaseData> steps = localStorage.getSteps();
+        deleteLastMousePressed(steps);
         database.save(TestCase.builder()
                 .image(testCase.getImage())
                 .url(testCase.getUrl())
                 .name(testCase.getName())
-                .steps(localStorage.getSteps())
+                .steps(steps)
                 .time((int) (System.currentTimeMillis() - localStorage.getStartTime()))
                 .path(executeApp.getPathToApp())
                 .os(getOS(userAgent))
                 .browser(new Browser(executeApp.getBrowserName().name(), getBrowserVersion(userAgent)))
                 .build()
         );
+        localStorage.invalidateLocalStorage();
         return ResponseBuilder.ok();
     }
+
+
 
     private String getOS(String userAgent) {
         return userAgent.split("\\(")[0].split("\\)")[0];

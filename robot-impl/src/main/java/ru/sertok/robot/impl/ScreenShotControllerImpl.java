@@ -13,6 +13,8 @@ import ru.sertok.robot.storage.LocalStorage;
 
 import javax.ws.rs.core.Response;
 
+import static ru.sertok.robot.utils.Utils.deleteLastMousePressed;
+
 @Slf4j
 @Controller
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
@@ -24,6 +26,7 @@ public class ScreenShotControllerImpl implements ScreenShotController {
     @Override
     public Response start(ScreenShotRequest screenShotRequest) {
         log.debug("REST-запрос ../screenshot/start со значением {}", screenShotRequest);
+        deleteLastMousePressed(localStorage.getSteps());
         screenShot.setSize(screenShotMapper.toImage(screenShotRequest));
         localStorage.setScreenshotStart(true);
         return ResponseBuilder.ok();
@@ -32,7 +35,15 @@ public class ScreenShotControllerImpl implements ScreenShotController {
     @Override
     public Response stop() {
         log.debug("REST-запрос ../screenshot/stop");
+        deleteLastMousePressed(localStorage.getSteps());
         localStorage.setScreenshotStart(false);
+        return ResponseBuilder.ok();
+    }
+
+    @Override
+    public Response crop() {
+        log.debug("REST-запрос ../screenshot/crop (произошло нажатие кнопки crop)");
+        deleteLastMousePressed(localStorage.getSteps());
         return ResponseBuilder.ok();
     }
 }

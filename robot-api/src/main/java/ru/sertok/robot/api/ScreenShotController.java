@@ -22,4 +22,8 @@ public interface ScreenShotController {
     @POST
     @Path("/stop")
     Response stop();
+
+    @POST
+    @Path("/crop")
+    Response crop();
 }
