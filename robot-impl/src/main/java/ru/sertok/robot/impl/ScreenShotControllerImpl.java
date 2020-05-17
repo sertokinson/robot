@@ -43,6 +43,7 @@ public class ScreenShotControllerImpl implements ScreenShotController {
     @Override
     public Response crop() {
         log.debug("REST-запрос ../screenshot/crop (произошло нажатие кнопки crop)");
+        localStorage.setActiveCrop(!localStorage.isActiveCrop());
         deleteLastMousePressed(localStorage.getSteps());
         return ResponseBuilder.ok();
     }

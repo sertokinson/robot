@@ -6,11 +6,15 @@ import org.jnativehook.keyboard.NativeKeyListener;
 import org.jnativehook.mouse.NativeMouseEvent;
 import org.jnativehook.mouse.NativeMouseInputListener;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import ru.sertok.robot.core.ScreenShot;
+import ru.sertok.robot.data.Image;
 import ru.sertok.robot.data.Keyboard;
 import ru.sertok.robot.data.Mouse;
 import ru.sertok.robot.data.enumerate.Type;
+import ru.sertok.robot.gui.ScreenShotButtons;
+import ru.sertok.robot.gui.TranslucentWindow;
 import ru.sertok.robot.storage.LocalStorage;
 
 @Component
@@ -18,8 +22,13 @@ import ru.sertok.robot.storage.LocalStorage;
 public class EventListener implements NativeMouseInputListener, NativeKeyListener {
     private final LocalStorage localStorage;
     private final ScreenShot screenShot;
+    private final Environment env;
+    private final TranslucentWindow tw;
+    private final ScreenShotButtons screenShotButtons;
     private long currentTime;
     private long screenShotTime;
+    private int x = 0;
+    private int y = 0;
 
     @Override
     public void nativeKeyPressed(NativeKeyEvent e) {
@@ -33,6 +42,7 @@ public class EventListener implements NativeMouseInputListener, NativeKeyListene
 
     @Override
     public void nativeMousePressed(NativeMouseEvent e) {
+        cropButtons(e);
         localStorage.getSteps().add(getMouse(e, Type.PRESSED));
     }
 
@@ -46,6 +56,21 @@ public class EventListener implements NativeMouseInputListener, NativeKeyListene
     public void nativeMouseMoved(NativeMouseEvent e) {
         if (getCurrentTime() > 0)
             localStorage.getSteps().add(getMouse(e, Type.MOVED));
+    }
+
+    @Override
+    public void nativeMouseDragged(NativeMouseEvent nativeMouseEvent) {
+        cropArea(nativeMouseEvent);
+    }
+
+    @Override
+    public void nativeKeyTyped(NativeKeyEvent nativeKeyEvent) {
+
+    }
+
+    @Override
+    public void nativeMouseClicked(NativeMouseEvent nativeMouseEvent) {
+
     }
 
     private boolean makeScreenshot() {
@@ -90,18 +115,37 @@ public class EventListener implements NativeMouseInputListener, NativeKeyListene
                 .build();
     }
 
-    @Override
-    public void nativeMouseDragged(NativeMouseEvent nativeMouseEvent) {
 
+    private void cropButtons(NativeMouseEvent e) {
+        if (isActiveCrop(e)) {
+            x = e.getX();
+            y = e.getY();
+            screenShotButtons.setLocation(x - 60, y);
+            screenShotButtons.setVisible(true);
+            tw.dispose();
+        }
     }
 
-    @Override
-    public void nativeKeyTyped(NativeKeyEvent nativeKeyEvent) {
-
+    private void cropArea(NativeMouseEvent e) {
+        if (isActiveCrop(e)) {
+            int width = e.getX() - x;
+            int height = e.getY() - y;
+            tw.setSize(x, y, e.getX(), e.getY());
+            screenShot.setSize(Image.builder()
+                    .x(x)
+                    .y(y)
+                    .width(width)
+                    .height(height)
+                    .build()
+            );
+        }
     }
 
-    @Override
-    public void nativeMouseClicked(NativeMouseEvent nativeMouseEvent) {
-
+    private boolean isActiveCrop(NativeMouseEvent e) {
+        return env.getActiveProfiles()[0].equals("local-gui")
+                && !localStorage.isScreenshotStart()
+                && localStorage.isActiveCrop()
+                && (e.getX() > x || e.getX() < x - 60 || e.getY() < y || e.getY() > y + 50);
     }
+
 }

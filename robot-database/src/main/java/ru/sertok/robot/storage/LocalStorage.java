@@ -18,6 +18,7 @@ public class LocalStorage {
     private boolean screenshotStart = false;
     private Image image;
     private TestCase testCase;
+    private boolean activeCrop = false;
 
     public void setStartTime(long startTime) {
         log.debug("Записываем в локальное хранилище время начала {}", startTime);
@@ -37,6 +38,11 @@ public class LocalStorage {
     public void setImage(Image image) {
         log.debug("Записываем в локальное хранилище изображение: {}", image);
         this.image = image;
+    }
+
+    public void setActiveCrop(boolean activeCrop) {
+        log.debug("Записываем в локальное хранилище активацию кропа: {}", activeCrop);
+        this.activeCrop = activeCrop;
     }
 
     public void setTestCase(TestCase testCase) {
@@ -63,6 +69,10 @@ public class LocalStorage {
         return screenshotStart;
     }
 
+    public boolean isActiveCrop() {
+        return activeCrop;
+    }
+
     public Image getImage() {
         return image;
     }
@@ -79,5 +89,6 @@ public class LocalStorage {
         screenshotStart = false;
         image = null;
         testCase = null;
+        activeCrop = false;
     }
 }
