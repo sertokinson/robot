@@ -58,9 +58,6 @@ public class RecordWindow extends JFrame {
         stop.addActionListener(actionEvent -> {
             RestTemplate restTemplate = new RestTemplate();
             restTemplate.getForEntity("http://localhost:8080/autotest/record/stop", String.class);
-            JComboBox selectBox = robotWindow.getSelectBox();
-            selectBox.addItem(input.getTestCase().getText());
-            selectBox.repaint();
             this.pack();
         });
 
@@ -68,7 +65,15 @@ public class RecordWindow extends JFrame {
         this.setAlwaysOnTop(true);
         this.setUndecorated(true);
         this.setVisible(true);
+        // Для быстрого тестирования
+        selectBox();
         this.pack();
+    }
+
+    private void selectBox() {
+        JComboBox selectBox = robotWindow.getSelectBox();
+        selectBox.addItem("test");
+        selectBox.repaint();
     }
 
     private void createWindow() {

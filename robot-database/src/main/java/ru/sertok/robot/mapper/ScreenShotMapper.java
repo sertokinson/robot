@@ -11,9 +11,13 @@ import ru.sertok.robot.request.ScreenShotRequest;
         unmappedTargetPolicy = ReportingPolicy.ERROR)
 public interface ScreenShotMapper {
     @Mapping(target = "image", ignore = true)
+    @Mapping(target = "assertResult", ignore = true)
+    @Mapping(target = "percent", ignore = true)
     Image toImage(ScreenShotEntity screenShotEntity);
 
     @Mapping(target = "image", ignore = true)
+    @Mapping(target = "assertResult", ignore = true)
+    @Mapping(target = "percent", ignore = true)
     Image toImage(ScreenShotRequest screenShotRequest);
 
     @Mapping(target = "id", ignore = true)

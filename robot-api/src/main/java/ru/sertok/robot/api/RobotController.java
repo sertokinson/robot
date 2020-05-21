@@ -1,12 +1,11 @@
 package ru.sertok.robot.api;
 
 import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import ru.sertok.robot.request.RobotRequest;
-import ru.sertok.robot.response.RobotResponse;
+import ru.sertok.robot.response.TestCasesResponse;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -31,7 +30,7 @@ public interface RobotController {
             responseCode = "200",
             content = @Content(
                     mediaType = "*/*",
-                    schema = @Schema(implementation = RobotResponse.class)
+                    schema = @Schema(implementation = TestCasesResponse.class)
             ),
             description = "Список наименований тест кейсов"
     ))

@@ -2,12 +2,12 @@ package ru.sertok.robot.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import ru.sertok.robot.data.BaseTestCase;
-
-import java.util.List;
+import lombok.NoArgsConstructor;
+import ru.sertok.robot.data.enumerate.Status;
 
 @Getter
+@NoArgsConstructor
 @AllArgsConstructor
 public class RobotResponse {
-    private List<BaseTestCase> testCases;
+    private Status status;
 }

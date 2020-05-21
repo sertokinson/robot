@@ -63,7 +63,7 @@ POST http://localhost:8080/autotest/robot/delete
 Content-Type: application/json
 
 {
-  "testCase": "test"
+  "testCase": "test1"
 }
 
 ###

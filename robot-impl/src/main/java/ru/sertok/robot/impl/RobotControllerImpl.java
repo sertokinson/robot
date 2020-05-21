@@ -9,14 +9,15 @@ import ru.sertok.robot.api.RobotController;
 import ru.sertok.robot.core.ExecuteApp;
 import ru.sertok.robot.core.ScreenShot;
 import ru.sertok.robot.core.hook.KeyEvents;
-import ru.sertok.robot.data.*;
 import ru.sertok.robot.data.Image;
+import ru.sertok.robot.data.*;
 import ru.sertok.robot.data.enumerate.Status;
 import ru.sertok.robot.data.enumerate.Type;
 import ru.sertok.robot.database.Database;
 import ru.sertok.robot.request.RobotRequest;
 import ru.sertok.robot.response.ResponseBuilder;
 import ru.sertok.robot.response.RobotResponse;
+import ru.sertok.robot.response.TestCasesResponse;
 import ru.sertok.robot.storage.LocalStorage;
 
 import javax.imageio.ImageIO;
@@ -106,9 +107,9 @@ public class RobotControllerImpl implements RobotController {
                 }
             }
         }
-        if (checkResult(testCaseName)) {
-            return Response.ok(Status.TEST_SUCCESS).build();
-        } else return Response.ok(Status.TEST_ERROR).build();
+        if (checkResult(testCaseName))
+            return ResponseBuilder.ok(new RobotResponse(Status.TEST_SUCCESS));
+        return ResponseBuilder.ok(new RobotResponse(Status.TEST_ERROR));
     }
 
     @Override
@@ -135,31 +136,33 @@ public class RobotControllerImpl implements RobotController {
         }
         // количество не совпадающих изображений
         int countError = 0;
-        for (Image expectedImage : expectedImages) {
-            boolean success = false;
-            for (Image actualImage : actualImages) {
-                if (compare(actualImage.getImage(), expectedImage.getImage())) {
-                    success = true;
-                    break;
-                }
-            }
-            if (!success) {
+        int size = Math.min(expectedImages.size(), actualImages.size());
+        for (int i = 0; i < size; i++) {
+            Image actual = actualImages.get(i);
+            // вычесляем процент совпадения
+            int percent = compare(actual.getImage(), expectedImages.get(i).getImage());
+            // допускаем 10% не совпадение
+            if (percent > 10) {
+                actual.setAssertResult(false);
                 countError++;
+            } else {
+                actual.setAssertResult(true);
             }
+            actual.setPercent(percent);
         }
         database.save(actualImages, testCaseName);
         // допускаем максимум 10% не совпадений
-        return ((countError * 100) / expectedImages.size()) <= 10;
+        return ((countError * 100) / size) <= 10;
     }
 
-    private boolean compare(byte[] actual, byte[] expected) {
+    private int compare(byte[] actual, byte[] expected) {
         try {
             BufferedImage expectedImage = ImageIO.read(new ByteArrayInputStream(expected));
             BufferedImage actualImage = ImageIO.read(new ByteArrayInputStream(actual));
             if (actualImage.getWidth() != expectedImage.getWidth() || expectedImage.getHeight() != actualImage.getHeight()) {
                 log.error("Размеры фактического изображения width: {} height: {} не совпадают с размерами ожидаемого изображения width: {} height: {}",
                         actualImage.getWidth(), actualImage.getHeight(), expectedImage.getWidth(), expectedImage.getHeight());
-                return false;
+                return 100;
             }
             // количество не идентичных пикселей
             int countIsNotIdentic = 0;
@@ -174,29 +177,28 @@ public class RobotControllerImpl implements RobotController {
                     }
                 }
             }
-            // допускаем 10% не совпадение
-            return (countIsNotIdentic * 100) / (actualImage.getWidth() * actualImage.getHeight()) <= 10;
+            return (countIsNotIdentic * 100) / (actualImage.getWidth() * actualImage.getHeight());
 
         } catch (IOException e) {
             log.error("Не смог преобразовать изображение", e);
-            return false;
+            return 100;
         }
     }
 
     private boolean compareColor(Color color1, Color color2) {
-        if (Math.abs(color1.getRed() - color2.getRed()) > 10) {
+        if (Math.abs(color1.getRed() - color2.getRed()) > 20) {
             return false;
         }
-        if (Math.abs(color1.getBlue() - color2.getBlue()) > 10) {
+        if (Math.abs(color1.getBlue() - color2.getBlue()) > 20) {
             return false;
         }
-        return Math.abs(color1.getGreen() - color2.getGreen()) <= 10;
+        return Math.abs(color1.getGreen() - color2.getGreen()) <= 20;
 
     }
 
     @Override
     public Response get() {
         log.debug("REST-запрос ../robot/get");
-        return ResponseBuilder.ok(new RobotResponse(database.getAll()));
+        return ResponseBuilder.ok(new TestCasesResponse(database.getAll()));
     }
 }

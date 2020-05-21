@@ -8,15 +8,17 @@ import ru.sertok.robot.entity.ImageEntity;
 import ru.sertok.robot.entity.TestCaseEntity;
 import ru.sertok.robot.repository.ImageRepository;
 
+import java.util.List;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class ImageService {
     private final ImageRepository imageRepository;
 
-    public ImageEntity get(int position, TestCaseEntity testCaseEntity) {
-        log.debug("Получаем изображение из БД по позиции: {}", position);
-        return imageRepository.findByPositionAndTestCase(position, testCaseEntity).orElse(null);
+    public List<ImageEntity> getAll(TestCaseEntity testCaseEntity) {
+        log.debug("Получаем все изображение из БД по тесту: {}", testCaseEntity.getName());
+        return imageRepository.findAllByTestCase(testCaseEntity).orElse(null);
     }
 
     public void save(ImageEntity imageEntity) {

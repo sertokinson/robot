@@ -2,7 +2,6 @@ package ru.sertok.robot.gui;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
@@ -15,7 +14,6 @@ import javax.ws.rs.core.Response;
 import java.awt.*;
 
 @Component
-@Profile("local-gui")
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class ScreenShotButtons extends JFrame {
     private final TranslucentWindow tw;

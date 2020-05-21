@@ -44,7 +44,6 @@ public class RecordControllerImpl implements RecordController {
             return ResponseBuilder.error(error);
         }
         String url = recordRequest.getUrl();
-        localStorage.setStartTime(System.currentTimeMillis());
         localStorage.setTestCase(TestCase.builder()
                 .name(recordRequest.getTestCaseName())
                 .url(recordRequest.getUrl())
@@ -61,10 +60,11 @@ public class RecordControllerImpl implements RecordController {
             log.error("There was a problem registering the native ru.sertok.hook.", e);
             return ResponseBuilder.error("Проблемы со считывания устройства мыши или клавиатуры");
         }
+        localStorage.setStartTime(System.currentTimeMillis());
         GlobalScreen.addNativeMouseListener(eventListener);
         GlobalScreen.addNativeMouseMotionListener(eventListener);
         GlobalScreen.addNativeKeyListener(eventListener);
-        return Response.ok().build();
+        return ResponseBuilder.ok();
     }
 
     @Override

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import ru.sertok.robot.data.enumerate.Status;
 import ru.sertok.robot.request.RobotRequest;
+import ru.sertok.robot.response.RobotResponse;
 
 import javax.swing.*;
 import java.awt.*;
@@ -26,7 +27,7 @@ class RobotWindow {
         start.addActionListener(actionEvent -> {
             RestTemplate restTemplate = new RestTemplate();
             HttpEntity<RobotRequest> request = new HttpEntity<>(new RobotRequest(selectBox.getSelectedItem().toString()));
-            Status status = restTemplate.postForObject("http://localhost:8080/autotest/robot/start", request, Status.class);
+            Status status = restTemplate.postForObject("http://localhost:8080/autotest/robot/start", request, RobotResponse.class).getStatus();
             if (Status.TEST_ERROR == status) {
                 JOptionPane.showMessageDialog(container,
                         new String[]{"ERROR!!!"},

@@ -52,5 +52,6 @@ class Line extends JFrame {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.pack();
         this.setVisible(true);
+        this.setOpacity(0.4f);
     }
 }

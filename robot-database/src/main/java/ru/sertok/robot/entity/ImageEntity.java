@@ -20,13 +20,31 @@ public class ImageEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    /**
+     * Скриншот сделанный при записи теста
+     */
     @Lob
-    @Column(name = "photo_expected", length = 10000)
+    @Column(name = "PHOTO_EXPECTED", length = 10000)
     private byte[] photoExpected;
 
+    /**
+     * Скриншот сделанный роботом
+     */
     @Lob
-    @Column(name = "photo_actual", length = 10000)
+    @Column(name = "PHOTO_ACTUAL", length = 10000)
     private byte[] photoActual;
+
+    /**
+     * Результат сравнения изображений
+     */
+    @Column(name = "ASSERT_RESULT")
+    private Boolean assertResult;
+
+    /**
+     * Процент совпадения
+     */
+    @Column(name = "PERCENT")
+    private Integer percent;
 
     /**
      * порядок в катором было событие

@@ -13,4 +13,6 @@ public class Image {
     private int width;
     private int height;
     private byte[] image;
+    private boolean assertResult;
+    private int percent;
 }

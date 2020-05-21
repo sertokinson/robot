@@ -24,7 +24,17 @@ Content-Type: application/json
 ###
 
 // Выгрузка изображений
-POST http://localhost:8080/autotest/image/output
+POST http://localhost:8080/autotest/image/getAll
+Content-Type: application/json
+
+{
+  "testCase": "test"
+}
+
+###
+
+// Выгрузка ошибочных изображений
+POST http://localhost:8080/autotest/image/getErrors
 Content-Type: application/json
 
 {

@@ -41,9 +41,9 @@ public class ScreenShot {
         localStorage.setImage(image);
         localStorage.setImages(new ArrayList<>());
         this.point = new Point(image.getX(), image.getY());
-        log.debug("Задаем начальную позицию скриншота x: {} y:{}", point.getX(), point.getY());
+        log.debug("Задаем начальную позицию скриншота x: {} y:{}", point.getX()+1, point.getY()+1);
         this.dimension = new Dimension(image.getWidth(), image.getHeight());
-        log.debug("Задаем ширину и высоту скриншота width: {} height:{}", dimension.getWidth(), dimension.getHeight());
+        log.debug("Задаем ширину и высоту скриншота width: {} height:{}", dimension.getWidth()-2, dimension.getHeight()-2);
     }
 
     private BufferedImage grabScreen() {

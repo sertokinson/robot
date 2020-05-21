@@ -15,6 +15,6 @@ public class AppControllerImpl implements AppController {
 
     @Override
     public Response pathToLog() {
-        return ResponseBuilder.ok(System.getProperty("java.io.tmpdir")+"robot.log");
+        return ResponseBuilder.ok(System.getProperty("java.io.tmpdir") + "robot.log");
     }
 }

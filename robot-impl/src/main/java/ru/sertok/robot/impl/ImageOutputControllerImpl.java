@@ -7,8 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.util.CollectionUtils;
 import ru.sertok.robot.api.ImageOutputController;
 import ru.sertok.robot.entity.ImageEntity;
-import ru.sertok.robot.entity.TestCaseEntity;
-import ru.sertok.robot.request.ImageOutputRequest;
+import ru.sertok.robot.request.RobotRequest;
 import ru.sertok.robot.response.ResponseBuilder;
 import ru.sertok.robot.service.TestCaseService;
 
@@ -22,52 +21,80 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Controller
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class ImageOutputControllerImpl implements ImageOutputController {
     private final TestCaseService testCaseService;
+    private String testCase;
 
     @Override
-    public Response output(ImageOutputRequest imageOutputRequest) {
-        String testCase = imageOutputRequest.getTestCase();
+    public Response getAll(RobotRequest robotRequest) {
+        String path = System.getProperty("java.io.tmpdir") + "database";
+        deletefile(new File(path));
+        testCase = robotRequest.getTestCase();
         log.debug("Выгружаем изображения по тест-кейсу: {}", testCase);
-        TestCaseEntity testCaseEntity = testCaseService.get("test");
-        List<ImageEntity> images = testCaseEntity.getImages();
-        images.sort(Comparator.comparingInt(ImageEntity::getPosition));
+        output(path, testCaseService.get(testCase).getImages());
+        return ResponseBuilder.ok(path);
+    }
+
+    @Override
+    public Response getErrors(RobotRequest robotRequest) {
+        String path = System.getProperty("java.io.tmpdir") + "database/error";
+        deletefile(new File(path));
+        testCase = robotRequest.getTestCase();
+        log.debug("Выгружаем ошибочные изображения по тест-кейсу: {}", testCase);
+        output(path, testCaseService.get(testCase).getImages().stream()
+                .filter(imageEntity -> imageEntity.getAssertResult() != null && !imageEntity.getAssertResult())
+                .collect(Collectors.toList()));
+        return ResponseBuilder.ok(path);
+    }
+
+    private void output(String path, List<ImageEntity> images) {
         for (int i = 0; i < images.size(); i++) {
             InputStream in = new ByteArrayInputStream(images.get(i).getPhotoExpected());
             try {
-                writePng(ImageIO.read(in), "recorder", testCase + i);
+                writePng(path, ImageIO.read(in), "recorder", testCase + i + "(" + (100 - images.get(i).getPercent()) + "%" + ")");
             } catch (IOException e) {
                 log.error("Ошибка при выгрузке изображения", e);
             }
         }
-        if (!CollectionUtils.isEmpty(images))
-            for (int i = 0; i < images.size(); i++) {
-                InputStream in = new ByteArrayInputStream(images.get(i).getPhotoActual());
+        for (int i = 0; i < images.size(); i++) {
+            byte[] photoActual = images.get(i).getPhotoActual();
+            if (photoActual != null) {
+                InputStream in = new ByteArrayInputStream(photoActual);
                 try {
-                    writePng(ImageIO.read(in), "robot", testCase + i);
+                    writePng(path, ImageIO.read(in), "robot", testCase + i + "(" + (100 - images.get(i).getPercent()) + "%" + ")");
                 } catch (IOException e) {
                     log.error("Ошибка при выгрузке изображения", e);
                 }
             }
-        return ResponseBuilder.ok();
+        }
     }
 
-    private void writePng(BufferedImage image, String folder, String filename) {
-        Path path = Paths.get("database");
-        if (!Files.exists(path)) {
-            new File("database").mkdir();
+    private void deletefile(File path) {
+        if (path.isDirectory()) {
+            for (File f : path.listFiles()) {
+                if (f.isDirectory()) deletefile(f);
+                else f.delete();
+            }
         }
-        new File("database/" + folder.split("/")[0]).mkdir();
-        new File("database/" + folder).mkdir();
+        path.delete();
+    }
+
+    private void writePng(String pathName, BufferedImage image, String folder, String filename) {
+        Path path = Paths.get(pathName);
+        if (!Files.exists(path)) {
+            new File(pathName).mkdir();
+        }
+        new File(pathName + "/" + folder.split("/")[0]).mkdir();
+        new File(pathName + "/" + folder).mkdir();
 
         try {
-            ImageIO.write(image, "png", new File("database/" + folder, filename + ".png"));
+            ImageIO.write(image, "png", new File(pathName + "/" + folder, filename + ".png"));
         } catch (IOException e) {
             log.error("Ошибка при выгрузке изображения", e);
         }
