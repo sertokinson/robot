@@ -141,8 +141,8 @@ public class RobotControllerImpl implements RobotController {
             Image actual = actualImages.get(i);
             // вычесляем процент совпадения
             int percent = compare(actual.getImage(), expectedImages.get(i).getImage());
-            // допускаем 10% не совпадение
-            if (percent > 10) {
+            // допускаем 2% не совпадение
+            if (percent > 2) {
                 actual.setAssertResult(false);
                 countError++;
             } else {
@@ -151,8 +151,8 @@ public class RobotControllerImpl implements RobotController {
             actual.setPercent(percent);
         }
         database.save(actualImages, testCaseName);
-        // допускаем максимум 10% не совпадений
-        return ((countError * 100) / size) <= 10;
+        // допускаем максимум 2% не совпадений
+        return countError == 0;
     }
 
     private int compare(byte[] actual, byte[] expected) {

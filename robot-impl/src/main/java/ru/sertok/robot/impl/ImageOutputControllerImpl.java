@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.CollectionUtils;
 import ru.sertok.robot.api.ImageOutputController;
 import ru.sertok.robot.entity.ImageEntity;
 import ru.sertok.robot.request.RobotRequest;
@@ -33,7 +32,7 @@ public class ImageOutputControllerImpl implements ImageOutputController {
 
     @Override
     public Response getAll(RobotRequest robotRequest) {
-        String path = System.getProperty("java.io.tmpdir") + "database";
+        String path = System.getProperty("java.io.tmpdir") + "images";
         deletefile(new File(path));
         testCase = robotRequest.getTestCase();
         log.debug("Выгружаем изображения по тест-кейсу: {}", testCase);
@@ -43,23 +42,31 @@ public class ImageOutputControllerImpl implements ImageOutputController {
 
     @Override
     public Response getErrors(RobotRequest robotRequest) {
-        String path = System.getProperty("java.io.tmpdir") + "database/error";
+        String path = System.getProperty("java.io.tmpdir") + "errorImages";
         deletefile(new File(path));
         testCase = robotRequest.getTestCase();
         log.debug("Выгружаем ошибочные изображения по тест-кейсу: {}", testCase);
-        output(path, testCaseService.get(testCase).getImages().stream()
+        List<ImageEntity> images = testCaseService.get(testCase).getImages().stream()
                 .filter(imageEntity -> imageEntity.getAssertResult() != null && !imageEntity.getAssertResult())
-                .collect(Collectors.toList()));
+                .collect(Collectors.toList());
+        if (images.isEmpty()) {
+            return ResponseBuilder.ok("Нет ошибочных изображений!");
+        }
+        output(path, images);
         return ResponseBuilder.ok(path);
     }
 
     private void output(String path, List<ImageEntity> images) {
         for (int i = 0; i < images.size(); i++) {
-            InputStream in = new ByteArrayInputStream(images.get(i).getPhotoExpected());
-            try {
-                writePng(path, ImageIO.read(in), "recorder", testCase + i + "(" + (100 - images.get(i).getPercent()) + "%" + ")");
-            } catch (IOException e) {
-                log.error("Ошибка при выгрузке изображения", e);
+            byte[] photoExpected = images.get(i).getPhotoExpected();
+            if (photoExpected != null) {
+                InputStream in = new ByteArrayInputStream(photoExpected);
+                try {
+                    Integer percent = images.get(i).getPercent();
+                    writePng(path, ImageIO.read(in), "recorder", testCase + i + "(" + (100 - (percent == null ? 0 : percent)) + "%" + ")");
+                } catch (IOException e) {
+                    log.error("Ошибка при выгрузке изображения", e);
+                }
             }
         }
         for (int i = 0; i < images.size(); i++) {

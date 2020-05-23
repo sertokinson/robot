@@ -142,7 +142,8 @@ public class EventListener implements NativeMouseInputListener, NativeKeyListene
     }
 
     private boolean isActiveCrop(NativeMouseEvent e) {
-        return env.getActiveProfiles()[0].equals("local-gui")
+        return env.getActiveProfiles().length!=0
+                && env.getActiveProfiles()[0].equals("local-gui")
                 && !localStorage.isScreenshotStart()
                 && localStorage.isActiveCrop()
                 && (e.getX() > x || e.getX() < x - 60 || e.getY() < y || e.getY() > y + 50);

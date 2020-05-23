@@ -5,7 +5,7 @@
     <parent>
         <artifactId>robot</artifactId>
         <groupId>ru.sertok.robot</groupId>
-        <version>0.10</version>
+        <version>0.12</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
