@@ -3,6 +3,7 @@ package ru.sertok.robot.impl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.CollectionUtils;
 import ru.sertok.robot.api.RobotController;
@@ -14,6 +15,7 @@ import ru.sertok.robot.data.*;
 import ru.sertok.robot.data.enumerate.Status;
 import ru.sertok.robot.data.enumerate.Type;
 import ru.sertok.robot.database.Database;
+import ru.sertok.robot.gui.ScreenShotButtons;
 import ru.sertok.robot.request.RobotRequest;
 import ru.sertok.robot.response.ResponseBuilder;
 import ru.sertok.robot.response.RobotResponse;
@@ -38,6 +40,8 @@ public class RobotControllerImpl implements RobotController {
     private final ScreenShot screenShot;
     private final LocalStorage localStorage;
     private final ExecuteApp executeApp;
+
+
 
     @Override
     public Response start(RobotRequest robotRequest) {

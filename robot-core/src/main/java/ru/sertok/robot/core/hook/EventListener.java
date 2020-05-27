@@ -43,12 +43,14 @@ public class EventListener implements NativeMouseInputListener, NativeKeyListene
     @Override
     public void nativeMousePressed(NativeMouseEvent e) {
         cropButtons(e);
-        localStorage.getSteps().add(getMouse(e, Type.PRESSED));
+        if (!localStorage.isActiveCrop() || localStorage.isScreenshotStart())
+            localStorage.getSteps().add(getMouse(e, Type.PRESSED));
     }
 
     @Override
     public void nativeMouseReleased(NativeMouseEvent e) {
-        localStorage.getSteps().add(getMouse(e, Type.RELEASED));
+        if (!localStorage.isActiveCrop() || localStorage.isScreenshotStart())
+            localStorage.getSteps().add(getMouse(e, Type.RELEASED));
 
     }
 
@@ -142,7 +144,7 @@ public class EventListener implements NativeMouseInputListener, NativeKeyListene
     }
 
     private boolean isActiveCrop(NativeMouseEvent e) {
-        return env.getActiveProfiles().length!=0
+        return env.getActiveProfiles().length != 0
                 && env.getActiveProfiles()[0].equals("local-gui")
                 && !localStorage.isScreenshotStart()
                 && localStorage.isActiveCrop()
