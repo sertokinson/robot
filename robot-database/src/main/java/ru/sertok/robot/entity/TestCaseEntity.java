@@ -59,6 +59,12 @@ public class TestCaseEntity {
     private String os;
 
     /**
+     * Описание теста
+     */
+    @Column(name = "DESCRIPTION")
+    private String description;
+
+    /**
      *  Время выполнения теста
      */
     @Column(name = "TIME")

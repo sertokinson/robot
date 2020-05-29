@@ -13,45 +13,36 @@ import java.io.IOException;
 @Getter
 @Component
 public class ExecuteApp {
-    private String pathToApp;
     private BrowserName browserName;
+    private String pathToApp;
 
-    public Status execute(String url) {
+    public Status execute(String url, String pathToApp) {
         if (pathToApp == null) {
             log.error("Не задан путь до приложения!");
             return Status.ERROR;
         }
+        this.pathToApp = pathToApp;
         log.debug("Запускаем приложение: {}", pathToApp);
         if (!StringUtils.isEmpty(url)) {
-            try {
-                if (System.getProperty("os.name").toLowerCase().contains("mac"))
-                    Runtime.getRuntime().exec(new String[]{"/usr/bin/open", "-a", pathToApp, url});
-                else
-                    new ProcessBuilder(pathToApp, url).start();
-                return Status.SUCCESS;
-            } catch (IOException e) {
-                log.error("Приложение по заданному пути не найдено: {}", pathToApp, e);
-                return Status.ERROR;
+            if (pathToApp.toUpperCase().contains(BrowserName.CHROME.toString())) {
+                browserName = BrowserName.CHROME;
+            } else if (pathToApp.toUpperCase().contains(BrowserName.FIREFOX.toString())) {
+                browserName = BrowserName.FIREFOX;
+            } else if (pathToApp.toUpperCase().contains(BrowserName.SAFARI.toString())) {
+                browserName = BrowserName.SAFARI;
+            } else {
+                browserName = BrowserName.UNKNOWN;
             }
-        } else {
-            log.error("Не задан url!");
+            log.debug("Установили браузер: {}", browserName);
+        }
+        try {
+            if (System.getProperty("os.name").toLowerCase().contains("mac"))
+                Runtime.getRuntime().exec(new String[]{"/usr/bin/open", "-a", pathToApp, url});
+            else new ProcessBuilder(pathToApp, url).start();
+            return Status.SUCCESS;
+        } catch (IOException e) {
+            log.error("Приложение по заданному пути не найдено: {}", pathToApp, e);
             return Status.ERROR;
         }
     }
-
-    public void setPathToApp(String pathToApp) {
-        log.debug("Установили путь до приложения: {}", pathToApp);
-        this.pathToApp = pathToApp;
-        if (pathToApp.toUpperCase().contains(BrowserName.CHROME.toString())) {
-            browserName = BrowserName.CHROME;
-        } else if (pathToApp.toUpperCase().contains(BrowserName.FIREFOX.toString())) {
-            browserName = BrowserName.FIREFOX;
-        } else if (pathToApp.toUpperCase().contains(BrowserName.SAFARI.toString())) {
-            browserName = BrowserName.SAFARI;
-        } else {
-            browserName = BrowserName.UNKNOWN;
-        }
-        log.debug("Установили браузер: {}", browserName);
-    }
-
 }

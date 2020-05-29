@@ -12,10 +12,8 @@ import ru.sertok.robot.core.ExecuteApp;
 import ru.sertok.robot.core.hook.EventListener;
 import ru.sertok.robot.data.BaseData;
 import ru.sertok.robot.data.Browser;
-import ru.sertok.robot.data.Mouse;
-import ru.sertok.robot.data.enumerate.Status;
 import ru.sertok.robot.data.TestCase;
-import ru.sertok.robot.data.enumerate.Type;
+import ru.sertok.robot.data.enumerate.Status;
 import ru.sertok.robot.database.Database;
 import ru.sertok.robot.request.RecordRequest;
 import ru.sertok.robot.response.ResponseBuilder;
@@ -45,11 +43,11 @@ public class RecordControllerImpl implements RecordController {
         }
         String url = recordRequest.getUrl();
         localStorage.setTestCase(TestCase.builder()
+                .description(recordRequest.getDescription())
                 .name(recordRequest.getTestCaseName())
                 .url(recordRequest.getUrl())
                 .build());
-
-        if (executeApp.execute(url) == Status.ERROR) {
+        if (executeApp.execute(url, recordRequest.getPathToApp()) == Status.ERROR) {
             String error = "Не удалось запустить приложение!";
             log.error(error);
             return ResponseBuilder.error(error);
@@ -84,6 +82,7 @@ public class RecordControllerImpl implements RecordController {
                 .url(testCase.getUrl())
                 .name(testCase.getName())
                 .steps(steps)
+                .description(testCase.getDescription())
                 .time((int) (System.currentTimeMillis() - localStorage.getStartTime()))
                 .path(executeApp.getPathToApp())
                 .os(getOS(userAgent))

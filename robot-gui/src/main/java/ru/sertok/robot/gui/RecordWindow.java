@@ -49,11 +49,14 @@ public class RecordWindow extends JFrame {
             // Целевое решение
             // HttpEntity<RecordRequest> request = new HttpEntity<>(new RecordRequest(input.getTestCase().getText(), input.getUrl().getText()));
             // Для быстрого тестирования от сюда
-            RestTemplate restTemplate = new RestTemplate();
-            restTemplate.postForObject("http://localhost:8080/autotest/settings/pathToApp/", new HttpEntity<>(new SettingsRequest("/Applications/Google Chrome.app")), Response.class);
-            HttpEntity<RecordRequest> request = new HttpEntity<>(new RecordRequest("test", "file:///Users/sergejstahanov/Desktop/robot_test/index.html"));
+            HttpEntity<RecordRequest> request = new HttpEntity<>(new RecordRequest(
+                    "test",
+                    "file:///Users/sergejstahanov/Desktop/robotProject/robot_test/index.html",
+                    "/Applications/Google Chrome.app",
+                    "Описание теста"
+            ));
             // до сюда
-            restTemplate.postForObject("http://localhost:8080/autotest/record/start", request, RecordRequest.class);
+            new RestTemplate().postForObject("http://localhost:8080/autotest/record/start", request, RecordRequest.class);
         });
         stop.addActionListener(actionEvent -> {
             RestTemplate restTemplate = new RestTemplate();

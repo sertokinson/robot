@@ -1,10 +1,7 @@
 package ru.sertok.robot.request;
 
 import io.swagger.v3.oas.annotations.Parameter;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 @Getter
 @ToString
@@ -15,4 +12,7 @@ public class RecordRequest {
     private String testCaseName;
     @Parameter(required = true)
     private String url;
+    @Parameter(required = true)
+    private String pathToApp;
+    private String description;
 }

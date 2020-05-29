@@ -1,20 +1,11 @@
-// Путь до запускаемого приложения
-POST http://localhost:8080/autotest/settings/pathToApp/
-Content-Type: application/json
-
-{
-  "pathToApp": "/Applications/Google Chrome.app"
-}
-
-###
-
 // Запись тест кейса
 POST http://localhost:8080/autotest/record/start/
 Content-Type: application/json
 
 {
+  "pathToApp": "/Applications/Google Chrome.app",
   "testCaseName": "test",
-  "url": "file:///Users/sergejstahanov/Desktop/robot_test/index.html"
+  "url": "file:///Users/sergejstahanov/Desktop/robotProject/robot_test/index.html"
 }
 
 ###
@@ -54,7 +45,7 @@ Content-Type: application/json
 ###
 
 // Выгрузка тест-кейсов
-GET http://localhost:8080/autotest/robot/get
+GET http://localhost:8080/autotest/robot/getAll
 
 ###
 

@@ -25,14 +25,14 @@ public interface RobotController {
     Response delete(RobotRequest robotRequest);
 
     @GET
-    @Path("/get")
+    @Path("/getAll")
     @ApiResponses(@ApiResponse(
             responseCode = "200",
             content = @Content(
                     mediaType = "*/*",
                     schema = @Schema(implementation = TestCasesResponse.class)
             ),
-            description = "Список наименований тест кейсов"
+            description = "Список тест кейсов"
     ))
-    Response get();
+    Response getAll();
 }

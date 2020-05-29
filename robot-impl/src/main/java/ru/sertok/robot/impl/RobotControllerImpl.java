@@ -3,7 +3,6 @@ package ru.sertok.robot.impl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.CollectionUtils;
 import ru.sertok.robot.api.RobotController;
@@ -15,7 +14,6 @@ import ru.sertok.robot.data.*;
 import ru.sertok.robot.data.enumerate.Status;
 import ru.sertok.robot.data.enumerate.Type;
 import ru.sertok.robot.database.Database;
-import ru.sertok.robot.gui.ScreenShotButtons;
 import ru.sertok.robot.request.RobotRequest;
 import ru.sertok.robot.response.ResponseBuilder;
 import ru.sertok.robot.response.RobotResponse;
@@ -63,8 +61,7 @@ public class RobotControllerImpl implements RobotController {
             log.error(error, e);
             return ResponseBuilder.error(error);
         }
-        executeApp.setPathToApp(testCase.getPath());
-        if (executeApp.execute(testCase.getUrl()) == Status.ERROR) {
+        if (executeApp.execute(testCase.getUrl(), testCase.getPath()) == Status.ERROR) {
             String error = "Не удалось запустить приложение!";
             log.error(error);
             return ResponseBuilder.error(error);
@@ -201,7 +198,7 @@ public class RobotControllerImpl implements RobotController {
     }
 
     @Override
-    public Response get() {
+    public Response getAll() {
         log.debug("REST-запрос ../robot/get");
         return ResponseBuilder.ok(new TestCasesResponse(database.getAll()));
     }

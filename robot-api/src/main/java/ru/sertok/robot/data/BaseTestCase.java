@@ -12,4 +12,5 @@ public class BaseTestCase {
     private Integer time;
     private String os;
     private Browser browser;
+    private String description;
 }
