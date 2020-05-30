@@ -4,6 +4,7 @@ import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import ru.sertok.robot.data.enumerate.Type;
+import ru.sertok.robot.data.enumerate.TypePressed;
 
 import javax.persistence.*;
 
@@ -20,13 +21,18 @@ public class MouseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    /**
-     * PASSED - нажал
-     * RELEASED - отпустил
-     */
     @Column(name = "TYPE")
     @Enumerated(EnumType.STRING)
     private Type type;
+
+    /**
+     * Тип нажатия:
+     * LEFT - левая кнопка мыши
+     * RIGHT - правая кнопка мыши
+     */
+    @Column(name = "TYPE_PRESSED")
+    @Enumerated(EnumType.STRING)
+    private TypePressed typePressed;
 
     /**
      * Координата мыши по x

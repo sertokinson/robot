@@ -15,6 +15,7 @@ import ru.sertok.robot.data.Image;
 import ru.sertok.robot.data.Keyboard;
 import ru.sertok.robot.data.Mouse;
 import ru.sertok.robot.data.enumerate.Type;
+import ru.sertok.robot.data.enumerate.TypePressed;
 import ru.sertok.robot.gui.ScreenShotButtons;
 import ru.sertok.robot.gui.TranslucentWindow;
 import ru.sertok.robot.storage.LocalStorage;
@@ -46,26 +47,26 @@ public class EventListener implements NativeMouseInputListener, NativeKeyListene
     public void nativeMousePressed(NativeMouseEvent e) {
         cropButtons(e);
         if (!localStorage.isActiveCrop() || localStorage.isScreenshotStart())
-            localStorage.getSteps().add(getMouse(e, Type.PRESSED));
+            localStorage.getSteps().add(getMouse(e, Type.PRESSED, TypePressed.getType(e.getButton())));
     }
 
     @Override
     public void nativeMouseReleased(NativeMouseEvent e) {
         if (!localStorage.isActiveCrop() || localStorage.isScreenshotStart())
-            localStorage.getSteps().add(getMouse(e, Type.RELEASED));
+            localStorage.getSteps().add(getMouse(e, Type.RELEASED, TypePressed.getType(e.getButton())));
 
     }
 
     @Override
     public void nativeMouseMoved(NativeMouseEvent e) {
         if (getCurrentTime() > 0)
-            localStorage.getSteps().add(getMouse(e, Type.MOVED));
+            localStorage.getSteps().add(getMouse(e, Type.MOVED, null));
     }
 
     @Override
     public void nativeMouseDragged(NativeMouseEvent e) {
         if (!localStorage.isActiveCrop() || localStorage.isScreenshotStart())
-            localStorage.getSteps().add(getMouse(e, Type.MOVED));
+            localStorage.getSteps().add(getMouse(e, Type.MOVED,null));
         cropArea(e);
     }
 
@@ -110,10 +111,11 @@ public class EventListener implements NativeMouseInputListener, NativeKeyListene
                 .build();
     }
 
-    private Mouse getMouse(NativeMouseEvent e, Type type) {
+    private Mouse getMouse(NativeMouseEvent e, Type type, TypePressed typePressed) {
         return Mouse.builder()
                 .x(e.getX())
                 .y(e.getY())
+                .typePressed(typePressed)
                 .type(type)
                 .time(getTime())
                 .screenshot(makeScreenshot())

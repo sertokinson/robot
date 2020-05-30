@@ -13,6 +13,7 @@ import ru.sertok.robot.data.Image;
 import ru.sertok.robot.data.*;
 import ru.sertok.robot.data.enumerate.Status;
 import ru.sertok.robot.data.enumerate.Type;
+import ru.sertok.robot.data.enumerate.TypePressed;
 import ru.sertok.robot.database.Database;
 import ru.sertok.robot.request.RobotRequest;
 import ru.sertok.robot.response.ResponseBuilder;
@@ -38,7 +39,6 @@ public class RobotControllerImpl implements RobotController {
     private final ScreenShot screenShot;
     private final LocalStorage localStorage;
     private final ExecuteApp executeApp;
-
 
 
     @Override
@@ -74,7 +74,7 @@ public class RobotControllerImpl implements RobotController {
                     Mouse mouse = (Mouse) baseData;
                     switch (mouse.getType()) {
                         case PRESSED:
-                            robot.mousePress(InputEvent.BUTTON1_MASK);
+                            robot.mousePress(getButton(mouse.getTypePressed()));
                             break;
                         case WHEEL:
                             robot.mouseWheel(mouse.getWheel());
@@ -83,7 +83,7 @@ public class RobotControllerImpl implements RobotController {
                             robot.mouseMove(mouse.getX(), mouse.getY());
                             break;
                         case RELEASED:
-                            robot.mouseRelease(InputEvent.BUTTON1_MASK);
+                            robot.mouseRelease(getButton(mouse.getTypePressed()));
                     }
                 }
                 if (baseData instanceof Keyboard) {
@@ -198,6 +198,14 @@ public class RobotControllerImpl implements RobotController {
         }
         return Math.abs(color1.getGreen() - color2.getGreen()) <= 20;
 
+    }
+
+    private int getButton(TypePressed type) {
+        if (TypePressed.LEFT == type) {
+            return InputEvent.BUTTON1_MASK;
+        } else {
+            return InputEvent.BUTTON3_MASK;
+        }
     }
 
     @Override
