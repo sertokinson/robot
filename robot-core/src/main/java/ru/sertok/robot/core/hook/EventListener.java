@@ -40,12 +40,6 @@ public class EventListener implements NativeMouseInputListener, NativeKeyListene
     @SneakyThrows
     public void nativeKeyPressed(NativeKeyEvent e) {
         String keyText = NativeKeyEvent.getKeyText(e.getKeyCode());
-
-        System.out.println("===================");
-        System.out.println(keyText);
-        System.out.println(keyEvents.getKey(keyText));
-        System.out.println("===================");
-
         if (keyEvents.getKey(keyText) != 0)
             localStorage.getSteps().add(getKeyboard(keyText, Type.PRESSED));
     }
@@ -111,7 +105,7 @@ public class EventListener implements NativeMouseInputListener, NativeKeyListene
 
     private boolean makeScreenshot() {
         boolean screenshot = localStorage.isScreenshotStart();
-        if (screenshot && getScreenShotTime() > 100) {
+        if (screenshot && getScreenShotTime() > 200) {
             screenShotTime = System.currentTimeMillis();
             screenShot.make();
             return true;

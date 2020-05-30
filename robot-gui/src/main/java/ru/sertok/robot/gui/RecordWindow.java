@@ -9,7 +9,6 @@ import org.springframework.web.client.RestTemplate;
 import ru.sertok.robot.gui.data.Input;
 import ru.sertok.robot.request.RecordRequest;
 import ru.sertok.robot.request.ScreenShotRequest;
-import ru.sertok.robot.request.SettingsRequest;
 
 import javax.annotation.PostConstruct;
 import javax.imageio.ImageIO;
@@ -51,8 +50,8 @@ public class RecordWindow extends JFrame {
             // Для быстрого тестирования от сюда
             HttpEntity<RecordRequest> request = new HttpEntity<>(new RecordRequest(
                     "test",
-                    "google.ru",
-                    "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe",
+                    "https://www.google.com/",
+                    "/Applications/Google Chrome.app",
                     "Описание теста"
             ));
             // до сюда

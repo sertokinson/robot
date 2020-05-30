@@ -83,7 +83,6 @@ public class RecordControllerImpl implements RecordController {
         }
         TestCase testCase = localStorage.getTestCase();
         List<BaseData> steps = localStorage.getSteps();
-        deleteLastMousePressed(steps);
         database.save(TestCase.builder()
                 .image(testCase.getImage())
                 .url(testCase.getUrl())
