@@ -61,8 +61,10 @@ public class EventListener implements NativeMouseInputListener, NativeKeyListene
     }
 
     @Override
-    public void nativeMouseDragged(NativeMouseEvent nativeMouseEvent) {
-        cropArea(nativeMouseEvent);
+    public void nativeMouseDragged(NativeMouseEvent e) {
+        if (!localStorage.isActiveCrop() || localStorage.isScreenshotStart())
+            localStorage.getSteps().add(getMouse(e, Type.MOVED));
+        cropArea(e);
     }
 
     @Override
@@ -72,7 +74,7 @@ public class EventListener implements NativeMouseInputListener, NativeKeyListene
 
     @Override
     public void nativeMouseClicked(NativeMouseEvent nativeMouseEvent) {
-
+        System.out.println("CLICKED!!!");
     }
 
     private boolean makeScreenshot() {

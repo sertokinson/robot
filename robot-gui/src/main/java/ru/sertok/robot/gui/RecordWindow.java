@@ -51,8 +51,8 @@ public class RecordWindow extends JFrame {
             // Для быстрого тестирования от сюда
             HttpEntity<RecordRequest> request = new HttpEntity<>(new RecordRequest(
                     "test",
-                    "",
-                    "C:\\Program Files (x86)\\Steam\\Steam.exe",
+                    "google.ru",
+                    "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe",
                     "Описание теста"
             ));
             // до сюда

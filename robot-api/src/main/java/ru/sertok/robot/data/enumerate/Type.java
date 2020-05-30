@@ -14,5 +14,5 @@ public enum Type {
     /**
      * движение
      */
-    MOVED;
+    MOVED
 }
