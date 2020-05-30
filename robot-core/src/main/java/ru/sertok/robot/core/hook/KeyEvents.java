@@ -20,6 +20,12 @@ public class KeyEvents {
             case "Right Control":
                 newKey = "Control";
                 break;
+            case "Backspace":
+                newKey = "BACK_SPACE";
+                break;
+            case "Left Alt":
+                newKey = "Alt";
+                break;
             default:
                 newKey = key;
         }

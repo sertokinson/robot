@@ -98,15 +98,11 @@ public class RobotControllerImpl implements RobotController {
                     Keyboard keyboard = (Keyboard) baseData;
                     try {
                         int keyEvent = keyEvents.getKey(keyboard.getKey());
-                        System.out.println(keyEvent);
                         if (keyboard.getType() == Type.PRESSED) {
-                            System.out.println(keyEvent);
                             robot.keyPress(keyEvent);
                         } else {
-                            System.out.println(keyEvent);
                             robot.keyRelease(keyEvent);
                         }
-                        System.out.println("success");
                     } catch (IllegalAccessException | IllegalArgumentException e) {
                         log.error("Нет такой клавиши KeyEvents {} ", keyboard.getKey(), e);
                         return ResponseBuilder.error("Ошибка при считывании клавиши");
