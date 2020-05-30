@@ -5,6 +5,8 @@ import org.jnativehook.keyboard.NativeKeyEvent;
 import org.jnativehook.keyboard.NativeKeyListener;
 import org.jnativehook.mouse.NativeMouseEvent;
 import org.jnativehook.mouse.NativeMouseInputListener;
+import org.jnativehook.mouse.NativeMouseWheelEvent;
+import org.jnativehook.mouse.NativeMouseWheelListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
@@ -19,7 +21,7 @@ import ru.sertok.robot.storage.LocalStorage;
 
 @Component
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
-public class EventListener implements NativeMouseInputListener, NativeKeyListener {
+public class EventListener implements NativeMouseInputListener, NativeKeyListener, NativeMouseWheelListener {
     private final LocalStorage localStorage;
     private final ScreenShot screenShot;
     private final Environment env;
@@ -74,7 +76,6 @@ public class EventListener implements NativeMouseInputListener, NativeKeyListene
 
     @Override
     public void nativeMouseClicked(NativeMouseEvent nativeMouseEvent) {
-        System.out.println("CLICKED!!!");
     }
 
     private boolean makeScreenshot() {
@@ -153,4 +154,14 @@ public class EventListener implements NativeMouseInputListener, NativeKeyListene
                 && (e.getX() > x || e.getX() < x - 60 || e.getY() < y || e.getY() > y + 50);
     }
 
+    @Override
+    public void nativeMouseWheelMoved(NativeMouseWheelEvent nativeMouseWheelEvent) {
+        if (!localStorage.isActiveCrop() || localStorage.isScreenshotStart())
+            localStorage.getSteps().add(Mouse.builder()
+                    .type(Type.WHEEL)
+                    .wheel(nativeMouseWheelEvent.getWheelRotation())
+                    .time(getTime())
+                    .screenshot(makeScreenshot())
+                    .build());
+    }
 }

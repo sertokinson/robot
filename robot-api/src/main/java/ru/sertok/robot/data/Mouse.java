@@ -10,4 +10,5 @@ public class Mouse extends BaseData{
     private Type type;
     private int x;
     private int y;
+    private int wheel;
 }

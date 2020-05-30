@@ -76,6 +76,9 @@ public class RobotControllerImpl implements RobotController {
                         case PRESSED:
                             robot.mousePress(InputEvent.BUTTON1_MASK);
                             break;
+                        case WHEEL:
+                            robot.mouseWheel(mouse.getWheel());
+                            break;
                         case MOVED:
                             robot.mouseMove(mouse.getX(), mouse.getY());
                             break;

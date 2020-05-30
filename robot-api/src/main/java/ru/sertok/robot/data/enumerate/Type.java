@@ -14,5 +14,9 @@ public enum Type {
     /**
      * движение
      */
-    MOVED
+    MOVED,
+    /**
+     * Колесо
+     */
+    WHEEL
 }

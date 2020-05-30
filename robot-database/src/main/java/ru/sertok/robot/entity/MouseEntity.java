@@ -41,6 +41,12 @@ public class MouseEntity {
     private int y;
 
     /**
+     * Значение колеса мыши
+     */
+    @Column(name = "WHEEL")
+    private int wheel;
+
+    /**
      * время отсчета от старта
      */
     @Column(name = "TIME")

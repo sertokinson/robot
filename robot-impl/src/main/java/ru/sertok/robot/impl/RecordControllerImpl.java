@@ -62,6 +62,7 @@ public class RecordControllerImpl implements RecordController {
         GlobalScreen.addNativeMouseListener(eventListener);
         GlobalScreen.addNativeMouseMotionListener(eventListener);
         GlobalScreen.addNativeKeyListener(eventListener);
+        GlobalScreen.addNativeMouseWheelListener(eventListener);
         return ResponseBuilder.ok();
     }
 
