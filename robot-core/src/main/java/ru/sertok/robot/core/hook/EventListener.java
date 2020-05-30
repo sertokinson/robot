@@ -1,6 +1,7 @@
 package ru.sertok.robot.core.hook;
 
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import org.jnativehook.keyboard.NativeKeyEvent;
 import org.jnativehook.keyboard.NativeKeyListener;
 import org.jnativehook.mouse.NativeMouseEvent;
@@ -28,19 +29,33 @@ public class EventListener implements NativeMouseInputListener, NativeKeyListene
     private final Environment env;
     private final TranslucentWindow tw;
     private final ScreenShotButtons screenShotButtons;
+    private final KeyEvents keyEvents;
+
     private long currentTime;
     private long screenShotTime;
     private int x = 0;
     private int y = 0;
 
     @Override
+    @SneakyThrows
     public void nativeKeyPressed(NativeKeyEvent e) {
-        localStorage.getSteps().add(getKeyboard(e.getKeyCode(), Type.PRESSED));
+        String keyText = NativeKeyEvent.getKeyText(e.getKeyCode());
+
+        System.out.println("===================");
+        System.out.println(keyText);
+        System.out.println(keyEvents.getKey(keyText));
+        System.out.println("===================");
+
+        if (keyEvents.getKey(keyText) != 0)
+            localStorage.getSteps().add(getKeyboard(keyText, Type.PRESSED));
     }
 
     @Override
+    @SneakyThrows
     public void nativeKeyReleased(NativeKeyEvent e) {
-        localStorage.getSteps().add(getKeyboard(e.getKeyCode(), Type.RELEASED));
+        String keyText = NativeKeyEvent.getKeyText(e.getKeyCode());
+        if (keyEvents.getKey(keyText) != 0)
+            localStorage.getSteps().add(getKeyboard(keyText, Type.RELEASED));
     }
 
     @Override
@@ -60,7 +75,6 @@ public class EventListener implements NativeMouseInputListener, NativeKeyListene
 
     @Override
     public void nativeMouseReleased(NativeMouseEvent e) {
-        System.out.println(e.getClickCount());
         if (!localStorage.isActiveCrop() || localStorage.isScreenshotStart())
             localStorage.getSteps().add(Mouse.builder()
                     .x(e.getX())
@@ -77,19 +91,18 @@ public class EventListener implements NativeMouseInputListener, NativeKeyListene
     @Override
     public void nativeMouseMoved(NativeMouseEvent e) {
         if (getCurrentTime() > 0)
-            localStorage.getSteps().add(getMouse(e, Type.MOVED));
+            localStorage.getSteps().add(getMouse(e));
     }
 
     @Override
     public void nativeMouseDragged(NativeMouseEvent e) {
         if (!localStorage.isActiveCrop() || localStorage.isScreenshotStart())
-            localStorage.getSteps().add(getMouse(e, Type.MOVED));
+            localStorage.getSteps().add(getMouse(e));
         cropArea(e);
     }
 
     @Override
     public void nativeKeyTyped(NativeKeyEvent nativeKeyEvent) {
-
     }
 
     @Override
@@ -119,20 +132,20 @@ public class EventListener implements NativeMouseInputListener, NativeKeyListene
         return (int) (System.currentTimeMillis() - screenShotTime);
     }
 
-    private Keyboard getKeyboard(int key, Type type) {
+    private Keyboard getKeyboard(String key, Type type) {
         return Keyboard.builder()
                 .type(type)
                 .time(getTime())
-                .key(NativeKeyEvent.getKeyText(key))
+                .key(key)
                 .screenshot(makeScreenshot())
                 .build();
     }
 
-    private Mouse getMouse(NativeMouseEvent e, Type type) {
+    private Mouse getMouse(NativeMouseEvent e) {
         return Mouse.builder()
                 .x(e.getX())
                 .y(e.getY())
-                .type(type)
+                .type(Type.MOVED)
                 .time(getTime())
                 .screenshot(makeScreenshot())
                 .build();

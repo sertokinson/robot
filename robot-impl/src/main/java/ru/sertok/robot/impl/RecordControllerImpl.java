@@ -52,17 +52,19 @@ public class RecordControllerImpl implements RecordController {
             log.error(error);
             return ResponseBuilder.error(error);
         }
-        try {
-            GlobalScreen.registerNativeHook();
-        } catch (NativeHookException e) {
-            log.error("There was a problem registering the native ru.sertok.hook.", e);
-            return ResponseBuilder.error("Проблемы со считывания устройства мыши или клавиатуры");
-        }
         localStorage.setStartTime(System.currentTimeMillis());
-        GlobalScreen.addNativeMouseListener(eventListener);
-        GlobalScreen.addNativeMouseMotionListener(eventListener);
-        GlobalScreen.addNativeKeyListener(eventListener);
-        GlobalScreen.addNativeMouseWheelListener(eventListener);
+        if (!GlobalScreen.isNativeHookRegistered()) {
+            try {
+                GlobalScreen.registerNativeHook();
+            } catch (NativeHookException e) {
+                log.error("There was a problem registering the native ru.sertok.hook.", e);
+                return ResponseBuilder.error("Проблемы со считывания устройства мыши или клавиатуры");
+            }
+            GlobalScreen.addNativeMouseListener(eventListener);
+            GlobalScreen.addNativeMouseMotionListener(eventListener);
+            GlobalScreen.addNativeKeyListener(eventListener);
+            GlobalScreen.addNativeMouseWheelListener(eventListener);
+        }
         return ResponseBuilder.ok();
     }
 
@@ -71,6 +73,10 @@ public class RecordControllerImpl implements RecordController {
         log.debug("REST-запрос ../record/stop");
         try {
             GlobalScreen.unregisterNativeHook();
+            GlobalScreen.removeNativeKeyListener(eventListener);
+            GlobalScreen.removeNativeMouseListener(eventListener);
+            GlobalScreen.removeNativeMouseMotionListener(eventListener);
+            GlobalScreen.removeNativeMouseWheelListener(eventListener);
         } catch (NativeHookException e) {
             log.error("There was a problem unregistering the native ru.sertok.hook.", e);
             return ResponseBuilder.error("Проблемы с остановкой слушателя устройства мыши или клавиатуры");
@@ -93,7 +99,6 @@ public class RecordControllerImpl implements RecordController {
         localStorage.invalidateLocalStorage();
         return ResponseBuilder.ok();
     }
-
 
 
     private String getOS(String userAgent) {

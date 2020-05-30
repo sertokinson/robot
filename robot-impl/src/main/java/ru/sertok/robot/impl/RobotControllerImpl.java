@@ -39,7 +39,7 @@ public class RobotControllerImpl implements RobotController {
     private final ScreenShot screenShot;
     private final LocalStorage localStorage;
     private final ExecuteApp executeApp;
-
+    private final KeyEvents keyEvents;
 
     @Override
     public Response start(RobotRequest robotRequest) {
@@ -97,14 +97,18 @@ public class RobotControllerImpl implements RobotController {
                 if (baseData instanceof Keyboard) {
                     Keyboard keyboard = (Keyboard) baseData;
                     try {
-                        int keyEvent = new KeyEvents().getKey(keyboard.getKey());
+                        int keyEvent = keyEvents.getKey(keyboard.getKey());
+                        System.out.println(keyEvent);
                         if (keyboard.getType() == Type.PRESSED) {
+                            System.out.println(keyEvent);
                             robot.keyPress(keyEvent);
                         } else {
+                            System.out.println(keyEvent);
                             robot.keyRelease(keyEvent);
                         }
-                    } catch (IllegalAccessException e) {
-                        log.error("Нет такой клавиши в KeyEvents {}", keyboard.getKey(), e);
+                        System.out.println("success");
+                    } catch (IllegalAccessException | IllegalArgumentException e) {
+                        log.error("Нет такой клавиши KeyEvents {} ", keyboard.getKey(), e);
                         return ResponseBuilder.error("Ошибка при считывании клавиши");
                     }
                 }

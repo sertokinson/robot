@@ -1,8 +1,11 @@
 package ru.sertok.robot.core.hook;
 
+import org.springframework.stereotype.Component;
+
 import java.awt.event.KeyEvent;
 import java.lang.reflect.Field;
 
+@Component
 public class KeyEvents {
     public int getKey(String key) throws IllegalAccessException {
         String newKey;
@@ -12,10 +15,6 @@ public class KeyEvents {
                 break;
             case "␣":
                 newKey = "Space";
-                break;
-            case "Left Meta":
-            case "Right Meta":
-                newKey = "Meta";
                 break;
             case "Left Control":
             case "Right Control":
