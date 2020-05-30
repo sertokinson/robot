@@ -28,4 +28,12 @@ public interface AppController {
     ))
     Response pathToLog();
 
+    @GET
+    @Path("/version")
+    @ApiResponses(@ApiResponse(
+            responseCode = "200",
+            description = "Версия приложения"
+    ))
+    Response version();
+
 }
