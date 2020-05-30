@@ -47,26 +47,43 @@ public class EventListener implements NativeMouseInputListener, NativeKeyListene
     public void nativeMousePressed(NativeMouseEvent e) {
         cropButtons(e);
         if (!localStorage.isActiveCrop() || localStorage.isScreenshotStart())
-            localStorage.getSteps().add(getMouse(e, Type.PRESSED, TypePressed.getType(e.getButton())));
+            localStorage.getSteps().add(Mouse.builder()
+                    .x(e.getX())
+                    .y(e.getY())
+                    .typePressed(TypePressed.getType(e.getButton()))
+                    .count(e.getClickCount())
+                    .type(Type.PRESSED)
+                    .time(getTime())
+                    .screenshot(makeScreenshot())
+                    .build());
     }
 
     @Override
     public void nativeMouseReleased(NativeMouseEvent e) {
+        System.out.println(e.getClickCount());
         if (!localStorage.isActiveCrop() || localStorage.isScreenshotStart())
-            localStorage.getSteps().add(getMouse(e, Type.RELEASED, TypePressed.getType(e.getButton())));
+            localStorage.getSteps().add(Mouse.builder()
+                    .x(e.getX())
+                    .y(e.getY())
+                    .typePressed(TypePressed.getType(e.getButton()))
+                    .count(e.getClickCount())
+                    .type(Type.RELEASED)
+                    .time(getTime())
+                    .screenshot(makeScreenshot())
+                    .build());
 
     }
 
     @Override
     public void nativeMouseMoved(NativeMouseEvent e) {
         if (getCurrentTime() > 0)
-            localStorage.getSteps().add(getMouse(e, Type.MOVED, null));
+            localStorage.getSteps().add(getMouse(e, Type.MOVED));
     }
 
     @Override
     public void nativeMouseDragged(NativeMouseEvent e) {
         if (!localStorage.isActiveCrop() || localStorage.isScreenshotStart())
-            localStorage.getSteps().add(getMouse(e, Type.MOVED,null));
+            localStorage.getSteps().add(getMouse(e, Type.MOVED));
         cropArea(e);
     }
 
@@ -111,11 +128,10 @@ public class EventListener implements NativeMouseInputListener, NativeKeyListene
                 .build();
     }
 
-    private Mouse getMouse(NativeMouseEvent e, Type type, TypePressed typePressed) {
+    private Mouse getMouse(NativeMouseEvent e, Type type) {
         return Mouse.builder()
                 .x(e.getX())
                 .y(e.getY())
-                .typePressed(typePressed)
                 .type(type)
                 .time(getTime())
                 .screenshot(makeScreenshot())

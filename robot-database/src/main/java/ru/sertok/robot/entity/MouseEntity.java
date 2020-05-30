@@ -59,6 +59,12 @@ public class MouseEntity {
     private Integer time;
 
     /**
+     * Количество нажатий
+     */
+    @Column(name = "COUNT")
+    private Integer count;
+
+    /**
      * порядок в котором было событие
      */
     @Column(name = "position", nullable = false)

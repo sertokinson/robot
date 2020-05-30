@@ -74,7 +74,15 @@ public class RobotControllerImpl implements RobotController {
                     Mouse mouse = (Mouse) baseData;
                     switch (mouse.getType()) {
                         case PRESSED:
-                            robot.mousePress(getButton(mouse.getTypePressed()));
+                            if (mouse.getCount() > 1) {
+                                for (int j = 0; j < mouse.getCount() - 1; j++) {
+                                    robot.mousePress(InputEvent.BUTTON1_MASK);
+                                    robot.mouseRelease(InputEvent.BUTTON1_MASK);
+                                    robot.mousePress(InputEvent.BUTTON1_MASK);
+                                }
+                            } else {
+                                robot.mousePress(getButton(mouse.getTypePressed()));
+                            }
                             break;
                         case WHEEL:
                             robot.mouseWheel(mouse.getWheel());
