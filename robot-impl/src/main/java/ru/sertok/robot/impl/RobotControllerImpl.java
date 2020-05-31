@@ -70,6 +70,8 @@ public class RobotControllerImpl implements RobotController {
         for (int i = 0; i < data.size(); i++) {
             BaseData baseData = data.get(i);
             if (baseData != null) {
+                if (i == 0)
+                    robot.delay((data.get(i)).getTime());
                 if (baseData instanceof Mouse) {
                     Mouse mouse = (Mouse) baseData;
                     switch (mouse.getType()) {

@@ -38,7 +38,11 @@ public class ExecuteApp {
         try {
             if (System.getProperty("os.name").toLowerCase().contains("mac"))
                 Runtime.getRuntime().exec(new String[]{"/usr/bin/open", "-a", pathToApp, url});
-            else new ProcessBuilder(pathToApp, url).start();
+            else {
+                if (!StringUtils.isEmpty(url))
+                    new ProcessBuilder(pathToApp, url).start();
+                else new ProcessBuilder(pathToApp).start();
+            }
             return Status.SUCCESS;
         } catch (IOException e) {
             log.error("Приложение по заданному пути не найдено: {}", pathToApp, e);

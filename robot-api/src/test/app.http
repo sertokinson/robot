@@ -47,3 +47,8 @@ Content-Type: application/json
 GET http://localhost:8080/autotest/version
 
 ###
+
+// Выход из записи теста
+POST http://localhost:8080/autotest/record/exit
+
+###

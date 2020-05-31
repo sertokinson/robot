@@ -21,6 +21,7 @@ import ru.sertok.robot.storage.LocalStorage;
 
 import javax.ws.rs.core.Response;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Controller
@@ -34,6 +35,7 @@ public class RecordControllerImpl implements RecordController {
     @Override
     public Response start(RecordRequest recordRequest) {
         log.debug("REST-запрос ../record/start с параметрами {}", recordRequest);
+        localStorage.invalidateLocalStorage();
         if (StringUtils.isEmpty(recordRequest.getTestCaseName())) {
             String error = "Пустое название тест кейса!";
             log.error(error);
@@ -90,7 +92,9 @@ public class RecordControllerImpl implements RecordController {
                 .time((int) (System.currentTimeMillis() - localStorage.getStartTime()))
                 .path(executeApp.getPathToApp())
                 .os(getOS(userAgent))
-                .browser(new Browser(executeApp.getBrowserName().name(), getBrowserVersion(userAgent)))
+                .browser(Optional.ofNullable(executeApp.getBrowserName()).map(browserName -> new Browser(browserName.name(),
+                        getBrowserVersion(userAgent))).orElse(null)
+                )
                 .build()
         );
         localStorage.invalidateLocalStorage();
