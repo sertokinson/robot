@@ -20,6 +20,6 @@ public class AppControllerImpl implements AppController {
 
     @Override
     public Response version() {
-        return ResponseBuilder.ok("0.14");
+        return ResponseBuilder.ok("0.15");
     }
 }

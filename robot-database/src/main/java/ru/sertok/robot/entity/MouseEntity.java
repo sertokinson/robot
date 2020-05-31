@@ -50,7 +50,7 @@ public class MouseEntity {
      * Значение колеса мыши
      */
     @Column(name = "WHEEL")
-    private int wheel;
+    private Integer wheel;
 
     /**
      * время отсчета от старта
