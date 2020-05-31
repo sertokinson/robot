@@ -22,8 +22,6 @@ import ru.sertok.robot.storage.LocalStorage;
 import javax.ws.rs.core.Response;
 import java.util.List;
 
-import static ru.sertok.robot.utils.Utils.deleteLastMousePressed;
-
 @Slf4j
 @Controller
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
@@ -99,6 +97,21 @@ public class RecordControllerImpl implements RecordController {
         return ResponseBuilder.ok();
     }
 
+    @Override
+    public Response exit() {
+        try {
+            localStorage.invalidateLocalStorage();
+            GlobalScreen.unregisterNativeHook();
+            GlobalScreen.removeNativeKeyListener(eventListener);
+            GlobalScreen.removeNativeMouseListener(eventListener);
+            GlobalScreen.removeNativeMouseMotionListener(eventListener);
+            GlobalScreen.removeNativeMouseWheelListener(eventListener);
+        } catch (NativeHookException e) {
+            log.error("There was a problem unregistering the native ru.sertok.hook.", e);
+            return ResponseBuilder.error("Проблемы с остановкой слушателя устройства мыши или клавиатуры");
+        }
+        return ResponseBuilder.ok();
+    }
 
     private String getOS(String userAgent) {
         return userAgent.split("\\(")[0].split("\\)")[0];

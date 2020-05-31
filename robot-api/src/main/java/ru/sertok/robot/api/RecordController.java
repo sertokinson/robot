@@ -19,4 +19,8 @@ public interface RecordController {
     @GET
     @Path("/stop")
     Response stop(@HeaderParam("user-agent") String userAgent);
+
+    @POST
+    @Path("/exit")
+    Response exit();
 }

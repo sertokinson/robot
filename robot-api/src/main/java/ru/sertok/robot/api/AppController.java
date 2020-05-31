@@ -35,5 +35,4 @@ public interface AppController {
             description = "Версия приложения"
     ))
     Response version();
-
 }
