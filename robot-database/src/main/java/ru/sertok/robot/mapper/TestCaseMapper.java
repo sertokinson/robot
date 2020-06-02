@@ -4,7 +4,6 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
 import ru.sertok.robot.data.BaseTestCase;
-import ru.sertok.robot.data.Browser;
 import ru.sertok.robot.entity.TestCaseEntity;
 
 @Mapper(componentModel = "spring",

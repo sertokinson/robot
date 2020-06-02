@@ -66,7 +66,6 @@ public class RobotControllerImpl implements RobotController {
             log.error(error);
             return ResponseBuilder.error(error);
         }
-        robot.delay(900);
         for (int i = 0; i < data.size(); i++) {
             BaseData baseData = data.get(i);
             if (baseData != null) {
