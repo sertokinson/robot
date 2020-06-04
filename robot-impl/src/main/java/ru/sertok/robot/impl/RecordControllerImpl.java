@@ -71,16 +71,8 @@ public class RecordControllerImpl implements RecordController {
     @Override
     public Response stop(String userAgent) {
         log.debug("REST-запрос ../record/stop");
-        try {
-            GlobalScreen.unregisterNativeHook();
-            GlobalScreen.removeNativeKeyListener(eventListener);
-            GlobalScreen.removeNativeMouseListener(eventListener);
-            GlobalScreen.removeNativeMouseMotionListener(eventListener);
-            GlobalScreen.removeNativeMouseWheelListener(eventListener);
-        } catch (NativeHookException e) {
-            log.error("There was a problem unregistering the native ru.sertok.hook.", e);
+        if (!removeHook())
             return ResponseBuilder.error("Проблемы с остановкой слушателя устройства мыши или клавиатуры");
-        }
         TestCase testCase = localStorage.getTestCase();
         List<BaseData> steps = localStorage.getSteps();
         database.save(TestCase.builder()
@@ -103,18 +95,9 @@ public class RecordControllerImpl implements RecordController {
 
     @Override
     public Response exit() {
-        try {
-            localStorage.invalidateLocalStorage();
-            GlobalScreen.unregisterNativeHook();
-            GlobalScreen.removeNativeKeyListener(eventListener);
-            GlobalScreen.removeNativeMouseListener(eventListener);
-            GlobalScreen.removeNativeMouseMotionListener(eventListener);
-            GlobalScreen.removeNativeMouseWheelListener(eventListener);
-        } catch (NativeHookException e) {
-            log.error("There was a problem unregistering the native ru.sertok.hook.", e);
-            return ResponseBuilder.error("Проблемы с остановкой слушателя устройства мыши или клавиатуры");
-        }
-        return ResponseBuilder.ok();
+        return removeHook()
+                ? ResponseBuilder.ok()
+                : ResponseBuilder.error("Проблемы с остановкой слушателя устройства мыши или клавиатуры");
     }
 
     private String getOS(String userAgent) {
@@ -129,5 +112,20 @@ public class RecordControllerImpl implements RecordController {
             }
         }
         return null;
+    }
+
+    private boolean removeHook() {
+        try {
+            localStorage.invalidateLocalStorage();
+            GlobalScreen.unregisterNativeHook();
+            GlobalScreen.removeNativeKeyListener(eventListener);
+            GlobalScreen.removeNativeMouseListener(eventListener);
+            GlobalScreen.removeNativeMouseMotionListener(eventListener);
+            GlobalScreen.removeNativeMouseWheelListener(eventListener);
+            return true;
+        } catch (NativeHookException e) {
+            log.error("There was a problem unregistering the native ru.sertok.hook.", e);
+            return false;
+        }
     }
 }

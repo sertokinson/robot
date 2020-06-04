@@ -39,47 +39,24 @@ public class EventListener implements NativeMouseInputListener, NativeKeyListene
     @Override
     @SneakyThrows
     public void nativeKeyPressed(NativeKeyEvent e) {
-        String keyText = NativeKeyEvent.getKeyText(e.getKeyCode());
-        if (keyEvents.getKey(keyText) != 0)
-            localStorage.getSteps().add(getKeyboard(keyText, Type.PRESSED));
+        key(Type.PRESSED, e);
     }
 
     @Override
     @SneakyThrows
     public void nativeKeyReleased(NativeKeyEvent e) {
-        String keyText = NativeKeyEvent.getKeyText(e.getKeyCode());
-        if (keyEvents.getKey(keyText) != 0)
-            localStorage.getSteps().add(getKeyboard(keyText, Type.RELEASED));
+        key(Type.RELEASED, e);
     }
 
     @Override
     public void nativeMousePressed(NativeMouseEvent e) {
         cropButtons(e);
-        if (!localStorage.isActiveCrop() || localStorage.isScreenshotStart())
-            localStorage.getSteps().add(Mouse.builder()
-                    .x(e.getX())
-                    .y(e.getY())
-                    .typePressed(TypePressed.getType(e.getButton()))
-                    .count(e.getClickCount())
-                    .type(Type.PRESSED)
-                    .time(getTime())
-                    .screenshot(makeScreenshot())
-                    .build());
+        click(Type.PRESSED, e);
     }
 
     @Override
     public void nativeMouseReleased(NativeMouseEvent e) {
-        if (!localStorage.isActiveCrop() || localStorage.isScreenshotStart())
-            localStorage.getSteps().add(Mouse.builder()
-                    .x(e.getX())
-                    .y(e.getY())
-                    .typePressed(TypePressed.getType(e.getButton()))
-                    .count(e.getClickCount())
-                    .type(Type.RELEASED)
-                    .time(getTime())
-                    .screenshot(makeScreenshot())
-                    .build());
-
+        click(Type.RELEASED, e);
     }
 
     @Override
@@ -101,6 +78,25 @@ public class EventListener implements NativeMouseInputListener, NativeKeyListene
 
     @Override
     public void nativeMouseClicked(NativeMouseEvent nativeMouseEvent) {
+    }
+
+    private void key(Type type, NativeKeyEvent e) throws IllegalAccessException {
+        String keyText = NativeKeyEvent.getKeyText(e.getKeyCode());
+        if (keyEvents.getKey(keyText) != 0)
+            localStorage.getSteps().add(getKeyboard(keyText, type));
+    }
+
+    private void click(Type type, NativeMouseEvent e) {
+        if (!localStorage.isActiveCrop() || localStorage.isScreenshotStart())
+            localStorage.getSteps().add(Mouse.builder()
+                    .x(e.getX())
+                    .y(e.getY())
+                    .typePressed(TypePressed.getType(e.getButton()))
+                    .count(e.getClickCount())
+                    .type(type)
+                    .time(getTime())
+                    .screenshot(makeScreenshot())
+                    .build());
     }
 
     private boolean makeScreenshot() {
