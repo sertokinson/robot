@@ -17,7 +17,7 @@ public class ExecuteApp {
     private String pathToApp;
 
     public Status execute(String url, String pathToApp) {
-        if (pathToApp == null) {
+        if (StringUtils.isEmpty(pathToApp)) {
             log.error("Не задан путь до приложения!");
             return Status.ERROR;
         }
@@ -44,8 +44,8 @@ public class ExecuteApp {
                 else new ProcessBuilder(pathToApp).start();
             }
             return Status.SUCCESS;
-        } catch (IOException e) {
-            log.error("Приложение по заданному пути не найдено: {}", pathToApp, e);
+        } catch (Exception e) {
+            log.error("Приложение по заданному запустить невозможно: {}", pathToApp, e);
             return Status.ERROR;
         }
     }
