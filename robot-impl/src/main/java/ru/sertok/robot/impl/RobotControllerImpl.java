@@ -45,6 +45,7 @@ public class RobotControllerImpl implements RobotController {
     public Response start(RobotRequest robotRequest) {
         String testCaseName = robotRequest.getTestCase();
         log.debug("REST-запрос ../robot/start со значением {}", testCaseName);
+        localStorage.invalidateLocalStorage();
         TestCase testCase = database.get(testCaseName);
         if (testCase == null) {
             String error = "Не найден testCast по наименованию: " + testCaseName;
