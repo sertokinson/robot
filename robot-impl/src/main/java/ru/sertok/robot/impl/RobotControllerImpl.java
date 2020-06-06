@@ -125,10 +125,10 @@ public class RobotControllerImpl implements RobotController {
             }
         }
         if (checkResult(testCaseName)) {
-            database.setTestStatus(testCaseName, TEST_SUCCESS);
+            database.update(testCaseName, TEST_SUCCESS);
             return ResponseBuilder.ok(new RobotResponse(TEST_SUCCESS));
         }
-        database.setTestStatus(testCaseName, TEST_ERROR);
+        database.update(testCaseName, TEST_ERROR);
         return ResponseBuilder.ok(new RobotResponse(TEST_ERROR));
     }
 

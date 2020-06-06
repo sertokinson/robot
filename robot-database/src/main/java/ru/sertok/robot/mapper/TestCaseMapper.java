@@ -20,6 +20,7 @@ public interface TestCaseMapper {
     @Mapping(target = "screenShots", ignore = true)
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "status", ignore = true)
+    @Mapping(target = "runDate", ignore = true)
     @Mapping(target = "browserName", source = "browser.name")
     @Mapping(target = "browserVersion", source = "browser.version")
     TestCaseEntity toTestCaseEntity(BaseTestCase baseTestCase);

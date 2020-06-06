@@ -4,6 +4,8 @@ import lombok.Getter;
 import lombok.experimental.SuperBuilder;
 import ru.sertok.robot.data.enumerate.TestStatus;
 
+import java.util.Date;
+
 @Getter
 @SuperBuilder
 public class BaseTestCase {
@@ -15,4 +17,5 @@ public class BaseTestCase {
     private Browser browser;
     private String description;
     private TestStatus status;
+    private Date runDate;
 }

@@ -41,9 +41,10 @@ public class Database {
         return testCases;
     }
 
-    public void setTestStatus(String testCase, TestStatus status) {
+    public void update(String testCase, TestStatus status) {
         TestCaseEntity testCaseEntity = testCaseService.get(testCase);
         testCaseEntity.setStatus(status);
+        testCaseEntity.setRunDate(new Date());
         testCaseService.save(testCaseEntity);
     }
 

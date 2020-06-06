@@ -9,6 +9,7 @@ import ru.sertok.robot.data.enumerate.BrowserName;
 import ru.sertok.robot.data.enumerate.TestStatus;
 
 import javax.persistence.*;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -70,6 +71,12 @@ public class TestCaseEntity {
      */
     @Column(name = "TIME")
     private Integer time;
+
+    /**
+     *  Дата последнего запуска
+     */
+    @Column(name = "RUN_DATE")
+    private Date runDate;
 
     /**
      * Статус выполнения теста
