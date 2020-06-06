@@ -9,6 +9,7 @@ import javax.ws.rs.core.Response;
 
 @Path("/image")
 @Consumes(MediaType.APPLICATION_JSON)
+@Produces("text/html; charset=UTF-8")
 public interface ImageOutputController {
     @POST
     @Path("/getAll")

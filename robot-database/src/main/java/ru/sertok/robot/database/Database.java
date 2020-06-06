@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 import ru.sertok.robot.data.*;
+import ru.sertok.robot.data.enumerate.TestStatus;
 import ru.sertok.robot.entity.*;
 import ru.sertok.robot.mapper.KeyboardMapper;
 import ru.sertok.robot.mapper.MouseMapper;
@@ -40,11 +41,18 @@ public class Database {
         return testCases;
     }
 
+    public void setTestStatus(String testCase, TestStatus status) {
+        TestCaseEntity testCaseEntity = testCaseService.get(testCase);
+        testCaseEntity.setStatus(status);
+        testCaseService.save(testCaseEntity);
+    }
+
     public void save(TestCase testCase) {
         log.debug("Сохраняем тест кейс в БД {}", testCase);
         Optional.ofNullable(testCaseService.get(testCase.getName()))
                 .ifPresent(testCaseService::delete);
         TestCaseEntity testCaseEntity = testCaseMapper.toTestCaseEntity(testCase);
+        testCaseEntity.setStatus(TestStatus.NONE);
         testCaseService.save(testCaseEntity);
         Optional.ofNullable(localStorage.getImage())
                 .ifPresent(image -> {

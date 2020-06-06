@@ -95,6 +95,7 @@ public class RecordControllerImpl implements RecordController {
 
     @Override
     public Response exit() {
+        localStorage.invalidateLocalStorage();
         return removeHook()
                 ? ResponseBuilder.ok()
                 : ResponseBuilder.error("Проблемы с остановкой слушателя устройства мыши или клавиатуры");
@@ -116,7 +117,6 @@ public class RecordControllerImpl implements RecordController {
 
     private boolean removeHook() {
         try {
-            localStorage.invalidateLocalStorage();
             GlobalScreen.unregisterNativeHook();
             GlobalScreen.removeNativeKeyListener(eventListener);
             GlobalScreen.removeNativeMouseListener(eventListener);

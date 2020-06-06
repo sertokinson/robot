@@ -1,5 +1,6 @@
 package ru.sertok.robot.core.hook;
 
+import com.fasterxml.jackson.core.JsonToken;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.jnativehook.keyboard.NativeKeyEvent;
@@ -101,6 +102,8 @@ public class EventListener implements NativeMouseInputListener, NativeKeyListene
 
     private boolean makeScreenshot() {
         boolean screenshot = localStorage.isScreenshotStart();
+        System.out.println("screenShotTime = "+screenShotTime);
+        System.out.println("currentTime = "+currentTime);
         if (screenshot && getScreenShotTime() > 200) {
             screenShotTime = System.currentTimeMillis();
             screenShot.make();
@@ -118,8 +121,8 @@ public class EventListener implements NativeMouseInputListener, NativeKeyListene
         return (int) (System.currentTimeMillis() - currentTime);
     }
 
-    private int getScreenShotTime() {
-        return (int) (System.currentTimeMillis() - screenShotTime);
+    private long getScreenShotTime() {
+        return currentTime - screenShotTime;
     }
 
     private Keyboard getKeyboard(String key, Type type) {

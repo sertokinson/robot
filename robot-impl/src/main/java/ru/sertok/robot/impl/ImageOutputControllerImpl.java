@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.CollectionUtils;
 import ru.sertok.robot.api.ImageOutputController;
 import ru.sertok.robot.entity.ImageEntity;
 import ru.sertok.robot.request.RobotRequest;
@@ -36,7 +37,10 @@ public class ImageOutputControllerImpl implements ImageOutputController {
         deletefile(new File(path));
         testCase = robotRequest.getTestCase();
         log.debug("Выгружаем изображения по тест-кейсу: {}", testCase);
-        output(path, testCaseService.get(testCase).getImages());
+        List<ImageEntity> images = testCaseService.get(testCase).getImages();
+        if(CollectionUtils.isEmpty(images))
+            return ResponseBuilder.error("Нет изображений");
+        output(path, images);
         return ResponseBuilder.ok(path);
     }
 

@@ -31,6 +31,9 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
+import static ru.sertok.robot.data.enumerate.TestStatus.TEST_ERROR;
+import static ru.sertok.robot.data.enumerate.TestStatus.TEST_SUCCESS;
+
 @Controller
 @Slf4j
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
@@ -121,9 +124,12 @@ public class RobotControllerImpl implements RobotController {
                 }
             }
         }
-        if (checkResult(testCaseName))
-            return ResponseBuilder.ok(new RobotResponse(Status.TEST_SUCCESS));
-        return ResponseBuilder.ok(new RobotResponse(Status.TEST_ERROR));
+        if (checkResult(testCaseName)) {
+            database.setTestStatus(testCaseName, TEST_SUCCESS);
+            return ResponseBuilder.ok(new RobotResponse(TEST_SUCCESS));
+        }
+        database.setTestStatus(testCaseName, TEST_ERROR);
+        return ResponseBuilder.ok(new RobotResponse(TEST_ERROR));
     }
 
     @Override

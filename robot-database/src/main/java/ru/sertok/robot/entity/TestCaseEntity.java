@@ -6,6 +6,7 @@ import lombok.Setter;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import ru.sertok.robot.data.enumerate.BrowserName;
+import ru.sertok.robot.data.enumerate.TestStatus;
 
 import javax.persistence.*;
 import java.util.List;
@@ -69,6 +70,12 @@ public class TestCaseEntity {
      */
     @Column(name = "TIME")
     private Integer time;
+
+    /**
+     * Статус выполнения теста
+     */
+    @Column(name = "STATUS")
+    private TestStatus status;
 
     /**
      * Все события мыши
