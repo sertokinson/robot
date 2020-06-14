@@ -52,7 +52,7 @@ public class KeyboardEntity {
      * время отсчета от старта
      */
     @Column(name = "TIME")
-    private Integer time;
+    private int time;
 
     /**
      * Признак что есть скриншот у этого события

@@ -1,15 +1,58 @@
 package ru.sertok.robot.data;
 
-import lombok.*;
-import lombok.experimental.SuperBuilder;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
+import ru.sertok.robot.data.enumerate.TestStatus;
 
-import java.util.List;
+import java.util.Date;
 
-
-@ToString
+@Setter
 @Getter
-@SuperBuilder
-public class TestCase extends BaseTestCase {
-    private List<BaseData> steps;
-    private Image image;
+@Builder
+public class TestCase {
+    /**
+     * Название теста
+     */
+    private String testCaseName;
+
+    /**
+     * Описание теста
+     */
+    private String description;
+
+    /**
+     * Путь до приложения или браузера
+     */
+    private String pathToApp;
+
+    /**
+     * Название тестируемого приложения или браузера
+     */
+    private String appName;
+
+    /**
+     * Тестируемый url - адрес сайта
+     */
+    private String url;
+
+    /**
+     * Длительность теста
+     */
+    private Integer time;
+
+    /**
+     * Статус выполнения теста
+     */
+    private TestStatus status;
+
+    /**
+     * Дата последнего запуска теста
+     */
+    private Date runDate;
+
+    /**
+     * Является ли приложение браузером
+     */
+    private Boolean isBrowser;
 }

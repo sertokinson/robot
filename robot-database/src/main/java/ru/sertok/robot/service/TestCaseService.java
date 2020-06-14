@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.sertok.robot.data.BaseTestCase;
+import ru.sertok.robot.data.TestCase;
 import ru.sertok.robot.entity.TestCaseEntity;
 import ru.sertok.robot.mapper.TestCaseMapper;
 import ru.sertok.robot.repository.*;
@@ -25,11 +25,11 @@ public class TestCaseService {
         return testCaseRepository.findByName(name).orElse(null);
     }
 
-    public List<BaseTestCase> getAll() {
+    public List<TestCase> getAll() {
         return testCaseRepository
                 .findAll()
                 .stream()
-                .map(testCaseMapper::toBaseTestCase)
+                .map(testCaseMapper::toTestCase)
                 .collect(Collectors.toList());
     }
 

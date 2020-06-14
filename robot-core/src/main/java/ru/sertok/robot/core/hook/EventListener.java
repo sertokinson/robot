@@ -11,10 +11,10 @@ import org.jnativehook.mouse.NativeMouseWheelListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
-import ru.sertok.robot.core.ScreenShot;
-import ru.sertok.robot.data.Image;
+import ru.sertok.robot.core.service.ScreenShot;
 import ru.sertok.robot.data.Keyboard;
 import ru.sertok.robot.data.Mouse;
+import ru.sertok.robot.data.ScreenshotSize;
 import ru.sertok.robot.data.enumerate.Type;
 import ru.sertok.robot.data.enumerate.TypePressed;
 import ru.sertok.robot.gui.ScreenShotButtons;
@@ -157,13 +157,7 @@ public class EventListener implements NativeMouseInputListener, NativeKeyListene
             int width = e.getX() - x;
             int height = e.getY() - y;
             tw.setSize(x, y, e.getX(), e.getY());
-            screenShot.setSize(Image.builder()
-                    .x(x)
-                    .y(y)
-                    .width(width)
-                    .height(height)
-                    .build()
-            );
+            screenShot.setSize(new ScreenshotSize(x, y, width, height));
         }
     }
 

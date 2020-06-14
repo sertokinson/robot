@@ -6,12 +6,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.CollectionUtils;
 import ru.sertok.robot.api.RobotController;
-import ru.sertok.robot.core.ExecuteApp;
-import ru.sertok.robot.core.ScreenShot;
+import ru.sertok.robot.core.service.AppService;
+import ru.sertok.robot.core.service.ScreenShot;
 import ru.sertok.robot.core.hook.KeyEvents;
 import ru.sertok.robot.data.Image;
 import ru.sertok.robot.data.*;
 import ru.sertok.robot.data.enumerate.Status;
+import ru.sertok.robot.data.enumerate.TestStatus;
 import ru.sertok.robot.data.enumerate.Type;
 import ru.sertok.robot.data.enumerate.TypePressed;
 import ru.sertok.robot.database.Database;
@@ -31,9 +32,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
-import static ru.sertok.robot.data.enumerate.TestStatus.TEST_ERROR;
-import static ru.sertok.robot.data.enumerate.TestStatus.TEST_SUCCESS;
-
 @Controller
 @Slf4j
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
@@ -41,7 +39,7 @@ public class RobotControllerImpl implements RobotController {
     private final Database database;
     private final ScreenShot screenShot;
     private final LocalStorage localStorage;
-    private final ExecuteApp executeApp;
+    private final AppService appService;
     private final KeyEvents keyEvents;
 
     @Override
@@ -55,8 +53,8 @@ public class RobotControllerImpl implements RobotController {
             log.error(error);
             return ResponseBuilder.error(error);
         }
-        List<BaseData> data = testCase.getSteps();
-        Optional.ofNullable(testCase.getImage()).ifPresent(screenShot::setSize);
+        List<BaseData> data = database.getSteps(testCaseName);
+        Optional.ofNullable(database.getScreenshotSize(testCaseName)).ifPresent(screenShot::setSize);
         Robot robot;
         try {
             robot = new Robot();
@@ -65,7 +63,7 @@ public class RobotControllerImpl implements RobotController {
             log.error(error, e);
             return ResponseBuilder.error(error);
         }
-        if (executeApp.execute(testCase.getUrl(), testCase.getPath()) == Status.ERROR) {
+        if (appService.execute(testCase) == Status.ERROR) {
             String error = "Не удалось запустить приложение!";
             log.error(error);
             return ResponseBuilder.error(error);
@@ -125,11 +123,11 @@ public class RobotControllerImpl implements RobotController {
             }
         }
         if (checkResult(testCaseName)) {
-            database.update(testCaseName, TEST_SUCCESS);
-            return ResponseBuilder.ok(new RobotResponse(TEST_SUCCESS));
+            database.update(testCaseName, TestStatus.SUCCESS);
+            return ResponseBuilder.ok(new RobotResponse(TestStatus.SUCCESS));
         }
-        database.update(testCaseName, TEST_ERROR);
-        return ResponseBuilder.ok(new RobotResponse(TEST_ERROR));
+        database.update(testCaseName, TestStatus.ERROR);
+        return ResponseBuilder.ok(new RobotResponse(TestStatus.ERROR));
     }
 
     @Override

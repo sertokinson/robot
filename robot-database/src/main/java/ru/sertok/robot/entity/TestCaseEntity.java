@@ -5,7 +5,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
-import ru.sertok.robot.data.enumerate.BrowserName;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import ru.sertok.robot.data.enumerate.TestStatus;
 
 import javax.persistence.*;
@@ -16,8 +17,7 @@ import java.util.List;
 @Setter
 @Getter
 @NoArgsConstructor
-@Table(name = "TEST_CASE",
-        uniqueConstraints = {@UniqueConstraint(columnNames = {"name"})})
+@Table(name = "TEST_CASE")
 public class TestCaseEntity {
     @Id
     @Column(name = "ID")
@@ -31,36 +31,6 @@ public class TestCaseEntity {
     private String name;
 
     /**
-     * url сайта который тестируется
-     */
-    @Column(name = "URL")
-    private String url;
-
-    /**
-     * путь до приложения которое тестируется
-     */
-    @Column(name = "PATH")
-    private String path;
-
-    /**
-     * Браузер в котором тестируется приложение
-     */
-    @Column(name = "BROWSER_NAME")
-    private String  browserName;
-
-    /**
-     * версия браузера
-     */
-    @Column(name = "BROWSER_VERSION")
-    private String browserVersion;
-
-    /**
-     * ОС в катором тестируется приложение
-     */
-    @Column(name = "OS")
-    private String os;
-
-    /**
      * Описание теста
      */
     @Column(name = "DESCRIPTION")
@@ -70,7 +40,7 @@ public class TestCaseEntity {
      *  Время выполнения теста
      */
     @Column(name = "TIME")
-    private Integer time;
+    private Long time;
 
     /**
      *  Дата последнего запуска
@@ -83,6 +53,36 @@ public class TestCaseEntity {
      */
     @Column(name = "STATUS")
     private TestStatus status;
+
+    /**
+     * Является ли приложение браузером
+     */
+    @Column(name = "IS_BROWSER")
+    private Boolean isBrowser;
+
+    /**
+     * браузер
+     */
+    @ManyToOne
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name = "BROWSER_ID")
+    private BrowserEntity browser;
+
+    /**
+     * приложение
+     */
+    @ManyToOne
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name = "DESKTOP_ID")
+    private DesktopEntity desktop;
+
+    /**
+     * приложение
+     */
+    @ManyToOne
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name = "URL_ID")
+    private UrlEntity url;
 
     /**
      * Все события мыши

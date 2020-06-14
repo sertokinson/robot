@@ -48,12 +48,21 @@ public class RecordWindow extends JFrame {
             // Целевое решение
             // HttpEntity<RecordRequest> request = new HttpEntity<>(new RecordRequest(input.getTestCase().getText(), input.getUrl().getText()));
             // Для быстрого тестирования от сюда
-            HttpEntity<RecordRequest> request = new HttpEntity<>(new RecordRequest(
+           /* HttpEntity<RecordRequest> request = new HttpEntity<>(new RecordRequest(
                     "test",
-                    "https://www.google.com/",
                     "/Applications/Google Chrome.app",
+                    "chrome",
+                    true,
+                    "https://www.google.com/",
                     "Описание теста"
-            ));
+            ));*/
+            HttpEntity<RecordRequest> request = new HttpEntity<>(RecordRequest.builder()
+                    .testCaseName("test")
+                    .appName("chrome")
+                    .isBrowser(true)
+                    .url("https://www.google.com/")
+                    .build()
+            );
             // до сюда
             new RestTemplate().postForObject("http://localhost:8080/autotest/record/start", request, RecordRequest.class);
         });

@@ -13,7 +13,6 @@ import ru.sertok.robot.response.RobotResponse;
 import javax.swing.*;
 import java.awt.*;
 
-import static ru.sertok.robot.data.enumerate.TestStatus.TEST_ERROR;
 
 @Component
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
@@ -31,7 +30,7 @@ class RobotWindow {
             RestTemplate restTemplate = new RestTemplate();
             HttpEntity<RobotRequest> request = new HttpEntity<>(new RobotRequest(selectBox.getSelectedItem().toString()));
             TestStatus status = restTemplate.postForObject("http://localhost:8080/autotest/robot/start", request, RobotResponse.class).getStatus();
-            if (TEST_ERROR == status) {
+            if (TestStatus.ERROR == status) {
                 JOptionPane.showMessageDialog(container,
                         new String[]{"ERROR!!!"},
                         "Результат теста",

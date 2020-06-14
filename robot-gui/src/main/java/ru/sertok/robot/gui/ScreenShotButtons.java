@@ -27,13 +27,10 @@ public class ScreenShotButtons extends JFrame {
         JButton start = new JButton("start");
         start.addActionListener(action -> {
             RestTemplate restTemplate = new RestTemplate();
-            ru.sertok.robot.data.Image image = localStorage.getImage();
-            restTemplate.postForObject("http://localhost:8080/autotest/screenshot/start/", new HttpEntity<>(new ScreenShotRequest(
-                    image.getX(),
-                    image.getY(),
-                    image.getWidth(),
-                    image.getHeight()
-            )), Response.class);
+            restTemplate.postForObject(
+                    "http://localhost:8080/autotest/screenshot/start/",
+                    new HttpEntity<>(new ScreenShotRequest(localStorage.getSize())),
+                    Response.class);
         });
         JButton stop = new JButton("stop");
         stop.addActionListener(action -> {

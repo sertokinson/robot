@@ -4,23 +4,64 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.sertok.robot.data.BaseData;
 import ru.sertok.robot.data.Image;
+import ru.sertok.robot.data.ScreenshotSize;
 import ru.sertok.robot.data.TestCase;
 
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Локальное хранилище
+ */
 @Slf4j
 @Component
 public class LocalStorage {
-    private Long startTime;
-    private List<BaseData> steps = new ArrayList<>();
-    private List<Image> images;
-    private boolean screenshotStart = false;
-    private Image image;
+    /**
+     * Данные по тесту
+     */
     private TestCase testCase;
+
+    /**
+     * Время начала записи теста
+     */
+    private Long startTime;
+
+    /**
+     * Все шаги пройденные тестом
+     */
+    private List<BaseData> steps = new ArrayList<>();
+
+    /**
+     * Скриншоты которые были сделаны во время теста
+     */
+    private List<Image> images;
+
+    /**
+     * Признак того что начата запись скриншотов
+     */
+    private boolean screenshotStart = false;
+
+    /**
+     * Нажатие на кнопку crop
+     */
     private boolean activeCrop = false;
 
-    public void setStartTime(long startTime) {
+    /**
+     * Размеры скриншота
+     */
+    private ScreenshotSize size;
+
+    public ScreenshotSize getSize() {
+        log.debug("Вычитываем из локального хранилища размеры скриншота: {}", size);
+        return size;
+    }
+
+    public void setSize(ScreenshotSize size) {
+        log.debug("Записываем в локальное хранилище размеры скриншота {}", size);
+        this.size = size;
+    }
+
+    public void setStartTime(Long startTime) {
         log.debug("Записываем в локальное хранилище время начала {}", startTime);
         this.startTime = startTime;
     }
@@ -35,11 +76,6 @@ public class LocalStorage {
         this.screenshotStart = start;
     }
 
-    public void setImage(Image image) {
-        log.debug("Записываем в локальное хранилище изображение: {}", image);
-        this.image = image;
-    }
-
     public void setActiveCrop(boolean activeCrop) {
         log.debug("Записываем в локальное хранилище активацию кропа: {}", activeCrop);
         this.activeCrop = activeCrop;
@@ -50,7 +86,7 @@ public class LocalStorage {
         this.testCase = testCase;
     }
 
-    public long getStartTime() {
+    public Long getStartTime() {
         log.debug("Вычитываем из локального хранилища время начала: {}", startTime);
         return startTime;
     }
@@ -73,9 +109,6 @@ public class LocalStorage {
         return activeCrop;
     }
 
-    public Image getImage() {
-        return image;
-    }
 
     public TestCase getTestCase() {
         log.debug("Вычитываем из локального хранилища данные о тест кейсе: {}", testCase);
@@ -87,7 +120,7 @@ public class LocalStorage {
         steps = new ArrayList<>();
         images = null;
         screenshotStart = false;
-        image = null;
+        size = null;
         testCase = null;
         activeCrop = false;
     }

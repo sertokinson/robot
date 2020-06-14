@@ -56,7 +56,7 @@ public class MouseEntity {
      * время отсчета от старта
      */
     @Column(name = "TIME")
-    private Integer time;
+    private int time;
 
     /**
      * Количество нажатий

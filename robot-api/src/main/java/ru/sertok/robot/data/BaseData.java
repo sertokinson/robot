@@ -6,6 +6,6 @@ import lombok.experimental.SuperBuilder;
 @Getter
 @SuperBuilder
 public class BaseData {
-    private Integer time;
+    private int time;
     private boolean screenshot;
 }

@@ -7,7 +7,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.util.CollectionUtils;
 import ru.sertok.robot.api.ImageOutputController;
 import ru.sertok.robot.entity.ImageEntity;
-import ru.sertok.robot.request.RobotRequest;
 import ru.sertok.robot.response.ResponseBuilder;
 import ru.sertok.robot.service.TestCaseService;
 
@@ -32,10 +31,9 @@ public class ImageOutputControllerImpl implements ImageOutputController {
     private String testCase;
 
     @Override
-    public Response getAll(RobotRequest robotRequest) {
+    public Response getAll(String testCase) {
         String path = System.getProperty("java.io.tmpdir") + "images";
         deletefile(new File(path));
-        testCase = robotRequest.getTestCase();
         log.debug("Выгружаем изображения по тест-кейсу: {}", testCase);
         List<ImageEntity> images = testCaseService.get(testCase).getImages();
         if(CollectionUtils.isEmpty(images))
@@ -45,10 +43,9 @@ public class ImageOutputControllerImpl implements ImageOutputController {
     }
 
     @Override
-    public Response getErrors(RobotRequest robotRequest) {
+    public Response getErrors(String testCase) {
         String path = System.getProperty("java.io.tmpdir") + "errorImages";
         deletefile(new File(path));
-        testCase = robotRequest.getTestCase();
         log.debug("Выгружаем ошибочные изображения по тест-кейсу: {}", testCase);
         List<ImageEntity> images = testCaseService.get(testCase).getImages().stream()
                 .filter(imageEntity -> imageEntity.getAssertResult() != null && !imageEntity.getAssertResult())
