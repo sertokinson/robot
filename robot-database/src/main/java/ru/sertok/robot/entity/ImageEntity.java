@@ -18,7 +18,7 @@ public class ImageEntity {
     @Id
     @Column(name = "ID")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
 
     /**
      * Скриншот сделанный при записи теста

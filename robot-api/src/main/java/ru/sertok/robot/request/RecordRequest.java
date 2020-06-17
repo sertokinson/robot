@@ -2,6 +2,8 @@ package ru.sertok.robot.request;
 
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.*;
+import ru.sertok.robot.data.App;
+import ru.sertok.robot.data.Url;
 
 @Getter
 @ToString
@@ -16,27 +18,20 @@ public class RecordRequest {
     private String testCaseName;
 
     /**
-     * Путь до приложения или браузера
-     */
-    @Parameter(required = true)
-    private String pathToApp;
-
-    /**
-     * Название тестируемого приложения или браузера
-     */
-    @Parameter(required = true)
-    private String appName;
-
-    /**
      * Является ли приложение браузером
      */
     @Parameter(required = true)
     private Boolean isBrowser;
 
     /**
+     * Тестируемое приложение или браузер
+     */
+    private App app;
+
+    /**
      * Тестируемый url - адрес сайта
      */
-    private String url;
+    private Url url;
 
     /**
      * Описание теста

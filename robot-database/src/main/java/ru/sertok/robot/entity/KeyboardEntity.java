@@ -18,7 +18,7 @@ public class KeyboardEntity {
     @Id
     @Column(name = "ID")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
 
     /**
      * PASSED - нажал

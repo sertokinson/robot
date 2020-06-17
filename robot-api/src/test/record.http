@@ -1,0 +1,44 @@
+### Запись тест кейса
+POST http://localhost:8080/autotest/record/start/
+Content-Type: application/json
+
+{
+  "testCaseName": "test",
+  "isBrowser": true,
+  "app": {
+    "name": "chrome",
+    "path": "/Applications/Google Chrome.app",
+    "isNew": true
+  },
+  "url": {
+    "url": "https://www.google.ru/",
+    "isNew": true
+  }
+}
+
+### Запись тест кейса с другим url
+POST http://localhost:8080/autotest/record/start/
+Content-Type: application/json
+
+{
+  "testCaseName": "test",
+  "isBrowser": true,
+  "app": {
+    "name": "chrome",
+    "path": "/Applications/Google Chrome.app",
+    "isNew": true
+  },
+  "url": {
+    "url": "file:///Users/sergejstahanov/Desktop/robotProject/robot_test/index.html",
+    "isNew": true
+  }
+}
+
+### продолжение записи теста
+POST http://localhost:8080/autotest/record/continued
+
+### Стоп записи теста
+GET http://localhost:8080/autotest/record/stop
+
+### Выход из записи теста
+POST http://localhost:8080/autotest/record/exit

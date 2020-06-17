@@ -4,34 +4,39 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import ru.sertok.robot.api.TestSettingsController;
+import ru.sertok.robot.api.SettingsController;
+import ru.sertok.robot.response.BaseResponse;
 import ru.sertok.robot.response.ResponseBuilder;
 import ru.sertok.robot.response.SettingsResponse;
 import ru.sertok.robot.service.SettingsService;
 
-import javax.ws.rs.core.Response;
-
 @Slf4j
 @Controller
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
-public class TestCaseSettingsControllerImpl implements TestSettingsController {
+public class CaseSettingsControllerImpl implements SettingsController {
     private final SettingsService settingsService;
 
     @Override
-    public Response browsers() {
+    public BaseResponse browsers() {
         log.debug("REST-запрос ../settings/browsers");
-        return ResponseBuilder.ok(new SettingsResponse(settingsService.getBrowsers()));
+        return ResponseBuilder.success(SettingsResponse.builder()
+                .values(settingsService.getBrowsers())
+                .build());
     }
 
     @Override
-    public Response desktops() {
+    public BaseResponse desktops() {
         log.debug("REST-запрос ../settings/desktops");
-        return ResponseBuilder.ok(new SettingsResponse(settingsService.getDesktops()));
+        return ResponseBuilder.success(SettingsResponse.builder()
+                .values(settingsService.getDesktops())
+                .build());
     }
 
     @Override
-    public Response urls() {
+    public BaseResponse urls() {
         log.debug("REST-запрос ../settings/urls");
-        return ResponseBuilder.ok(new SettingsResponse(settingsService.getUrls()));
+        return ResponseBuilder.success(SettingsResponse.builder()
+                .values(settingsService.getUrls())
+                .build());
     }
 }

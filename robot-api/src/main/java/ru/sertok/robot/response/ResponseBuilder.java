@@ -1,20 +1,26 @@
 package ru.sertok.robot.response;
 
-import javax.ws.rs.core.Response;
+import ru.sertok.robot.data.enumerate.Status;
 
 public class ResponseBuilder {
-    public static Response ok() {
-        return Response.ok().build();
+    public static BaseResponse success() {
+        return new BaseResponse(Status.SUCCESS);
     }
 
-    public static Response ok(Object entity) {
-        return Response.ok(entity).build();
+    public static <T extends BaseResponse> BaseResponse success(T response) {
+        response.setStatus(Status.SUCCESS);
+        return response;
     }
 
-    public static Response error(String error) {
-        return Response
-                .status(Response.Status.INTERNAL_SERVER_ERROR)
-                .entity(error)
-                .build();
+    public static <T extends BaseResponse> BaseResponse warning(T response) {
+        response.setStatus(Status.WARNING);
+        return response;
     }
+
+    public static <T extends BaseResponse> BaseResponse error(T response) {
+        response.setStatus(Status.ERROR);
+        return response;
+    }
+
+
 }

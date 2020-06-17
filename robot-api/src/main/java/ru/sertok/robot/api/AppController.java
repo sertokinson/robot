@@ -4,10 +4,10 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import ru.sertok.robot.response.BaseResponse;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
-import javax.ws.rs.core.Response;
 
 @Path("/")
 public interface AppController {
@@ -18,7 +18,7 @@ public interface AppController {
             content = @Content(examples = @ExampleObject("PONG")),
             description = "Приложение запущено"
     ))
-    Response ping();
+    BaseResponse ping();
 
     @GET
     @Path("/pathToLog")
@@ -26,7 +26,7 @@ public interface AppController {
             responseCode = "200",
             description = "Путь до логов"
     ))
-    Response pathToLog();
+    BaseResponse pathToLog();
 
     @GET
     @Path("/version")
@@ -34,5 +34,5 @@ public interface AppController {
             responseCode = "200",
             description = "Версия приложения"
     ))
-    Response version();
+    BaseResponse version();
 }

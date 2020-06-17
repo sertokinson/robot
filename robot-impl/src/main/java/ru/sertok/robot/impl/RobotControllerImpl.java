@@ -6,9 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.CollectionUtils;
 import ru.sertok.robot.api.RobotController;
+import ru.sertok.robot.core.hook.KeyEvents;
 import ru.sertok.robot.core.service.AppService;
 import ru.sertok.robot.core.service.ScreenShot;
-import ru.sertok.robot.core.hook.KeyEvents;
 import ru.sertok.robot.data.Image;
 import ru.sertok.robot.data.*;
 import ru.sertok.robot.data.enumerate.Status;
@@ -17,13 +17,10 @@ import ru.sertok.robot.data.enumerate.Type;
 import ru.sertok.robot.data.enumerate.TypePressed;
 import ru.sertok.robot.database.Database;
 import ru.sertok.robot.request.RobotRequest;
-import ru.sertok.robot.response.ResponseBuilder;
-import ru.sertok.robot.response.RobotResponse;
-import ru.sertok.robot.response.TestCasesResponse;
+import ru.sertok.robot.response.*;
 import ru.sertok.robot.storage.LocalStorage;
 
 import javax.imageio.ImageIO;
-import javax.ws.rs.core.Response;
 import java.awt.*;
 import java.awt.event.InputEvent;
 import java.awt.image.BufferedImage;
@@ -43,15 +40,17 @@ public class RobotControllerImpl implements RobotController {
     private final KeyEvents keyEvents;
 
     @Override
-    public Response start(RobotRequest robotRequest) {
+    public BaseResponse start(RobotRequest robotRequest) {
         String testCaseName = robotRequest.getTestCase();
         log.debug("REST-запрос ../robot/start со значением {}", testCaseName);
-        localStorage.invalidateLocalStorage();
+        localStorage. invalidateLocalStorage();
         TestCase testCase = database.get(testCaseName);
         if (testCase == null) {
             String error = "Не найден testCast по наименованию: " + testCaseName;
             log.error(error);
-            return ResponseBuilder.error(error);
+            return ResponseBuilder.error(AppResponse.builder()
+                    .result(error)
+                    .build());
         }
         List<BaseData> data = database.getSteps(testCaseName);
         Optional.ofNullable(database.getScreenshotSize(testCaseName)).ifPresent(screenShot::setSize);
@@ -61,12 +60,16 @@ public class RobotControllerImpl implements RobotController {
         } catch (AWTException e) {
             String error = "Ошибка при создании робота";
             log.error(error, e);
-            return ResponseBuilder.error(error);
+            return ResponseBuilder.error(AppResponse.builder()
+                    .result(error)
+                    .build());
         }
         if (appService.execute(testCase) == Status.ERROR) {
             String error = "Не удалось запустить приложение!";
             log.error(error);
-            return ResponseBuilder.error(error);
+            return ResponseBuilder.error(AppResponse.builder()
+                    .result(error)
+                    .build());
         }
         for (int i = 0; i < data.size(); i++) {
             BaseData baseData = data.get(i);
@@ -108,7 +111,9 @@ public class RobotControllerImpl implements RobotController {
                         }
                     } catch (IllegalAccessException | IllegalArgumentException e) {
                         log.error("Нет такой клавиши KeyEvents {} ", keyboard.getKey(), e);
-                        return ResponseBuilder.error("Ошибка при считывании клавиши");
+                        return ResponseBuilder.error(AppResponse.builder()
+                                .result("Ошибка при считывании клавиши")
+                                .build());
                     }
                 }
                 if (baseData.isScreenshot())
@@ -124,17 +129,21 @@ public class RobotControllerImpl implements RobotController {
         }
         if (checkResult(testCaseName)) {
             database.update(testCaseName, TestStatus.SUCCESS);
-            return ResponseBuilder.ok(new RobotResponse(TestStatus.SUCCESS));
+            return ResponseBuilder.success(RobotResponse.builder()
+                    .testStatus(TestStatus.SUCCESS)
+                    .build());
         }
         database.update(testCaseName, TestStatus.ERROR);
-        return ResponseBuilder.ok(new RobotResponse(TestStatus.ERROR));
+        return ResponseBuilder.success(RobotResponse.builder()
+                .testStatus(TestStatus.ERROR)
+                .build());
     }
 
     @Override
-    public Response delete(RobotRequest robotRequest) {
+    public BaseResponse delete(RobotRequest robotRequest) {
         log.debug("REST-запрос ../robot/delete со значением {}", robotRequest);
         database.delete(robotRequest.getTestCase());
-        return ResponseBuilder.ok();
+        return ResponseBuilder.success();
     }
 
     private boolean checkResult(String testCaseName) {
@@ -223,8 +232,10 @@ public class RobotControllerImpl implements RobotController {
     }
 
     @Override
-    public Response getAll() {
+    public BaseResponse getAll() {
         log.debug("REST-запрос ../robot/get");
-        return ResponseBuilder.ok(new TestCasesResponse(database.getAll()));
+        return ResponseBuilder.success(TestCasesResponse.builder()
+                .testCases(database.getAll())
+                .build());
     }
 }

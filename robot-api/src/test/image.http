@@ -1,0 +1,15 @@
+### Выгрузка изображений
+POST http://localhost:8080/autotest/image/getAll
+Content-Type: application/json
+
+{
+  "testCase": "test"
+}
+
+### Выгрузка ошибочных изображений
+POST http://localhost:8080/autotest/image/getErrors
+Content-Type: application/json
+
+{
+  "testCase": "test"
+}

@@ -1,13 +1,11 @@
 package ru.sertok.robot.response;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 import ru.sertok.robot.data.enumerate.TestStatus;
 
 @Getter
-@NoArgsConstructor
-@AllArgsConstructor
-public class RobotResponse {
-    private TestStatus status;
+@SuperBuilder
+public class RobotResponse extends BaseResponse {
+    private TestStatus testStatus;
 }

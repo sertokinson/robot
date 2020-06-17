@@ -29,7 +29,7 @@ class RobotWindow {
         start.addActionListener(actionEvent -> {
             RestTemplate restTemplate = new RestTemplate();
             HttpEntity<RobotRequest> request = new HttpEntity<>(new RobotRequest(selectBox.getSelectedItem().toString()));
-            TestStatus status = restTemplate.postForObject("http://localhost:8080/autotest/robot/start", request, RobotResponse.class).getStatus();
+            TestStatus status = restTemplate.postForObject("http://localhost:8080/autotest/robot/start", request, RobotResponse.class).getTestStatus();
             if (TestStatus.ERROR == status) {
                 JOptionPane.showMessageDialog(container,
                         new String[]{"ERROR!!!"},

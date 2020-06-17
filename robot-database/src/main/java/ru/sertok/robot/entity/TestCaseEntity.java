@@ -5,8 +5,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 import ru.sertok.robot.data.enumerate.TestStatus;
 
 import javax.persistence.*;
@@ -17,12 +15,14 @@ import java.util.List;
 @Setter
 @Getter
 @NoArgsConstructor
-@Table(name = "TEST_CASE")
+@Table(name = "TEST_CASE",
+        uniqueConstraints = {@UniqueConstraint(columnNames = {"name"})}
+)
 public class TestCaseEntity {
     @Id
     @Column(name = "ID")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
 
     /**
      * наименование тест кейса
@@ -60,29 +60,14 @@ public class TestCaseEntity {
     @Column(name = "IS_BROWSER")
     private Boolean isBrowser;
 
-    /**
-     * браузер
-     */
-    @ManyToOne
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = "BROWSER_ID")
-    private BrowserEntity browser;
+    @Column(name = "BROWSER_ID")
+    private Long browserId;
 
-    /**
-     * приложение
-     */
-    @ManyToOne
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = "DESKTOP_ID")
-    private DesktopEntity desktop;
+    @Column(name = "URL_ID")
+    private Long urlId;
 
-    /**
-     * приложение
-     */
-    @ManyToOne
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = "URL_ID")
-    private UrlEntity url;
+    @Column(name = "DESKTOP_ID")
+    private Long desktopId;
 
     /**
      * Все события мыши

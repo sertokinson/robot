@@ -1,11 +1,8 @@
 package ru.sertok.robot.entity;
 
 import lombok.*;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Entity
 @Setter
@@ -19,7 +16,7 @@ public class DesktopEntity {
     @Id
     @Column(name = "ID")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
 
     /**
      * имя приложения
@@ -32,11 +29,4 @@ public class DesktopEntity {
      */
     @Column(name = "PATH")
     private String path;
-
-    /**
-     * Все тесты которые тестируют это приложение
-     */
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "desktop", cascade = CascadeType.ALL)
-    @Fetch(value = FetchMode.SUBSELECT)
-    private List<TestCaseEntity> testCases;
 }

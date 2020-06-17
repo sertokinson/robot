@@ -1,19 +1,13 @@
-// Проверяем запущено ли приложение
+### Проверяем запущено ли приложение
 GET http://localhost:8080/autotest/ping/
 
-###
-
-// Получить путь до логов
+### Получить путь до логов
 GET http://localhost:8080/autotest/pathToLog/
 
-###
-
-// Получить текущий уровень логгирования
+### Получить текущий уровень логгирования
 GET http://localhost:8080/autotest/actuator/loggers/ru.sertok.robot
 
-###
-
-// Изменить уровень логгирования
+### Изменить уровень логгирования
 POST http://localhost:8080/autotest/actuator/loggers/ru.sertok.robot
 Content-Type: application/json
 
@@ -21,34 +15,6 @@ Content-Type: application/json
   "configuredLevel": "debug"
 }
 
-###
-
-// Выгрузка изображений
-POST http://localhost:8080/autotest/image/getAll
-Content-Type: application/json
-
-{
-  "testCase": "test"
-}
-
-###
-
-// Выгрузка ошибочных изображений
-POST http://localhost:8080/autotest/image/getErrors
-Content-Type: application/json
-
-{
-  "testCase": "test"
-}
-
-###
-
-// Версия приложения
+### Версия приложения
 GET http://localhost:8080/autotest/version
 
-###
-
-// Выход из записи теста
-POST http://localhost:8080/autotest/record/exit
-
-###

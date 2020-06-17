@@ -6,6 +6,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import ru.sertok.robot.request.ScreenShotRequest;
+import ru.sertok.robot.response.BaseResponse;
 import ru.sertok.robot.storage.LocalStorage;
 
 import javax.annotation.PostConstruct;
@@ -30,12 +31,12 @@ public class ScreenShotButtons extends JFrame {
             restTemplate.postForObject(
                     "http://localhost:8080/autotest/screenshot/start/",
                     new HttpEntity<>(new ScreenShotRequest(localStorage.getSize())),
-                    Response.class);
+                    BaseResponse.class);
         });
         JButton stop = new JButton("stop");
         stop.addActionListener(action -> {
             RestTemplate restTemplate = new RestTemplate();
-            restTemplate.postForObject("http://localhost:8080/autotest/screenshot/stop/", new HttpEntity<>(new ScreenShotRequest()), Response.class);
+            restTemplate.postForObject("http://localhost:8080/autotest/screenshot/stop/", new HttpEntity<>(new ScreenShotRequest()), BaseResponse.class);
             this.setVisible(false);
             tw.dispose();
         });

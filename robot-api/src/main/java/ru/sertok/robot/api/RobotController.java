@@ -5,11 +5,11 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import ru.sertok.robot.request.RobotRequest;
+import ru.sertok.robot.response.BaseResponse;
 import ru.sertok.robot.response.TestCasesResponse;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 @Path("/robot")
 @Produces(MediaType.APPLICATION_JSON)
@@ -18,11 +18,11 @@ public interface RobotController {
 
     @POST
     @Path("/start")
-    Response start(RobotRequest robotRequest);
+    BaseResponse start(RobotRequest robotRequest);
 
     @POST
     @Path("/delete")
-    Response delete(RobotRequest robotRequest);
+    BaseResponse delete(RobotRequest robotRequest);
 
     @GET
     @Path("/getAll")
@@ -34,5 +34,5 @@ public interface RobotController {
             ),
             description = "Список тест кейсов"
     ))
-    Response getAll();
+    BaseResponse getAll();
 }

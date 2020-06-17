@@ -43,7 +43,7 @@ public class Database {
     }
 
     public void update(String testCase, TestStatus status) {
-        TestCaseEntity testCaseEntity = testCaseService.get(testCase);
+        TestCaseEntity testCaseEntity = testCaseService.getTestCaseEntity(testCase);
         testCaseEntity.setStatus(status);
         testCaseEntity.setRunDate(new Date());
         testCaseService.save(testCaseEntity);
@@ -52,17 +52,25 @@ public class Database {
     public void save() {
         TestCase testCase = localStorage.getTestCase();
         log.debug("Сохраняем тест кейс в БД {}", testCase);
-        Optional.ofNullable(testCaseService.get(testCase.getTestCaseName()))
+        Optional.ofNullable(testCaseService.getTestCaseEntity(testCase.getTestCaseName()))
                 .ifPresent(testCaseService::delete);
         TestCaseEntity testCaseEntity = testCaseMapper.toTestCaseEntity(testCase);
         testCaseEntity.setStatus(TestStatus.NONE);
         testCaseEntity.setTime(System.currentTimeMillis() - localStorage.getStartTime());
-        if (testCase.getIsBrowser() && settingsService.getBrowser(testCase.getAppName()) == null){
-            testCaseEntity.setBrowser(settingsService.saveBrowser(testCase));
-            testCaseEntity.setUrl(settingsService.saveUrl(testCase.getUrl()));
+        if (testCase.getIsBrowser()) {
+            BrowserEntity browser = settingsService.getBrowser(testCase.getAppName());
+            if(browser!=null)
+                testCaseEntity.setBrowserId(browser.getId());
+            else testCaseEntity.setBrowserId(settingsService.saveBrowser(testCase).getId());
+            testCaseEntity.setUrlId(Optional.ofNullable(settingsService.getUrl(testCase.getUrl()))
+                    .map(UrlEntity::getId)
+                    .orElse(settingsService.saveUrl(testCase.getUrl()).getId()));
+        } else {
+            testCaseEntity.setDesktopId(Optional.ofNullable(settingsService.getDesktop(testCase.getAppName()))
+                    .map(DesktopEntity::getId)
+                    .orElse(settingsService.saveDesktop(testCase.getAppName(), testCase.getPathToApp()).getId())
+            );
         }
-        else if (settingsService.getDesktop(testCase.getAppName()) == null)
-            testCaseEntity.setDesktop(settingsService.saveDesktop(testCase.getAppName(), testCase.getPathToApp()));
         testCaseService.save(testCaseEntity);
         Optional.ofNullable(localStorage.getSize())
                 .ifPresent(size -> {
@@ -100,7 +108,7 @@ public class Database {
 
     public void save(List<Image> images, String testCaseName) {
         log.debug("Сохраняем изображения в БД {}", images);
-        TestCaseEntity testCaseEntity = testCaseService.get(testCaseName);
+        TestCaseEntity testCaseEntity = testCaseService.getTestCaseEntity(testCaseName);
         Optional.ofNullable(imageService.getAll(testCaseEntity)).ifPresent(
                 imageEntities -> {
                     for (int i = 0; i < images.size(); i++) {
@@ -118,14 +126,12 @@ public class Database {
 
     public TestCase get(String testCaseName) {
         log.debug("Получаем тест-кейс из БД по имени: {}", testCaseName);
-        return Optional.ofNullable(testCaseService.get(testCaseName))
-                .map(testCaseMapper::toTestCase)
-                .orElse(null);
+        return testCaseService.getTestCase(testCaseName);
     }
 
     public List<BaseData> getSteps(String testCaseName) {
         List<Object> steps = new ArrayList<>();
-        return Optional.ofNullable(testCaseService.get(testCaseName)).map(testCaseEntity -> {
+        return Optional.ofNullable(testCaseService.getTestCaseEntity(testCaseName)).map(testCaseEntity -> {
             steps.addAll(testCaseEntity.getMouse());
             steps.addAll(testCaseEntity.getKeyboard());
             BaseData[] stepsResult = new BaseData[steps.size() + 1];
@@ -152,7 +158,7 @@ public class Database {
 
     public List<Image> getImages(String testCase) {
         log.debug("Получаем изображения из БД по имени тест-кейса: {}", testCase);
-        return testCaseService.get(testCase).getImages().stream()
+        return testCaseService.getTestCaseEntity(testCase).getImages().stream()
                 .map(imageEntity -> Image.builder()
                         .image(imageEntity.getPhotoExpected())
                         .build()
