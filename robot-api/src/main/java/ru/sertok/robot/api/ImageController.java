@@ -1,6 +1,7 @@
 package ru.sertok.robot.api;
 
-import ru.sertok.robot.response.BaseResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import ru.sertok.robot.response.AppResponse;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -10,13 +11,16 @@ import javax.ws.rs.core.MediaType;
 
 @Path("/image")
 @Consumes(MediaType.APPLICATION_JSON)
-@Produces("text/html; charset=UTF-8")
+@Produces(MediaType.APPLICATION_JSON)
 public interface ImageController {
+
     @GET
     @Path("/getAll")
-    BaseResponse getAll(String testCase);
+    @ApiResponse(description = "Выгрузить все изображения по данному тесту")
+    AppResponse getAll(String testCase);
 
     @GET
     @Path("/getErrors")
-    BaseResponse getErrors(String testCase);
+    @ApiResponse(description = "Выгрузить все ошибочные изображения по данному тесту")
+    AppResponse getErrors(String testCase);
 }

@@ -40,7 +40,7 @@ public class RobotControllerImpl implements RobotController {
     private final KeyEvents keyEvents;
 
     @Override
-    public BaseResponse start(RobotRequest robotRequest) {
+    public RobotResponse start(RobotRequest robotRequest) {
         String testCaseName = robotRequest.getTestCase();
         log.debug("REST-запрос ../robot/start со значением {}", testCaseName);
         localStorage. invalidateLocalStorage();
@@ -48,9 +48,7 @@ public class RobotControllerImpl implements RobotController {
         if (testCase == null) {
             String error = "Не найден testCast по наименованию: " + testCaseName;
             log.error(error);
-            return ResponseBuilder.error(AppResponse.builder()
-                    .result(error)
-                    .build());
+            return ResponseBuilder.error(error);
         }
         List<BaseData> data = database.getSteps(testCaseName);
         Optional.ofNullable(database.getScreenshotSize(testCaseName)).ifPresent(screenShot::setSize);
@@ -60,16 +58,12 @@ public class RobotControllerImpl implements RobotController {
         } catch (AWTException e) {
             String error = "Ошибка при создании робота";
             log.error(error, e);
-            return ResponseBuilder.error(AppResponse.builder()
-                    .result(error)
-                    .build());
+            return ResponseBuilder.error(error);
         }
         if (appService.execute(testCase) == Status.ERROR) {
             String error = "Не удалось запустить приложение!";
             log.error(error);
-            return ResponseBuilder.error(AppResponse.builder()
-                    .result(error)
-                    .build());
+            return ResponseBuilder.error(error);
         }
         for (int i = 0; i < data.size(); i++) {
             BaseData baseData = data.get(i);
@@ -111,9 +105,7 @@ public class RobotControllerImpl implements RobotController {
                         }
                     } catch (IllegalAccessException | IllegalArgumentException e) {
                         log.error("Нет такой клавиши KeyEvents {} ", keyboard.getKey(), e);
-                        return ResponseBuilder.error(AppResponse.builder()
-                                .result("Ошибка при считывании клавиши")
-                                .build());
+                        return ResponseBuilder.error("Ошибка при считывании клавиши");
                     }
                 }
                 if (baseData.isScreenshot())
@@ -232,7 +224,7 @@ public class RobotControllerImpl implements RobotController {
     }
 
     @Override
-    public BaseResponse getAll() {
+    public TestCasesResponse getAll() {
         log.debug("REST-запрос ../robot/get");
         return ResponseBuilder.success(TestCasesResponse.builder()
                 .testCases(database.getAll())

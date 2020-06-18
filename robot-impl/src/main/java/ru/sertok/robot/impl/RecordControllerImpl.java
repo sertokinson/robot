@@ -54,7 +54,7 @@ public class RecordControllerImpl implements RecordController {
         if (StringUtils.isEmpty(testCaseName)) {
             String error = "Пустое название тест кейса!";
             log.error(error);
-            return ResponseBuilder.error(AppResponse.builder().result(error).build());
+            return ResponseBuilder.error(error);
         }
         if (!localStorage.isWarningTestCaseName() && database.get(testCaseName) != null) {
             String warning = "Тест с таким именем уже существует, перезаписать?";
@@ -81,12 +81,12 @@ public class RecordControllerImpl implements RecordController {
         if (localStorage.isNewUrl() && isBrowser && settingsService.getUrl(testCase.getUrl()) != null) {
             String error = "Такой url уже существует!";
             log.error(error);
-            return ResponseBuilder.error(AppResponse.builder().result(error).build());
+            return ResponseBuilder.error(error);
         }
         if (appService.execute(testCase) == Status.ERROR) {
             String error = "Не удалось запустить приложение!";
             log.error(error);
-            return ResponseBuilder.error(AppResponse.builder().result(error).build());
+            return ResponseBuilder.error(error);
         }
         localStorage.setStartTime(System.currentTimeMillis());
         if (!GlobalScreen.isNativeHookRegistered()) {
@@ -94,10 +94,7 @@ public class RecordControllerImpl implements RecordController {
                 GlobalScreen.registerNativeHook();
             } catch (NativeHookException e) {
                 log.error("There was a problem registering the native ru.sertok.hook.", e);
-                return ResponseBuilder.error(AppResponse.builder()
-                        .result("Проблемы со считывания устройства мыши или клавиатуры")
-                        .build()
-                );
+                return ResponseBuilder.error("Проблемы со считывания устройства мыши или клавиатуры");
             }
             GlobalScreen.addNativeMouseListener(eventListener);
             GlobalScreen.addNativeMouseMotionListener(eventListener);
@@ -111,9 +108,7 @@ public class RecordControllerImpl implements RecordController {
     public BaseResponse stop(String userAgent) {
         log.debug("REST-запрос ../record/stop");
         if (!removeHook())
-            return ResponseBuilder.error(AppResponse.builder()
-                    .result("Проблемы с остановкой слушателя устройства мыши или клавиатуры")
-                    .build());
+            return ResponseBuilder.error("Проблемы с остановкой слушателя устройства мыши или клавиатуры");
         database.save();
         localStorage.invalidateLocalStorage();
         return ResponseBuilder.success();
@@ -124,10 +119,7 @@ public class RecordControllerImpl implements RecordController {
         localStorage.invalidateLocalStorage();
         return removeHook()
                 ? ResponseBuilder.success()
-                : ResponseBuilder.error(AppResponse.builder()
-                .result("Проблемы с остановкой слушателя устройства мыши или клавиатуры")
-                .build()
-        );
+                : ResponseBuilder.error("Проблемы с остановкой слушателя устройства мыши или клавиатуры");
     }
 
     private boolean removeHook() {

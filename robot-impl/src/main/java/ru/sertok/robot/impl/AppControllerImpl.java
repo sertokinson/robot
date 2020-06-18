@@ -9,21 +9,21 @@ import ru.sertok.robot.response.ResponseBuilder;
 @Controller
 public class AppControllerImpl implements AppController {
     @Override
-    public BaseResponse ping() {
+    public AppResponse ping() {
         return ResponseBuilder.success(AppResponse.builder()
                 .result("PONG")
                 .build());
     }
 
     @Override
-    public BaseResponse pathToLog() {
+    public AppResponse pathToLog() {
         return ResponseBuilder.success(AppResponse.builder()
                 .result(System.getProperty("java.io.tmpdir") + "robot.log")
                 .build());
     }
 
     @Override
-    public BaseResponse version() {
+    public AppResponse version() {
         return ResponseBuilder.success(AppResponse.builder()
                 .result("0.20")
                 .build());

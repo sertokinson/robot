@@ -1,6 +1,7 @@
 package ru.sertok.robot.api;
 
-import ru.sertok.robot.response.BaseResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import ru.sertok.robot.response.SettingsResponse;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -14,13 +15,16 @@ import javax.ws.rs.core.MediaType;
 public interface SettingsController {
     @GET
     @Path("/browsers")
-    BaseResponse browsers();
+    @ApiResponse(description = "Получить все доступные браузеры")
+    SettingsResponse browsers();
 
     @GET
     @Path("/desktops")
-    BaseResponse desktops();
+    @ApiResponse(description = "Получить все доступные приложения")
+    SettingsResponse desktops();
 
     @GET
     @Path("/urls")
-    BaseResponse urls();
+    @ApiResponse(description = "Получить все доступные urls")
+    SettingsResponse urls();
 }

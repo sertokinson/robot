@@ -1,6 +1,6 @@
 package ru.sertok.robot.api;
 
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import ru.sertok.robot.request.ScreenShotRequest;
 import ru.sertok.robot.response.BaseResponse;
 
@@ -17,13 +17,16 @@ public interface ScreenShotController {
 
     @POST
     @Path("/start")
-    BaseResponse start(@RequestBody(required = true) ScreenShotRequest screenShotRequest);
+    @ApiResponse(description = "Старт записи скриншота")
+    BaseResponse start(ScreenShotRequest screenShotRequest);
 
     @POST
     @Path("/stop")
+    @ApiResponse(description = "Стоп записи скриншота")
     BaseResponse stop();
 
     @POST
     @Path("/crop")
+    @ApiResponse(description = "Нажатие на кнопку кроп")
     BaseResponse crop();
 }

@@ -8,7 +8,6 @@ import org.springframework.util.CollectionUtils;
 import ru.sertok.robot.api.ImageController;
 import ru.sertok.robot.entity.ImageEntity;
 import ru.sertok.robot.response.AppResponse;
-import ru.sertok.robot.response.BaseResponse;
 import ru.sertok.robot.response.ResponseBuilder;
 import ru.sertok.robot.service.TestCaseService;
 
@@ -32,21 +31,19 @@ public class ImageControllerImpl implements ImageController {
     private String testCase;
 
     @Override
-    public BaseResponse getAll(String testCase) {
+    public AppResponse getAll(String testCase) {
         String path = System.getProperty("java.io.tmpdir") + "images";
         deleteFile(new File(path));
         log.debug("Выгружаем изображения по тест-кейсу: {}", testCase);
         List<ImageEntity> images = testCaseService.getTestCaseEntity(testCase).getImages();
         if(CollectionUtils.isEmpty(images))
-            return ResponseBuilder.error(AppResponse.builder()
-                    .result("Нет изображений")
-                    .build());
+            return ResponseBuilder.error("Нет изображений");
         output(path, images);
         return ResponseBuilder.success(AppResponse.builder().result(path).build());
     }
 
     @Override
-    public BaseResponse getErrors(String testCase) {
+    public AppResponse getErrors(String testCase) {
         String path = System.getProperty("java.io.tmpdir") + "errorImages";
         deleteFile(new File(path));
         log.debug("Выгружаем ошибочные изображения по тест-кейсу: {}", testCase);
@@ -54,7 +51,7 @@ public class ImageControllerImpl implements ImageController {
                 .filter(imageEntity -> imageEntity.getAssertResult() != null && !imageEntity.getAssertResult())
                 .collect(Collectors.toList());
         if (images.isEmpty()) {
-            return ResponseBuilder.error(AppResponse.builder().result("Нет ошибочных изображений!").build());
+            return ResponseBuilder.error("Нет ошибочных изображений!");
         }
         output(path, images);
         return ResponseBuilder.success(AppResponse.builder().result(path).build());

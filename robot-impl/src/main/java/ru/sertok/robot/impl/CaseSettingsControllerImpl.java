@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import ru.sertok.robot.api.SettingsController;
-import ru.sertok.robot.response.BaseResponse;
 import ru.sertok.robot.response.ResponseBuilder;
 import ru.sertok.robot.response.SettingsResponse;
 import ru.sertok.robot.service.SettingsService;
@@ -17,7 +16,7 @@ public class CaseSettingsControllerImpl implements SettingsController {
     private final SettingsService settingsService;
 
     @Override
-    public BaseResponse browsers() {
+    public SettingsResponse browsers() {
         log.debug("REST-запрос ../settings/browsers");
         return ResponseBuilder.success(SettingsResponse.builder()
                 .values(settingsService.getBrowsers())
@@ -25,7 +24,7 @@ public class CaseSettingsControllerImpl implements SettingsController {
     }
 
     @Override
-    public BaseResponse desktops() {
+    public SettingsResponse desktops() {
         log.debug("REST-запрос ../settings/desktops");
         return ResponseBuilder.success(SettingsResponse.builder()
                 .values(settingsService.getDesktops())
@@ -33,7 +32,7 @@ public class CaseSettingsControllerImpl implements SettingsController {
     }
 
     @Override
-    public BaseResponse urls() {
+    public SettingsResponse urls() {
         log.debug("REST-запрос ../settings/urls");
         return ResponseBuilder.success(SettingsResponse.builder()
                 .values(settingsService.getUrls())
