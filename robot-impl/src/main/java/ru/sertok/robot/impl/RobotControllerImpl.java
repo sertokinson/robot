@@ -48,7 +48,7 @@ public class RobotControllerImpl implements RobotController {
         if (testCase == null) {
             String error = "Не найден testCast по наименованию: " + testCaseName;
             log.error(error);
-            return ResponseBuilder.error(error);
+            return ResponseBuilder.error(RobotResponse.builder().error(error).build());
         }
         List<BaseData> data = database.getSteps(testCaseName);
         Optional.ofNullable(database.getScreenshotSize(testCaseName)).ifPresent(screenShot::setSize);
@@ -58,12 +58,12 @@ public class RobotControllerImpl implements RobotController {
         } catch (AWTException e) {
             String error = "Ошибка при создании робота";
             log.error(error, e);
-            return ResponseBuilder.error(error);
+            return ResponseBuilder.error(RobotResponse.builder().error(error).build());
         }
         if (appService.execute(testCase) == Status.ERROR) {
             String error = "Не удалось запустить приложение!";
             log.error(error);
-            return ResponseBuilder.error(error);
+            return ResponseBuilder.error(RobotResponse.builder().error(error).build());
         }
         for (int i = 0; i < data.size(); i++) {
             BaseData baseData = data.get(i);
@@ -105,7 +105,7 @@ public class RobotControllerImpl implements RobotController {
                         }
                     } catch (IllegalAccessException | IllegalArgumentException e) {
                         log.error("Нет такой клавиши KeyEvents {} ", keyboard.getKey(), e);
-                        return ResponseBuilder.error("Ошибка при считывании клавиши");
+                        return ResponseBuilder.error(RobotResponse.builder().error("Ошибка при считывании клавиши").build());
                     }
                 }
                 if (baseData.isScreenshot())

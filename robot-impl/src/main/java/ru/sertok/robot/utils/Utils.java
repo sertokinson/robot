@@ -15,11 +15,11 @@ public class Utils {
         List<BaseData> mouseSteps = steps.stream().filter(step -> step instanceof Mouse).collect(Collectors.toList());
         if (!mouseSteps.isEmpty() && mouseSteps.stream().anyMatch(step -> ((Mouse) step).getType() == Type.PRESSED))
             for (int i = mouseSteps.size() - 1; i >= 0; i--) {
-                if (((Mouse) steps.get(i)).getType() == Type.PRESSED) {
-                    steps.remove(i);
+                if (((Mouse) mouseSteps.get(i)).getType() == Type.PRESSED) {
+                    mouseSteps.remove(i);
                     break;
                 }
-                steps.remove(i);
+                mouseSteps.remove(i);
             }
     }
 }

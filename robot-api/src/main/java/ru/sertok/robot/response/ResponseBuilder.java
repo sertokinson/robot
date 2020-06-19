@@ -19,12 +19,15 @@ public class ResponseBuilder {
         return response;
     }
 
-    public static <T extends BaseResponse> T error(String error) {
-        return (T) BaseResponse.builder()
+    public static <T extends BaseResponse> T error(T response) {
+        response.setStatus(Status.ERROR);
+        return response;
+    }
+
+    public static BaseResponse error(String error) {
+        return BaseResponse.builder()
                 .status(Status.ERROR)
                 .error(error)
                 .build();
     }
-
-
 }

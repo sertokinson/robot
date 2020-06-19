@@ -28,7 +28,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class ImageControllerImpl implements ImageController {
     private final TestCaseService testCaseService;
-    private String testCase;
 
     @Override
     public AppResponse getAll(String testCase) {
@@ -37,8 +36,8 @@ public class ImageControllerImpl implements ImageController {
         log.debug("Выгружаем изображения по тест-кейсу: {}", testCase);
         List<ImageEntity> images = testCaseService.getTestCaseEntity(testCase).getImages();
         if(CollectionUtils.isEmpty(images))
-            return ResponseBuilder.error("Нет изображений");
-        output(path, images);
+            return ResponseBuilder.error(AppResponse.builder().error("Нет изображений").build());
+        output(path, images, testCase);
         return ResponseBuilder.success(AppResponse.builder().result(path).build());
     }
 
@@ -51,13 +50,13 @@ public class ImageControllerImpl implements ImageController {
                 .filter(imageEntity -> imageEntity.getAssertResult() != null && !imageEntity.getAssertResult())
                 .collect(Collectors.toList());
         if (images.isEmpty()) {
-            return ResponseBuilder.error("Нет ошибочных изображений!");
+            return ResponseBuilder.error(AppResponse.builder().error("Нет ошибочных изображений").build());
         }
-        output(path, images);
+        output(path, images, testCase);
         return ResponseBuilder.success(AppResponse.builder().result(path).build());
     }
 
-    private void output(String path, List<ImageEntity> images) {
+    private void output(String path, List<ImageEntity> images, String testCase) {
         for (int i = 0; i < images.size(); i++) {
             byte[] photoExpected = images.get(i).getPhotoExpected();
             if (photoExpected != null) {
