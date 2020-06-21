@@ -3,6 +3,11 @@ package ru.sertok.robot.response;
 import ru.sertok.robot.data.enumerate.Status;
 
 public class ResponseBuilder {
+
+    private ResponseBuilder() {
+        throw new IllegalStateException("Utility class");
+    }
+
     public static BaseResponse success() {
         return BaseResponse.builder()
                 .status(Status.SUCCESS)

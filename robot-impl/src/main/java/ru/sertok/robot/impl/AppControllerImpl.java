@@ -3,7 +3,6 @@ package ru.sertok.robot.impl;
 import org.springframework.stereotype.Controller;
 import ru.sertok.robot.api.AppController;
 import ru.sertok.robot.response.AppResponse;
-import ru.sertok.robot.response.BaseResponse;
 import ru.sertok.robot.response.ResponseBuilder;
 
 @Controller

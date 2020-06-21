@@ -1,6 +1,5 @@
 package ru.sertok.robot.utils;
 
-import org.junit.After;
 import org.junit.Test;
 import ru.sertok.robot.data.BaseData;
 import ru.sertok.robot.data.Keyboard;
@@ -10,7 +9,7 @@ import ru.sertok.robot.data.enumerate.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class UtilsTest {
 

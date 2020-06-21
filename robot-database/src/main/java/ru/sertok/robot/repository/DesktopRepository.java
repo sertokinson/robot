@@ -1,7 +1,6 @@
 package ru.sertok.robot.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import ru.sertok.robot.entity.BrowserEntity;
 import ru.sertok.robot.entity.DesktopEntity;
 
 import java.util.Optional;

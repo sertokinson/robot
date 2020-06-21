@@ -21,7 +21,7 @@ public class AppServiceTest {
     private SettingsService settingsService;
 
     @Test
-    public void error_pathToApp() {
+    public void errorPathToApp() {
         assertEquals(Status.ERROR, appService.execute(TestCase.builder().build()));
     }
 

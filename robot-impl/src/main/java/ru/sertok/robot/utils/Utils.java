@@ -9,6 +9,10 @@ import java.util.List;
 
 @Slf4j
 public class Utils {
+    private Utils() {
+        throw new IllegalStateException("Utility class");
+    }
+
     public static void deleteLastMousePressed(List<BaseData> steps) {
         log.debug("Удаляем последнее нажатие");
         if (!steps.isEmpty())
