@@ -35,6 +35,4 @@ public class RecordRequest {
      */
     private String description;
 
-
-
 }

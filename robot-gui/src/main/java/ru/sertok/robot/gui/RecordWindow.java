@@ -16,7 +16,6 @@ import ru.sertok.robot.response.BaseResponse;
 import javax.annotation.PostConstruct;
 import javax.imageio.ImageIO;
 import javax.swing.*;
-import javax.ws.rs.core.Response;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 

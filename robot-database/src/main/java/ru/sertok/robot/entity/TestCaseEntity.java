@@ -1,8 +1,6 @@
 package ru.sertok.robot.entity;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import ru.sertok.robot.data.enumerate.TestStatus;
@@ -14,7 +12,9 @@ import java.util.List;
 @Entity
 @Setter
 @Getter
+@Builder
 @NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "TEST_CASE",
         uniqueConstraints = {@UniqueConstraint(columnNames = {"name"})}
 )

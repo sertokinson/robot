@@ -21,6 +21,8 @@ import ru.sertok.robot.gui.ScreenShotButtons;
 import ru.sertok.robot.gui.TranslucentWindow;
 import ru.sertok.robot.storage.LocalStorage;
 
+import javax.annotation.PostConstruct;
+
 @Component
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class EventListener implements NativeMouseInputListener, NativeKeyListener, NativeMouseWheelListener {
@@ -35,6 +37,11 @@ public class EventListener implements NativeMouseInputListener, NativeKeyListene
     private long screenShotTime;
     private int x = 0;
     private int y = 0;
+
+    @PostConstruct
+    public void init(){
+        currentTime = System.currentTimeMillis();
+    }
 
     @Override
     @SneakyThrows
@@ -78,6 +85,17 @@ public class EventListener implements NativeMouseInputListener, NativeKeyListene
 
     @Override
     public void nativeMouseClicked(NativeMouseEvent nativeMouseEvent) {
+    }
+
+    @Override
+    public void nativeMouseWheelMoved(NativeMouseWheelEvent e) {
+        if (!localStorage.isActiveCrop() || localStorage.isScreenshotStart())
+            localStorage.getSteps().add(Mouse.builder()
+                    .type(Type.WHEEL)
+                    .wheel(e.getWheelRotation())
+                    .time(getTime())
+                    .screenshot(makeScreenshot())
+                    .build());
     }
 
     private void key(Type type, NativeKeyEvent e) throws IllegalAccessException {
@@ -162,21 +180,11 @@ public class EventListener implements NativeMouseInputListener, NativeKeyListene
     }
 
     private boolean isActiveCrop(NativeMouseEvent e) {
-        return env.getActiveProfiles().length != 0
+        return env.getActiveProfiles()!=null
+                && env.getActiveProfiles().length != 0
                 && env.getActiveProfiles()[0].equals("local-gui")
                 && !localStorage.isScreenshotStart()
                 && localStorage.isActiveCrop()
                 && (e.getX() > x || e.getX() < x - 60 || e.getY() < y || e.getY() > y + 50);
-    }
-
-    @Override
-    public void nativeMouseWheelMoved(NativeMouseWheelEvent nativeMouseWheelEvent) {
-        if (!localStorage.isActiveCrop() || localStorage.isScreenshotStart())
-            localStorage.getSteps().add(Mouse.builder()
-                    .type(Type.WHEEL)
-                    .wheel(nativeMouseWheelEvent.getWheelRotation())
-                    .time(getTime())
-                    .screenshot(makeScreenshot())
-                    .build());
     }
 }

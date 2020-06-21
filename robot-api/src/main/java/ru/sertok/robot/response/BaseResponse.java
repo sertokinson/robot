@@ -1,9 +1,6 @@
 package ru.sertok.robot.response;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 import ru.sertok.robot.data.enumerate.Status;
 
@@ -12,6 +9,7 @@ import ru.sertok.robot.data.enumerate.Status;
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode
 public class BaseResponse {
     private Status status;
     private String error;

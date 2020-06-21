@@ -12,7 +12,7 @@ import ru.sertok.robot.service.SettingsService;
 @Slf4j
 @Controller
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
-public class CaseSettingsControllerImpl implements SettingsController {
+public class SettingsControllerImpl implements SettingsController {
     private final SettingsService settingsService;
 
     @Override
