@@ -59,17 +59,20 @@ public class Database {
         testCaseEntity.setTime(System.currentTimeMillis() - localStorage.getStartTime());
         if (testCase.getIsBrowser()) {
             BrowserEntity browser = settingsService.getBrowser(testCase.getAppName());
-            if(browser!=null)
+            if (browser != null)
                 testCaseEntity.setBrowserId(browser.getId());
             else testCaseEntity.setBrowserId(settingsService.saveBrowser(testCase).getId());
-            testCaseEntity.setUrlId(Optional.ofNullable(settingsService.getUrl(testCase.getUrl()))
-                    .map(UrlEntity::getId)
-                    .orElse(settingsService.saveUrl(testCase.getUrl()).getId()));
+            UrlEntity url = settingsService.getUrl(testCase.getUrl());
+            if (url != null)
+                testCaseEntity.setUrlId(url.getId());
+            else
+                testCaseEntity.setUrlId(settingsService.saveUrl(testCase.getUrl()).getId());
         } else {
-            testCaseEntity.setDesktopId(Optional.ofNullable(settingsService.getDesktop(testCase.getAppName()))
-                    .map(DesktopEntity::getId)
-                    .orElse(settingsService.saveDesktop(testCase.getAppName(), testCase.getPathToApp()).getId())
-            );
+            DesktopEntity desktop = settingsService.getDesktop(testCase.getAppName());
+            if(desktop!=null)
+                testCaseEntity.setDesktopId(desktop.getId());
+            else
+                testCaseEntity.setDesktopId(settingsService.saveDesktop(testCase.getAppName(), testCase.getPathToApp()).getId());
         }
         testCaseService.save(testCaseEntity);
         Optional.ofNullable(localStorage.getSize())

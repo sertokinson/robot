@@ -5,7 +5,7 @@
     <parent>
         <artifactId>robot</artifactId>
         <groupId>ru.sertok.robot</groupId>
-        <version>0.20</version>
+        <version>0.20-alpha</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -36,7 +36,7 @@
         <dependency>
             <groupId>ru.sertok.robot</groupId>
             <artifactId>robot-gui</artifactId>
-            <version>0.20</version>
+            <version>0.20-alpha</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
