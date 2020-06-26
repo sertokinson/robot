@@ -9,6 +9,9 @@ Content-Type: application/json
 ### Выгрузка тест-кейсов
 GET http://localhost:8080/autotest/robot/getAll
 
+### Выгрузить тест
+GET http://localhost:8080/autotest/robot/get/test
+
 ### Удалить тест-кейс
 POST http://localhost:8080/autotest/robot/delete
 Content-Type: application/json

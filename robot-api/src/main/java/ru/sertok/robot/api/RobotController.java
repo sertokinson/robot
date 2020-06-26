@@ -2,10 +2,7 @@ package ru.sertok.robot.api;
 
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import ru.sertok.robot.request.RobotRequest;
-import ru.sertok.robot.response.BaseResponse;
-import ru.sertok.robot.response.RobotResponse;
-import ru.sertok.robot.response.TestCaseResponse;
-import ru.sertok.robot.response.TestCasesResponse;
+import ru.sertok.robot.response.*;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -31,12 +28,13 @@ public interface RobotController {
     TestCasesResponse getAll();
 
     @GET
-    @Path("/getAll/{testCase}")
-    @ApiResponse(description = "Получить тест кейс по имени")
-    TestCaseResponse getAll(String testCase);
-
-    @GET
     @Path("/get/{testCase}")
     @ApiResponse(description = "Получить тест кейс")
-    TestCaseResponse get(String testCase);
+    TestCaseResponse get(@PathParam("testCase") String testCase);
+
+    @GET
+    @Path("/getAll/{testCase}")
+    @ApiResponse(description = "Получить тест кейс по имени")
+    TestCaseResponse getAll(@PathParam("testCase") String testCase);
+
 }

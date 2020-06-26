@@ -19,5 +19,5 @@ public interface ImageController {
     @GET
     @Path("/getErrors/{testCase}")
     @ApiResponse(description = "Выгрузить все ошибочные изображения по данному тесту")
-    AppResponse getErrors(@PathParam("testCase")String testCase);
+    AppResponse getErrors(@PathParam("testCase") String testCase);
 }

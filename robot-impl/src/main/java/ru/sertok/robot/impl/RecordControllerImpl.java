@@ -15,10 +15,8 @@ import ru.sertok.robot.data.enumerate.Status;
 import ru.sertok.robot.database.Database;
 import ru.sertok.robot.mapper.TestCaseMapper;
 import ru.sertok.robot.request.RecordRequest;
-import ru.sertok.robot.response.AppResponse;
 import ru.sertok.robot.response.BaseResponse;
 import ru.sertok.robot.response.ResponseBuilder;
-import ru.sertok.robot.service.SettingsService;
 import ru.sertok.robot.storage.LocalStorage;
 
 @Slf4j
@@ -30,7 +28,7 @@ public class RecordControllerImpl implements RecordController {
     private final EventListener eventListener;
     private final Database database;
     private final TestCaseMapper testCaseMapper;
-    private final SettingsService settingsService;
+    private final ScreenShotControllerImpl screenShotController;
 
     @Override
     public BaseResponse start(RecordRequest recordRequest) {
@@ -72,6 +70,8 @@ public class RecordControllerImpl implements RecordController {
     @Override
     public BaseResponse stop(String userAgent) {
         log.debug("REST-запрос ../record/stop");
+        if (localStorage.isScreenshotStart())
+            screenShotController.stop();
         if (!removeHook())
             return ResponseBuilder.error("Проблемы с остановкой слушателя устройства мыши или клавиатуры");
         database.save();

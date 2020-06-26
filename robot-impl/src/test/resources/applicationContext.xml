@@ -19,17 +19,20 @@
     <bean id="database" class="org.mockito.Mockito" factory-method="mock">
         <constructor-arg value="ru.sertok.robot.database.Database" />
     </bean>
-    <bean id="settingsService" class="org.mockito.Mockito" factory-method="mock">
-        <constructor-arg value="ru.sertok.robot.service.SettingsService" />
+    <bean id="screenShootController" class="ru.sertok.robot.impl.ScreenShotControllerImpl">
+        <constructor-arg index="0" ref="localStorage"/>
+        <constructor-arg index="1" ref="screenShot"/>
     </bean>
+
     <bean class="ru.sertok.robot.impl.RecordControllerImpl" id="recordController">
         <constructor-arg index="0" ref="localStorage"/>
         <constructor-arg index="1" ref="appService"/>
         <constructor-arg index="2" ref="eventListener"/>
         <constructor-arg index="3" ref="database"/>
         <constructor-arg index="4" ref="testCaseMapper"/>
-        <constructor-arg index="5" ref="settingsService"/>
+        <constructor-arg index="5" ref="screenShootController"/>
     </bean>
+
     <bean class="ru.sertok.robot.impl.RobotControllerImpl" id="robotController">
         <constructor-arg index="0" ref="database"/>
         <constructor-arg index="1" ref="screenShot"/>
@@ -37,6 +40,7 @@
         <constructor-arg index="3" ref="appService"/>
         <constructor-arg index="4" ref="keyEvents"/>
     </bean>
+
     <bean class="ru.sertok.robot.impl.ScreenShotControllerImpl" id="screenShotController">
         <constructor-arg index="0" ref="localStorage"/>
         <constructor-arg index="1" ref="screenShot"/>
