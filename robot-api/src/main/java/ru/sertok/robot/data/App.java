@@ -7,7 +7,7 @@ import lombok.Setter;
 @Setter
 @Getter
 @NoArgsConstructor
-public class App extends Template {
+public class App {
     /**
      * Название тестируемого приложения или браузера
      */

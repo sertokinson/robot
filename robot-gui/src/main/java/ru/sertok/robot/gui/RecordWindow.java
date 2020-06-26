@@ -7,7 +7,6 @@ import org.springframework.http.HttpEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import ru.sertok.robot.data.App;
-import ru.sertok.robot.data.Url;
 import ru.sertok.robot.gui.data.Input;
 import ru.sertok.robot.request.RecordRequest;
 import ru.sertok.robot.request.ScreenShotRequest;
@@ -56,13 +55,9 @@ public class RecordWindow extends JFrame {
                     true,
                     new App() {{
                         setName("chrome");
-                        setIsNew(true);
                         setPath("/Applications/Google Chrome.app");
                     }},
-                    new Url() {{
-                        setIsNew(true);
-                        setUrl("https://www.google.com/");
-                    }},
+                    "https://www.google.com/",
                     "Описание теста"
             ));
             /*HttpEntity<RecordRequest> request = new HttpEntity<>(RecordRequest.builder()

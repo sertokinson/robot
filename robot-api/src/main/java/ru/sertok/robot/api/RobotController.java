@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import ru.sertok.robot.request.RobotRequest;
 import ru.sertok.robot.response.BaseResponse;
 import ru.sertok.robot.response.RobotResponse;
+import ru.sertok.robot.response.TestCaseResponse;
 import ru.sertok.robot.response.TestCasesResponse;
 
 import javax.ws.rs.*;
@@ -28,4 +29,14 @@ public interface RobotController {
     @Path("/getAll")
     @ApiResponse(description = "Получить все тесты")
     TestCasesResponse getAll();
+
+    @GET
+    @Path("/getAll/{testCase}")
+    @ApiResponse(description = "Получить тест кейс по имени")
+    TestCaseResponse getAll(String testCase);
+
+    @GET
+    @Path("/get/{testCase}")
+    @ApiResponse(description = "Получить тест кейс")
+    TestCaseResponse get(String testCase);
 }

@@ -225,9 +225,25 @@ public class RobotControllerImpl implements RobotController {
 
     @Override
     public TestCasesResponse getAll() {
-        log.debug("REST-запрос ../robot/get");
+        log.debug("REST-запрос ../robot/getAll");
         return ResponseBuilder.success(TestCasesResponse.builder()
                 .testCases(database.getAll())
+                .build());
+    }
+
+    @Override
+    public TestCaseResponse getAll(String testCase) {
+        log.debug("REST-запрос ../robot/getAll/{}", testCase);
+        return ResponseBuilder.success(TestCaseResponse.builder()
+                .testCase(database.get(testCase))
+                .build());
+    }
+
+    @Override
+    public TestCaseResponse get(String testCase) {
+        log.debug("REST-запрос ../robot/get/{}", testCase);
+        return ResponseBuilder.success(TestCaseResponse.builder()
+                .testCase(database.get(testCase))
                 .build());
     }
 }

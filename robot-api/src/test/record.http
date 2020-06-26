@@ -7,35 +7,10 @@ Content-Type: application/json
   "isBrowser": true,
   "app": {
     "name": "chrome",
-    "path": "/Applications/Google Chrome.app",
-    "isNew": true
+    "path": "/Applications/Google Chrome.app"
   },
-  "url": {
-    "url": "https://www.google.ru/",
-    "isNew": true
-  }
+  "url": "https://www.google.ru/"
 }
-
-### Запись тест кейса с другим url
-POST http://localhost:8080/autotest/record/start/
-Content-Type: application/json
-
-{
-  "testCaseName": "test",
-  "isBrowser": true,
-  "app": {
-    "name": "chrome",
-    "path": "/Applications/Google Chrome.app",
-    "isNew": true
-  },
-  "url": {
-    "url": "file:///Users/sergejstahanov/Desktop/robotProject/robot_test/index.html",
-    "isNew": true
-  }
-}
-
-### продолжение записи теста
-POST http://localhost:8080/autotest/record/continued
 
 ### Стоп записи теста
 GET http://localhost:8080/autotest/record/stop

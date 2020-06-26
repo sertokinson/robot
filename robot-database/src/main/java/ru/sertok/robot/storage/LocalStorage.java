@@ -66,32 +66,6 @@ public class LocalStorage {
      */
     private boolean warningDesktop = false;
 
-    /**
-     * Новый url
-     */
-    private boolean newUrl = false;
-
-    /**
-     * Новое приложение
-     */
-    private boolean newApp = false;
-
-    public boolean isNewUrl() {
-        return newUrl;
-    }
-
-    public void setNewUrl(boolean newUrl) {
-        this.newUrl = newUrl;
-    }
-
-    public boolean isNewApp() {
-        return newApp;
-    }
-
-    public void setNewApp(boolean newApp) {
-        this.newApp = newApp;
-    }
-
     public boolean isWarningDesktop() {
         log.debug("Вычитываем из локального хранилища предупреждение об наименовании приложения: {}", warningDesktop);
         return warningDesktop;
@@ -187,8 +161,6 @@ public class LocalStorage {
     }
 
     public void invalidateLocalStorage() {
-        newUrl = false;
-        newApp = false;
         warningTestCaseName = false;
         warningBrowser = false;
         warningDesktop = false;

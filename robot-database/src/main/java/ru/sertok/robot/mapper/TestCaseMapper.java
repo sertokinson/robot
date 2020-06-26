@@ -20,7 +20,6 @@ public interface TestCaseMapper {
     @Mapping(target = "time", ignore = true)
     @Mapping(target = "status", ignore = true)
     @Mapping(target = "runDate", ignore = true)
-    @Mapping(target = "url", source = "url.url")
     @Mapping(target = "pathToApp", source = "app.path")
     @Mapping(target = "appName", source = "app.name")
     TestCase toTestCase(RecordRequest recordRequest);

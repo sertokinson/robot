@@ -19,11 +19,6 @@ public class ResponseBuilder {
         return response;
     }
 
-    public static <T extends BaseResponse> T warning(T response) {
-        response.setStatus(Status.WARNING);
-        return response;
-    }
-
     public static <T extends BaseResponse> T error(T response) {
         response.setStatus(Status.ERROR);
         return response;

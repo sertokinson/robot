@@ -38,48 +38,13 @@ public class RecordControllerImpl implements RecordController {
         localStorage.invalidateLocalStorage();
         TestCase testCase = testCaseMapper.toTestCase(recordRequest);
         localStorage.setTestCase(testCase);
-        localStorage.setNewApp(recordRequest.getApp().getIsNew());
-        localStorage.setNewUrl(recordRequest.getUrl().getIsNew());
         return record(testCase);
-    }
-
-    @Override
-    public BaseResponse continued() {
-        log.debug("REST-запрос ../record/continued");
-        return record(localStorage.getTestCase());
     }
 
     private BaseResponse record(TestCase testCase) {
         String testCaseName = testCase.getTestCaseName();
         if (StringUtils.isEmpty(testCaseName)) {
             String error = "Пустое название тест кейса!";
-            log.error(error);
-            return ResponseBuilder.error(error);
-        }
-        if (!localStorage.isWarningTestCaseName() && database.get(testCaseName) != null) {
-            String warning = "Тест с таким именем уже существует, перезаписать?";
-            log.warn(warning);
-            localStorage.setWarningTestCaseName(true);
-            return ResponseBuilder.warning(AppResponse.builder().result(warning).build());
-        }
-        String appName = testCase.getAppName();
-        Boolean isBrowser = testCase.getIsBrowser();
-        if (localStorage.isNewApp()) {
-            if (!localStorage.isWarningBrowser() && isBrowser && settingsService.getBrowser(appName) != null) {
-                String warning = "Браузер с таким именем уже существует, перезаписать?";
-                log.warn(warning);
-                localStorage.setWarningBrowser(true);
-                return ResponseBuilder.warning(AppResponse.builder().result(warning).build());
-            }
-            if (!localStorage.isWarningDesktop() && !isBrowser && settingsService.getDesktop(appName) != null) {
-                String warning = "Приложение с таким именем уже существует, перезаписать?";
-                log.warn(warning);
-                localStorage.setWarningDesktop(true);
-                return ResponseBuilder.warning(AppResponse.builder().result(warning).build());
-            }
-        }
-        if (localStorage.isNewUrl() && isBrowser && settingsService.getUrl(testCase.getUrl()) != null) {
-            String error = "Такой url уже существует!";
             log.error(error);
             return ResponseBuilder.error(error);
         }

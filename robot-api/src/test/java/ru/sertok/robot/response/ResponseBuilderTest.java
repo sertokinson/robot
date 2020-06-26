@@ -18,11 +18,6 @@ public class ResponseBuilderTest {
     }
 
     @Test
-    public void warning() {
-        assertEquals(AppResponse.builder().status(Status.WARNING).build(), ResponseBuilder.warning(AppResponse.builder().build()));
-    }
-
-    @Test
     public void error() {
         assertEquals(AppResponse.builder().status(Status.ERROR).build(), ResponseBuilder.error(AppResponse.builder().build()));
     }

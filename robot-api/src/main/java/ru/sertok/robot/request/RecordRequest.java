@@ -2,7 +2,6 @@ package ru.sertok.robot.request;
 
 import lombok.*;
 import ru.sertok.robot.data.App;
-import ru.sertok.robot.data.Url;
 
 @Getter
 @ToString
@@ -28,7 +27,7 @@ public class RecordRequest {
     /**
      * Тестируемый url - адрес сайта
      */
-    private Url url;
+    private String url;
 
     /**
      * Описание теста

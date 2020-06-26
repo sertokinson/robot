@@ -8,13 +8,11 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import ru.sertok.robot.data.App;
 import ru.sertok.robot.data.TestCase;
-import ru.sertok.robot.data.Url;
 import ru.sertok.robot.data.enumerate.Status;
 import ru.sertok.robot.request.RecordRequest;
 import ru.sertok.robot.storage.LocalStorage;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath:applicationContext.xml")
@@ -31,13 +29,9 @@ public class RecordControllerImplTest {
                 true,
                 new App() {{
                     setName("chrome");
-                    setIsNew(true);
                     setPath("/Applications/Google Chrome.app");
                 }},
-                new Url() {{
-                    setIsNew(true);
-                    setUrl("https://www.google.com/");
-                }},
+                "https://www.google.com/",
                 "Описание теста"
         )).getStatus());
         assertEquals(TestCase.builder()
@@ -49,8 +43,6 @@ public class RecordControllerImplTest {
                         .isBrowser(true)
                         .build(),
                 localStorage.getTestCase());
-        assertTrue(localStorage.isNewApp());
-        assertTrue(localStorage.isNewUrl());
     }
 
     @Test
@@ -60,13 +52,9 @@ public class RecordControllerImplTest {
                         .isBrowser(true)
                         .app(new App() {{
                             setName("chrome");
-                            setIsNew(true);
                             setPath("/Applications/Google Chrome.app");
                         }})
-                        .url(new Url() {{
-                            setIsNew(true);
-                            setUrl("https://www.google.com/");
-                        }})
+                        .url("https://www.google.com/")
                         .description("Описание теста")
                         .build()
         ).getStatus());
@@ -78,8 +66,6 @@ public class RecordControllerImplTest {
                         .isBrowser(true)
                         .build(),
                 localStorage.getTestCase());
-        assertTrue(localStorage.isNewApp());
-        assertTrue(localStorage.isNewUrl());
     }
 
     @Test

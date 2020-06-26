@@ -18,11 +18,6 @@ public interface RecordController {
     @ApiResponse(description = "Старт записи теста")
     BaseResponse start(@RequestBody(required = true) RecordRequest recordRequest);
 
-    @POST
-    @Path("/continued")
-    @ApiResponse(description = "Продолжение записи теста")
-    BaseResponse continued();
-
     @GET
     @Path("/stop")
     @ApiResponse(description = "Стоп записи теста")
