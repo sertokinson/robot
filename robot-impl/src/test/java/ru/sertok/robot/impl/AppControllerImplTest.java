@@ -5,7 +5,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class AppControllerImplTest {
-    private AppControllerImpl appController = new AppControllerImpl();
+    private final AppControllerImpl appController = new AppControllerImpl();
 
     @Test
     public void ping() {
