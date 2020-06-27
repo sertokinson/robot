@@ -39,6 +39,7 @@ public class Config {
         File file = new File(pathName, "0.20-alpha.txt");
         if (!file.exists()) {
             properties.setProperty("hibernate.hbm2ddl.auto", "create");
+            new File(pathName).mkdir();
             file.createNewFile();
         } else {
             properties.setProperty("hibernate.hbm2ddl.auto", "update");
