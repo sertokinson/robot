@@ -9,20 +9,22 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import javax.sql.DataSource;
+import java.io.File;
+import java.io.IOException;
 import java.util.Properties;
 import java.util.concurrent.Executor;
 
 @Configuration
 @EnableAsync
 public class Config {
-     
+
     @Bean(name = "threadPoolTaskExecutor")
     public Executor threadPoolTaskExecutor() {
         return new ThreadPoolTaskExecutor();
     }
 
     @Bean
-    public LocalContainerEntityManagerFactoryBean entityManagerFactory(DataSource dataSource) {
+    public LocalContainerEntityManagerFactoryBean entityManagerFactory(DataSource dataSource) throws IOException {
         LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
         em.setDataSource(dataSource);
         em.setPackagesToScan("ru.sertok.robot.entity");
@@ -32,11 +34,14 @@ public class Config {
 
         Properties properties = new Properties();
         properties.setProperty("hibernate.dialect", "org.hibernate.dialect.H2Dialect");
-        if("0.20".equals(System.getProperty("robot-version")))
-            properties.setProperty("hibernate.hbm2ddl.auto", "update");
-        else {
-            System.setProperty("robot-version", "0.20");
+
+        String pathName = System.getProperty("java.io.tmpdir") + "robot";
+        File file = new File(pathName, "0.20-alpha.txt");
+        if (!file.exists()) {
             properties.setProperty("hibernate.hbm2ddl.auto", "create");
+            file.createNewFile();
+        } else {
+            properties.setProperty("hibernate.hbm2ddl.auto", "update");
         }
 
         em.setJpaProperties(properties);
