@@ -17,17 +17,26 @@ public class ScreenShotEntity {
     @Id
     @Column(name = "ID")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
 
+    /**
+     * Координата изображения по x
+     */
     @Column(name = "X")
     private int x;
-
+    /**
+     * Координата изображения по y
+     */
     @Column(name = "Y")
     private int y;
-
+    /**
+     * ширина
+     */
     @Column(name = "WIDTH")
     private int width;
-
+    /**
+     * высота
+     */
     @Column(name = "HEIGHT")
     private int height;
 

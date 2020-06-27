@@ -1,4 +1,4 @@
-package ru.sertok.robot.core;
+package ru.sertok.robot.core.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import ru.sertok.robot.data.Image;
+import ru.sertok.robot.data.ScreenshotSize;
 import ru.sertok.robot.storage.LocalStorage;
 
 import javax.imageio.ImageIO;
@@ -37,13 +38,13 @@ public class ScreenShot {
         }
     }
 
-    public void setSize(Image image) {
-        localStorage.setImage(image);
+    public void setSize(ScreenshotSize size) {
+        localStorage.setSize(size);
         localStorage.setImages(new ArrayList<>());
-        this.point = new Point(image.getX(), image.getY());
-        log.debug("Задаем начальную позицию скриншота x: {} y:{}", point.getX()+1, point.getY()+1);
-        this.dimension = new Dimension(image.getWidth(), image.getHeight());
-        log.debug("Задаем ширину и высоту скриншота width: {} height:{}", dimension.getWidth()-2, dimension.getHeight()-2);
+        this.point = new Point(size.getX(), size.getY());
+        log.debug("Задаем начальную позицию скриншота x: {} y:{}", point.getX() + 1, point.getY() + 1);
+        this.dimension = new Dimension(size.getWidth(), size.getHeight());
+        log.debug("Задаем ширину и высоту скриншота width: {} height:{}", dimension.getWidth() - 2, dimension.getHeight() - 2);
     }
 
     private BufferedImage grabScreen() {

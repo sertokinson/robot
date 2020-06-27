@@ -1,5 +1,8 @@
 package ru.sertok.robot.data.enumerate;
 
+import lombok.Getter;
+
+@Getter
 public enum BrowserName {
     FIREFOX("Firefox"),
     CHROME("Chrome"),

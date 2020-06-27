@@ -18,7 +18,7 @@ public class KeyboardEntity {
     @Id
     @Column(name = "ID")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
 
     /**
      * PASSED - нажал
@@ -52,7 +52,7 @@ public class KeyboardEntity {
      * время отсчета от старта
      */
     @Column(name = "TIME")
-    private Integer time;
+    private int time;
 
     /**
      * Признак что есть скриншот у этого события

@@ -5,10 +5,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.sertok.robot.data.BaseTestCase;
+import ru.sertok.robot.data.TestCase;
+import ru.sertok.robot.entity.BrowserEntity;
+import ru.sertok.robot.entity.DesktopEntity;
 import ru.sertok.robot.entity.TestCaseEntity;
 import ru.sertok.robot.mapper.TestCaseMapper;
-import ru.sertok.robot.repository.*;
+import ru.sertok.robot.repository.TestCaseRepository;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,16 +22,38 @@ import java.util.stream.Collectors;
 public class TestCaseService {
     private final TestCaseRepository testCaseRepository;
     private final TestCaseMapper testCaseMapper;
+    private final SettingsService settingsService;
 
-    public TestCaseEntity get(String name) {
+    public TestCase getTestCase(String name) {
+        return testCaseRepository.findByName(name)
+                .map(this::get)
+                .orElse(null);
+    }
+
+    public TestCaseEntity getTestCaseEntity(String name) {
         return testCaseRepository.findByName(name).orElse(null);
     }
 
-    public List<BaseTestCase> getAll() {
+    public TestCase get(TestCaseEntity testCaseEntity) {
+        TestCase testCase = testCaseMapper.toTestCase(testCaseEntity);
+        if (testCase.getIsBrowser()) {
+            BrowserEntity browser = settingsService.getBrowser(testCaseEntity.getBrowserId());
+            testCase.setAppName(browser.getName());
+            testCase.setPathToApp(browser.getPath());
+            testCase.setUrl(settingsService.getUrl(testCaseEntity.getUrlId()).getUrl());
+        } else {
+            DesktopEntity desktop = settingsService.getDesktop(testCaseEntity.getDesktopId());
+            testCase.setAppName(desktop.getName());
+            testCase.setPathToApp(desktop.getPath());
+        }
+        return testCase;
+    }
+
+    public List<TestCase> getAll() {
         return testCaseRepository
                 .findAll()
                 .stream()
-                .map(testCaseMapper::toBaseTestCase)
+                .map(this::get)
                 .collect(Collectors.toList());
     }
 

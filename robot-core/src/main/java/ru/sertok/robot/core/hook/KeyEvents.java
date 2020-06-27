@@ -31,7 +31,7 @@ public class KeyEvents {
         }
         for (Field field : KeyEvent.class.getFields()) {
             String keyboard = field.getName().replace("VK_", "");
-            if (keyboard.equals(newKey.toUpperCase())) {
+            if (keyboard.equalsIgnoreCase(newKey)) {
                 return (int) field.get(field.getName());
             }
         }

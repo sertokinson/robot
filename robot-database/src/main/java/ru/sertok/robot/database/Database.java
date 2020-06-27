@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 import ru.sertok.robot.data.*;
+import ru.sertok.robot.data.enumerate.TestStatus;
 import ru.sertok.robot.entity.*;
 import ru.sertok.robot.mapper.KeyboardMapper;
 import ru.sertok.robot.mapper.MouseMapper;
@@ -33,27 +34,55 @@ public class Database {
     private final KeyboardService keyboardService;
     private final MouseService mouseService;
     private final ScreenShotService screenShotService;
+    private final SettingsService settingsService;
 
-    public List<BaseTestCase> getAll() {
-        List<BaseTestCase> testCases = testCaseService.getAll();
+    public List<TestCase> getAll() {
+        List<TestCase> testCases = testCaseService.getAll();
         log.debug("Получаем все тест кейсы из БД {}", testCases);
         return testCases;
     }
 
-    public void save(TestCase testCase) {
+    public void update(String testCase, TestStatus status) {
+        TestCaseEntity testCaseEntity = testCaseService.getTestCaseEntity(testCase);
+        testCaseEntity.setStatus(status);
+        testCaseEntity.setRunDate(new Date());
+        testCaseService.save(testCaseEntity);
+    }
+
+    public void save() {
+        TestCase testCase = localStorage.getTestCase();
         log.debug("Сохраняем тест кейс в БД {}", testCase);
-        Optional.ofNullable(testCaseService.get(testCase.getName()))
+        Optional.ofNullable(testCaseService.getTestCaseEntity(testCase.getTestCaseName()))
                 .ifPresent(testCaseService::delete);
         TestCaseEntity testCaseEntity = testCaseMapper.toTestCaseEntity(testCase);
+        testCaseEntity.setStatus(TestStatus.NONE);
+        testCaseEntity.setTime(System.currentTimeMillis() - localStorage.getStartTime());
+        if (testCase.getIsBrowser()) {
+            BrowserEntity browser = settingsService.getBrowser(testCase.getAppName());
+            if (browser != null)
+                testCaseEntity.setBrowserId(browser.getId());
+            else testCaseEntity.setBrowserId(settingsService.saveBrowser(testCase).getId());
+            UrlEntity url = settingsService.getUrl(testCase.getUrl());
+            if (url != null)
+                testCaseEntity.setUrlId(url.getId());
+            else
+                testCaseEntity.setUrlId(settingsService.saveUrl(testCase.getUrl()).getId());
+        } else {
+            DesktopEntity desktop = settingsService.getDesktop(testCase.getAppName());
+            if(desktop!=null)
+                testCaseEntity.setDesktopId(desktop.getId());
+            else
+                testCaseEntity.setDesktopId(settingsService.saveDesktop(testCase.getAppName(), testCase.getPathToApp()).getId());
+        }
         testCaseService.save(testCaseEntity);
-        Optional.ofNullable(localStorage.getImage())
-                .ifPresent(image -> {
-                            ScreenShotEntity screenShotEntity = screenShotMapper.toScreenShot(image);
+        Optional.ofNullable(localStorage.getSize())
+                .ifPresent(size -> {
+                            ScreenShotEntity screenShotEntity = screenShotMapper.toScreenShotEntity(size);
                             screenShotEntity.setTestCase(testCaseEntity);
                             screenShotService.save(screenShotEntity);
                         }
                 );
-        List<BaseData> steps = testCase.getSteps();
+        List<BaseData> steps = localStorage.getSteps();
         for (int i = 0; i < steps.size(); i++) {
             if (steps.get(i) instanceof Mouse) {
                 MouseEntity mouseEntity = mouseMapper.toMouseEntity((Mouse) steps.get(i));
@@ -82,7 +111,7 @@ public class Database {
 
     public void save(List<Image> images, String testCaseName) {
         log.debug("Сохраняем изображения в БД {}", images);
-        TestCaseEntity testCaseEntity = testCaseService.get(testCaseName);
+        TestCaseEntity testCaseEntity = testCaseService.getTestCaseEntity(testCaseName);
         Optional.ofNullable(imageService.getAll(testCaseEntity)).ifPresent(
                 imageEntities -> {
                     for (int i = 0; i < images.size(); i++) {
@@ -98,16 +127,14 @@ public class Database {
         );
     }
 
-    public TestCase get(String testCase) {
-        log.debug("Получаем тест-кейс из БД по имени: {}", testCase);
+    public TestCase get(String testCaseName) {
+        log.debug("Получаем тест-кейс из БД по имени: {}", testCaseName);
+        return testCaseService.getTestCase(testCaseName);
+    }
+
+    public List<BaseData> getSteps(String testCaseName) {
         List<Object> steps = new ArrayList<>();
-        return Optional.ofNullable(testCaseService.get(testCase)).map(testCaseEntity -> {
-            TestCase.TestCaseBuilder<?, ?> testCaseBuilder = TestCase.builder();
-            testCaseBuilder.url(testCaseEntity.getUrl());
-            testCaseBuilder.path(testCaseEntity.getPath());
-            List<ScreenShotEntity> screenShots = testCaseEntity.getScreenShots();
-            if (!CollectionUtils.isEmpty(screenShots))
-                testCaseBuilder.image(screenShotMapper.toImage(screenShots.get(0)));
+        return Optional.ofNullable(testCaseService.getTestCaseEntity(testCaseName)).map(testCaseEntity -> {
             steps.addAll(testCaseEntity.getMouse());
             steps.addAll(testCaseEntity.getKeyboard());
             BaseData[] stepsResult = new BaseData[steps.size() + 1];
@@ -121,14 +148,20 @@ public class Database {
                     stepsResult[keyboardEntity.getPosition()] = keyboardMapper.toKeyboard(keyboardEntity);
                 }
             }
-            testCaseBuilder.steps(Arrays.asList(stepsResult));
-            return testCaseBuilder.build();
+            return Arrays.asList(stepsResult);
         }).orElse(null);
+
+    }
+
+    public ScreenshotSize getScreenshotSize(String testCase) {
+        return Optional.ofNullable(screenShotService.get(testCase))
+                .map(screenShotMapper::toScreenshotSize)
+                .orElse(null);
     }
 
     public List<Image> getImages(String testCase) {
         log.debug("Получаем изображения из БД по имени тест-кейса: {}", testCase);
-        return testCaseService.get(testCase).getImages().stream()
+        return testCaseService.getTestCaseEntity(testCase).getImages().stream()
                 .map(imageEntity -> Image.builder()
                         .image(imageEntity.getPhotoExpected())
                         .build()

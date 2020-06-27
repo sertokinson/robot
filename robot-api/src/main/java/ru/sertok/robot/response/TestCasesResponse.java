@@ -1,13 +1,15 @@
 package ru.sertok.robot.response;
 
-import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import ru.sertok.robot.data.BaseTestCase;
+import lombok.experimental.SuperBuilder;
+import ru.sertok.robot.data.TestCase;
 
 import java.util.List;
 
 @Getter
-@AllArgsConstructor
-public class TestCasesResponse {
-    private List<BaseTestCase> testCases;
+@SuperBuilder
+@EqualsAndHashCode(callSuper = true)
+public class TestCasesResponse extends BaseResponse{
+    private List<TestCase> testCases;
 }

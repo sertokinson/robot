@@ -17,4 +17,9 @@ public class ScreenShotService {
         log.debug("Сохраняем размеры скриншота в бд: {}", screenShotEntity);
         screenShotRepository.save(screenShotEntity);
     }
+
+    public ScreenShotEntity get(String testCaseName) {
+        log.debug("Получаем размеры скриншота по имени теста: {}", testCaseName);
+        return screenShotRepository.findByTestCase_Name(testCaseName).orElse(null);
+    }
 }

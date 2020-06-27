@@ -1,38 +1,30 @@
 package ru.sertok.robot.api;
 
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import ru.sertok.robot.response.AppResponse;
 
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
-import javax.ws.rs.core.Response;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 
 @Path("/")
+@Produces(MediaType.APPLICATION_JSON)
+@Consumes(MediaType.APPLICATION_JSON)
 public interface AppController {
     @GET
     @Path("/ping")
-    @ApiResponses(@ApiResponse(
-            responseCode = "200",
-            content = @Content(examples = @ExampleObject("PONG")),
-            description = "Приложение запущено"
-    ))
-    Response ping();
+    @ApiResponse(description = "Проверка на то, что приложение запущенно")
+    AppResponse ping();
 
     @GET
     @Path("/pathToLog")
-    @ApiResponses(@ApiResponse(
-            responseCode = "200",
-            description = "Путь до логов"
-    ))
-    Response pathToLog();
+    @ApiResponse(description = "Путь до логов")
+    AppResponse pathToLog();
 
     @GET
     @Path("/version")
-    @ApiResponses(@ApiResponse(
-            responseCode = "200",
-            description = "Версия приложения"
-    ))
-    Response version();
+    @ApiResponse(description = "Версия приложения")
+    AppResponse version();
 }

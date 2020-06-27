@@ -1,18 +1,37 @@
 package ru.sertok.robot.request;
 
-import io.swagger.v3.oas.annotations.Parameter;
 import lombok.*;
+import ru.sertok.robot.data.App;
 
 @Getter
 @ToString
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class RecordRequest {
-    @Parameter(required = true)
+    /**
+     * Название теста
+     */
     private String testCaseName;
-    @Parameter(required = true)
+
+    /**
+     * Является ли приложение браузером
+     */
+    private Boolean isBrowser;
+
+    /**
+     * Тестируемое приложение или браузер
+     */
+    private App app;
+
+    /**
+     * Тестируемый url - адрес сайта
+     */
     private String url;
-    @Parameter(required = true)
-    private String pathToApp;
+
+    /**
+     * Описание теста
+     */
     private String description;
+
 }

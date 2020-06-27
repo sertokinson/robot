@@ -4,14 +4,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import ru.sertok.robot.api.ImageOutputController;
+import org.springframework.util.CollectionUtils;
+import ru.sertok.robot.api.ImageController;
 import ru.sertok.robot.entity.ImageEntity;
-import ru.sertok.robot.request.RobotRequest;
+import ru.sertok.robot.response.AppResponse;
 import ru.sertok.robot.response.ResponseBuilder;
 import ru.sertok.robot.service.TestCaseService;
 
 import javax.imageio.ImageIO;
-import javax.ws.rs.core.Response;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -26,37 +26,37 @@ import java.util.stream.Collectors;
 @Slf4j
 @Controller
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
-public class ImageOutputControllerImpl implements ImageOutputController {
+public class ImageControllerImpl implements ImageController {
     private final TestCaseService testCaseService;
-    private String testCase;
 
     @Override
-    public Response getAll(RobotRequest robotRequest) {
+    public AppResponse getAll(String testCase) {
         String path = System.getProperty("java.io.tmpdir") + "images";
-        deletefile(new File(path));
-        testCase = robotRequest.getTestCase();
+        deleteFile(new File(path));
         log.debug("Выгружаем изображения по тест-кейсу: {}", testCase);
-        output(path, testCaseService.get(testCase).getImages());
-        return ResponseBuilder.ok(path);
+        List<ImageEntity> images = testCaseService.getTestCaseEntity(testCase).getImages();
+        if(CollectionUtils.isEmpty(images))
+            return ResponseBuilder.error(AppResponse.builder().error("Нет изображений").build());
+        output(path, images, testCase);
+        return ResponseBuilder.success(AppResponse.builder().result(path).build());
     }
 
     @Override
-    public Response getErrors(RobotRequest robotRequest) {
+    public AppResponse getErrors(String testCase) {
         String path = System.getProperty("java.io.tmpdir") + "errorImages";
-        deletefile(new File(path));
-        testCase = robotRequest.getTestCase();
+        deleteFile(new File(path));
         log.debug("Выгружаем ошибочные изображения по тест-кейсу: {}", testCase);
-        List<ImageEntity> images = testCaseService.get(testCase).getImages().stream()
+        List<ImageEntity> images = testCaseService.getTestCaseEntity(testCase).getImages().stream()
                 .filter(imageEntity -> imageEntity.getAssertResult() != null && !imageEntity.getAssertResult())
                 .collect(Collectors.toList());
         if (images.isEmpty()) {
-            return ResponseBuilder.ok("Нет ошибочных изображений!");
+            return ResponseBuilder.error(AppResponse.builder().error("Нет ошибочных изображений").build());
         }
-        output(path, images);
-        return ResponseBuilder.ok(path);
+        output(path, images, testCase);
+        return ResponseBuilder.success(AppResponse.builder().result(path).build());
     }
 
-    private void output(String path, List<ImageEntity> images) {
+    private void output(String path, List<ImageEntity> images, String testCase) {
         for (int i = 0; i < images.size(); i++) {
             byte[] photoExpected = images.get(i).getPhotoExpected();
             if (photoExpected != null) {
@@ -82,10 +82,10 @@ public class ImageOutputControllerImpl implements ImageOutputController {
         }
     }
 
-    private void deletefile(File path) {
+    private void deleteFile(File path) {
         if (path.isDirectory()) {
             for (File f : path.listFiles()) {
-                if (f.isDirectory()) deletefile(f);
+                if (f.isDirectory()) deleteFile(f);
                 else f.delete();
             }
         }

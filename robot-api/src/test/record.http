@@ -1,0 +1,19 @@
+### Запись тест кейса
+POST http://localhost:8080/autotest/record/start/
+Content-Type: application/json
+
+{
+  "testCaseName": "test",
+  "isBrowser": true,
+  "app": {
+    "name": "chrome",
+    "path": "/Applications/Google Chrome.app"
+  },
+  "url": "https://www.google.ru/"
+}
+
+### Стоп записи теста
+GET http://localhost:8080/autotest/record/stop
+
+### Выход из записи теста
+POST http://localhost:8080/autotest/record/exit

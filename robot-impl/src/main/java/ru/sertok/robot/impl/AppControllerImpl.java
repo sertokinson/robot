@@ -2,24 +2,29 @@ package ru.sertok.robot.impl;
 
 import org.springframework.stereotype.Controller;
 import ru.sertok.robot.api.AppController;
+import ru.sertok.robot.response.AppResponse;
 import ru.sertok.robot.response.ResponseBuilder;
-
-import javax.ws.rs.core.Response;
 
 @Controller
 public class AppControllerImpl implements AppController {
     @Override
-    public Response ping() {
-        return ResponseBuilder.ok("PONG");
+    public AppResponse ping() {
+        return ResponseBuilder.success(AppResponse.builder()
+                .result("PONG")
+                .build());
     }
 
     @Override
-    public Response pathToLog() {
-        return ResponseBuilder.ok(System.getProperty("java.io.tmpdir") + "robot.log");
+    public AppResponse pathToLog() {
+        return ResponseBuilder.success(AppResponse.builder()
+                .result(System.getProperty("java.io.tmpdir") + "robot.log")
+                .build());
     }
 
     @Override
-    public Response version() {
-        return ResponseBuilder.ok("0.19-alpha");
+    public AppResponse version() {
+        return ResponseBuilder.success(AppResponse.builder()
+                .result("0.20-alpha")
+                .build());
     }
 }

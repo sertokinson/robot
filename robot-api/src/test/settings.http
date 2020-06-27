@@ -1,0 +1,12 @@
+### Получить список браузеров
+GET http://localhost:8080/autotest/settings/browsers
+
+### Получить список урлов
+GET http://localhost:8080/autotest/settings/urls
+
+### Получить список приложений
+GET http://localhost:8080/autotest/settings/desktops
+
+###
+
+

@@ -1,0 +1,7 @@
+### Выгрузка изображений
+GET http://localhost:8080/autotest/image/getAll/test
+
+### Выгрузка ошибочных изображений
+GET http://localhost:8080/autotest/image/getErrors/test
+
+###

@@ -6,14 +6,15 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
+import ru.sertok.robot.data.App;
 import ru.sertok.robot.gui.data.Input;
 import ru.sertok.robot.request.RecordRequest;
 import ru.sertok.robot.request.ScreenShotRequest;
+import ru.sertok.robot.response.BaseResponse;
 
 import javax.annotation.PostConstruct;
 import javax.imageio.ImageIO;
 import javax.swing.*;
-import javax.ws.rs.core.Response;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
@@ -42,20 +43,32 @@ public class RecordWindow extends JFrame {
         container.add(crop);
         crop.addActionListener(action -> {
             RestTemplate restTemplate = new RestTemplate();
-            restTemplate.postForObject("http://localhost:8080/autotest/screenshot/crop/", new HttpEntity<>(new ScreenShotRequest()), Response.class);
+            restTemplate.postForObject("http://localhost:8080/autotest/screenshot/crop/", new HttpEntity<>(new ScreenShotRequest()), BaseResponse.class);
         });
         start.addActionListener(actionEvent -> {
             // Целевое решение
             // HttpEntity<RecordRequest> request = new HttpEntity<>(new RecordRequest(input.getTestCase().getText(), input.getUrl().getText()));
             // Для быстрого тестирования от сюда
+
             HttpEntity<RecordRequest> request = new HttpEntity<>(new RecordRequest(
                     "test",
+                    true,
+                    new App() {{
+                        setName("chrome");
+                        setPath("/Applications/Google Chrome.app");
+                    }},
                     "https://www.google.com/",
-                    "/Applications/Google Chrome.app",
                     "Описание теста"
             ));
+            /*HttpEntity<RecordRequest> request = new HttpEntity<>(RecordRequest.builder()
+                    .testCaseName("test")
+                    .appName("chrome")
+                    .isBrowser(true)
+                    .url("https://www.google.com/")
+                    .build()
+            );*/
             // до сюда
-            new RestTemplate().postForObject("http://localhost:8080/autotest/record/start", request, RecordRequest.class);
+            new RestTemplate().postForEntity("http://localhost:8080/autotest/record/start", request, BaseResponse.class);
         });
         stop.addActionListener(actionEvent -> {
             RestTemplate restTemplate = new RestTemplate();

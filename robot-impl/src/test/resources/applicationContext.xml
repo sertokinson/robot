@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-4.1.xsd">
+
+    <bean class="ru.sertok.robot.storage.LocalStorage" id="localStorage"/>
+    <bean class="ru.sertok.robot.mapper.TestCaseMapperImpl" id="testCaseMapper"/>
+    <bean class="ru.sertok.robot.core.hook.KeyEvents" id="keyEvents"/>
+    <bean class="ru.sertok.robot.core.service.ScreenShot" id="screenShot">
+        <constructor-arg ref="localStorage"/>
+    </bean>
+    <bean id="appService" class="org.mockito.Mockito" factory-method="mock">
+        <constructor-arg value="ru.sertok.robot.core.service.AppService" />
+    </bean>
+    <bean id="eventListener" class="org.mockito.Mockito" factory-method="mock">
+        <constructor-arg value="ru.sertok.robot.core.hook.EventListener" />
+    </bean>
+    <bean id="database" class="org.mockito.Mockito" factory-method="mock">
+        <constructor-arg value="ru.sertok.robot.database.Database" />
+    </bean>
+    <bean id="screenShootController" class="ru.sertok.robot.impl.ScreenShotControllerImpl">
+        <constructor-arg index="0" ref="localStorage"/>
+        <constructor-arg index="1" ref="screenShot"/>
+    </bean>
+
+    <bean class="ru.sertok.robot.impl.RecordControllerImpl" id="recordController">
+        <constructor-arg index="0" ref="localStorage"/>
+        <constructor-arg index="1" ref="appService"/>
+        <constructor-arg index="2" ref="eventListener"/>
+        <constructor-arg index="3" ref="database"/>
+        <constructor-arg index="4" ref="testCaseMapper"/>
+        <constructor-arg index="5" ref="screenShootController"/>
+    </bean>
+
+    <bean class="ru.sertok.robot.impl.RobotControllerImpl" id="robotController">
+        <constructor-arg index="0" ref="database"/>
+        <constructor-arg index="1" ref="screenShot"/>
+        <constructor-arg index="2" ref="localStorage"/>
+        <constructor-arg index="3" ref="appService"/>
+        <constructor-arg index="4" ref="keyEvents"/>
+    </bean>
+
+    <bean class="ru.sertok.robot.impl.ScreenShotControllerImpl" id="screenShotController">
+        <constructor-arg index="0" ref="localStorage"/>
+        <constructor-arg index="1" ref="screenShot"/>
+    </bean>
+</beans>

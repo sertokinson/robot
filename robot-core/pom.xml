@@ -5,7 +5,7 @@
     <parent>
         <artifactId>robot</artifactId>
         <groupId>ru.sertok.robot</groupId>
-        <version>0.19-alpha</version>
+        <version>0.20-alpha</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -36,8 +36,24 @@
         <dependency>
             <groupId>ru.sertok.robot</groupId>
             <artifactId>robot-gui</artifactId>
-            <version>0.19-alpha</version>
+            <version>0.20-alpha</version>
             <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+            <version>${spring.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 

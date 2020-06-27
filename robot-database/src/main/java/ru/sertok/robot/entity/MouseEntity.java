@@ -19,7 +19,7 @@ public class MouseEntity {
     @Id
     @Column(name = "ID")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
 
     @Column(name = "TYPE")
     @Enumerated(EnumType.STRING)
@@ -56,7 +56,7 @@ public class MouseEntity {
      * время отсчета от старта
      */
     @Column(name = "TIME")
-    private Integer time;
+    private int time;
 
     /**
      * Количество нажатий
