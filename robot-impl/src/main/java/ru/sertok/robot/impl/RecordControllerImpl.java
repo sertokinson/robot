@@ -69,7 +69,10 @@ public class RecordControllerImpl implements RecordController {
     }
 
     private String getName(String path) {
-        String[] split = path.split("/");
+        String regex = "\\\\";
+        if (System.getProperty("os.name").toLowerCase().contains("mac"))
+            regex = "/";
+        String[] split = path.split(regex);
         return split[split.length - 1];
     }
 

@@ -26,6 +26,9 @@ public class KeyEvents {
             case "Left Alt":
                 newKey = "Alt";
                 break;
+            case "Left Shift":
+                newKey = "Shift";
+                break;
             default:
                 newKey = key;
         }
