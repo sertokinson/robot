@@ -83,7 +83,7 @@ public class Database {
             if (desktop != null)
                 testCaseEntity.setDesktopId(desktop.getId());
             else
-                testCaseEntity.setDesktopId(settingsService.saveDesktop(testCase.getAppName(), testCase.getPathToApp()).getId());
+                testCaseEntity.setDesktopId(settingsService.saveDesktop(testCase.getAppName(), testCase.getPath()).getId());
         }
         testCaseService.save(testCaseEntity);
         Optional.ofNullable(localStorage.getSize())

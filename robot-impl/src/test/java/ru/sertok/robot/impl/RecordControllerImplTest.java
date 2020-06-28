@@ -35,7 +35,7 @@ public class RecordControllerImplTest {
                         .testCaseName("test")
                         .folderName("folder")
                         .description("Описание теста")
-                        .pathToApp("/Applications/Google Chrome.app")
+                        .path("/Applications/Google Chrome.app")
                         .appName("Google Chrome.app")
                         .url("https://www.google.com/")
                         .isBrowser(true)
@@ -55,7 +55,7 @@ public class RecordControllerImplTest {
         ).getStatus());
         assertEquals(TestCase.builder()
                         .description("Описание теста")
-                        .pathToApp("/Applications/Google Chrome.app")
+                        .path("/Applications/Google Chrome.app")
                         .appName("Google Chrome.app")
                         .url("https://www.google.com/")
                         .isBrowser(true)

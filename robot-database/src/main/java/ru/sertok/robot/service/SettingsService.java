@@ -90,7 +90,7 @@ public class SettingsService {
     public BrowserEntity saveBrowser(TestCase testCase) {
         return browserRepository.save(BrowserEntity.builder()
                 .name(testCase.getAppName())
-                .path(testCase.getPathToApp())
+                .path(testCase.getPath())
                 .build());
     }
 

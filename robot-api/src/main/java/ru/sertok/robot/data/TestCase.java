@@ -31,7 +31,7 @@ public class TestCase {
     /**
      * Путь до приложения или браузера
      */
-    private String pathToApp;
+    private String path;
 
     /**
      * Название тестируемого приложения или браузера

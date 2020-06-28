@@ -44,12 +44,12 @@ public class TestCaseService {
         if (testCase.getIsBrowser()) {
             BrowserEntity browser = settingsService.getBrowser(testCaseEntity.getBrowserId());
             testCase.setAppName(browser.getName());
-            testCase.setPathToApp(browser.getPath());
+            testCase.setPath(browser.getPath());
             testCase.setUrl(settingsService.getUrl(testCaseEntity.getUrlId()).getUrl());
         } else {
             DesktopEntity desktop = settingsService.getDesktop(testCaseEntity.getDesktopId());
             testCase.setAppName(desktop.getName());
-            testCase.setPathToApp(desktop.getPath());
+            testCase.setPath(desktop.getPath());
         }
         return testCase;
     }
