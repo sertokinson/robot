@@ -19,6 +19,11 @@ public class TestCase {
     private String testCaseName;
 
     /**
+     * Имя папки
+     */
+    private String folderName;
+
+    /**
      * Описание теста
      */
     private String description;

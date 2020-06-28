@@ -69,6 +69,9 @@ public class TestCaseEntity {
     @Column(name = "DESKTOP_ID")
     private Long desktopId;
 
+    @Column(name = "FOLDER_ID")
+    private Long folderId;
+
     /**
      * Все события мыши
      */

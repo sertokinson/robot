@@ -14,6 +14,11 @@ public class RecordRequest {
     private String testCaseName;
 
     /**
+     * Имя папки
+     */
+    private String folderName;
+
+    /**
      * Является ли приложение браузером
      */
     private Boolean isBrowser;

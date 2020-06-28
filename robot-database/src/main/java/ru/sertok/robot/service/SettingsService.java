@@ -18,6 +18,7 @@ public class SettingsService {
     private final UrlRepository urlRepository;
     private final DesktopRepository desktopRepository;
     private final BrowserRepository browserRepository;
+    private final FolderRepository folderRepository;
 
     public List<String> getUrls() {
         return urlRepository.findAll()
@@ -40,6 +41,13 @@ public class SettingsService {
                 .collect(Collectors.toList());
     }
 
+    public List<String> getFolders() {
+        return folderRepository.findAll()
+                .stream()
+                .map(FolderEntity::getName)
+                .collect(Collectors.toList());
+    }
+
     public BrowserEntity getBrowser(String name) {
         return browserRepository.findByName(name).orElse(null);
     }
@@ -48,12 +56,20 @@ public class SettingsService {
         return desktopRepository.findByName(name).orElse(null);
     }
 
+    public FolderEntity getFolder(String name) {
+        return folderRepository.findByName(name).orElse(null);
+    }
+
     public UrlEntity getUrl(String url) {
         return urlRepository.findByUrl(url).orElse(null);
     }
 
     public BrowserEntity getBrowser(Long id) {
         return browserRepository.findById(id).orElse(null);
+    }
+
+    public FolderEntity getFolder(Long id) {
+        return folderRepository.findById(id).orElse(null);
     }
 
     public DesktopEntity getDesktop(Long id) {
@@ -88,6 +104,12 @@ public class SettingsService {
        return desktopRepository.save(DesktopEntity.builder()
                 .name(name)
                 .path(path)
+                .build());
+    }
+
+    public FolderEntity saveFolder(String name) {
+        return folderRepository.save(FolderEntity.builder()
+                .name(name)
                 .build());
     }
 }

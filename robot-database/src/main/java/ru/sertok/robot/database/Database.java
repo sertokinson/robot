@@ -42,6 +42,12 @@ public class Database {
         return testCases;
     }
 
+    public Map<String, List<TestCase>> getFolders() {
+        Map<String, List<TestCase>> folders = testCaseService.getFolders();
+        log.debug("Получаем все папки из БД {}", folders);
+        return folders;
+    }
+
     public void update(String testCase, TestStatus status) {
         TestCaseEntity testCaseEntity = testCaseService.getTestCaseEntity(testCase);
         testCaseEntity.setStatus(status);
@@ -57,6 +63,11 @@ public class Database {
         TestCaseEntity testCaseEntity = testCaseMapper.toTestCaseEntity(testCase);
         testCaseEntity.setStatus(TestStatus.NONE);
         testCaseEntity.setTime(System.currentTimeMillis() - localStorage.getStartTime());
+        String folderName = testCase.getFolderName();
+        FolderEntity folderEntity = settingsService.getFolder(folderName);
+        if (folderEntity != null)
+            testCaseEntity.setFolderId(folderEntity.getId());
+        else testCaseEntity.setFolderId(settingsService.saveFolder(folderName).getId());
         if (testCase.getIsBrowser()) {
             BrowserEntity browser = settingsService.getBrowser(testCase.getAppName());
             if (browser != null)
@@ -69,7 +80,7 @@ public class Database {
                 testCaseEntity.setUrlId(settingsService.saveUrl(testCase.getUrl()).getId());
         } else {
             DesktopEntity desktop = settingsService.getDesktop(testCase.getAppName());
-            if(desktop!=null)
+            if (desktop != null)
                 testCaseEntity.setDesktopId(desktop.getId());
             else
                 testCaseEntity.setDesktopId(settingsService.saveDesktop(testCase.getAppName(), testCase.getPathToApp()).getId());

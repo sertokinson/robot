@@ -232,6 +232,14 @@ public class RobotControllerImpl implements RobotController {
     }
 
     @Override
+    public FoldersResponse getFolders() {
+        log.debug("REST-запрос ../robot/getFolders");
+        return ResponseBuilder.success(FoldersResponse.builder()
+                .folders(database.getFolders())
+                .build());
+    }
+
+    @Override
     public TestCaseResponse getAll(String testCase) {
         log.debug("REST-запрос ../robot/getAll/{}", testCase);
         return ResponseBuilder.success(TestCaseResponse.builder()

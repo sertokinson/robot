@@ -25,6 +25,7 @@ public class RecordControllerImplTest {
     public void start() {
         assertEquals(Status.SUCCESS, recordController.start(new RecordRequest(
                 "test",
+                "folder",
                 true,
                 "/Applications/Google Chrome.app",
                 "https://www.google.com/",
@@ -32,6 +33,7 @@ public class RecordControllerImplTest {
         )).getStatus());
         assertEquals(TestCase.builder()
                         .testCaseName("test")
+                        .folderName("folder")
                         .description("Описание теста")
                         .pathToApp("/Applications/Google Chrome.app")
                         .appName("Google Chrome.app")

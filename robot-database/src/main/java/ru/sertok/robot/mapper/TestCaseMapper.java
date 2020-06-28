@@ -14,6 +14,7 @@ public interface TestCaseMapper {
     @Mapping(target = "url", ignore = true)
     @Mapping(target = "pathToApp", ignore = true)
     @Mapping(target = "appName", ignore = true)
+    @Mapping(target = "folderName", ignore = true)
     @Mapping(target = "testCaseName", source = "name")
     TestCase toTestCase(TestCaseEntity testCaseEntity);
 
@@ -34,6 +35,7 @@ public interface TestCaseMapper {
     @Mapping(target = "browserId", ignore = true)
     @Mapping(target = "urlId", ignore = true)
     @Mapping(target = "desktopId", ignore = true)
+    @Mapping(target = "folderId", ignore = true)
     @Mapping(target = "name", source = "testCaseName")
     TestCaseEntity toTestCaseEntity(TestCase testCase);
 
