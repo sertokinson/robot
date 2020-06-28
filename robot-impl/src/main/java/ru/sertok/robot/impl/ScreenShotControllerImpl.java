@@ -22,7 +22,7 @@ public class ScreenShotControllerImpl implements ScreenShotController {
 
     @Override
     public BaseResponse start(ScreenShotRequest screenShotRequest) {
-        log.debug("REST-запрос ../screenshot/start со значением {}", screenShotRequest);
+        log.info("REST-запрос ../screenshot/start со значением {}", screenShotRequest);
         deleteLastMousePressed(localStorage.getSteps());
         screenShot.setSize(screenShotRequest.getSize());
         localStorage.setScreenshotStart(true);
@@ -31,7 +31,7 @@ public class ScreenShotControllerImpl implements ScreenShotController {
 
     @Override
     public BaseResponse stop() {
-        log.debug("REST-запрос ../screenshot/stop");
+        log.info("REST-запрос ../screenshot/stop");
         deleteLastMousePressed(localStorage.getSteps());
         localStorage.setScreenshotStart(false);
         return ResponseBuilder.success();
@@ -39,7 +39,7 @@ public class ScreenShotControllerImpl implements ScreenShotController {
 
     @Override
     public BaseResponse crop() {
-        log.debug("REST-запрос ../screenshot/crop (произошло нажатие кнопки crop)");
+        log.info("REST-запрос ../screenshot/crop (произошло нажатие кнопки crop)");
         localStorage.setActiveCrop(!localStorage.isActiveCrop());
         deleteLastMousePressed(localStorage.getSteps());
         return ResponseBuilder.success();

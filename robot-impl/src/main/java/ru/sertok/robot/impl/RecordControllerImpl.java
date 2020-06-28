@@ -32,7 +32,7 @@ public class RecordControllerImpl implements RecordController {
 
     @Override
     public BaseResponse start(RecordRequest recordRequest) {
-        log.debug("REST-запрос ../record/start с параметрами {}", recordRequest);
+        log.info("REST-запрос ../record/start с параметрами {}", recordRequest);
         localStorage.invalidateLocalStorage();
         TestCase testCase = testCaseMapper.toTestCase(recordRequest);
         testCase.setAppName(getName(recordRequest.getPath()));
@@ -75,7 +75,7 @@ public class RecordControllerImpl implements RecordController {
 
     @Override
     public BaseResponse stop(String userAgent) {
-        log.debug("REST-запрос ../record/stop");
+        log.info("REST-запрос ../record/stop");
         if (localStorage.isScreenshotStart())
             screenShotController.stop();
         if (!removeHook())
@@ -87,6 +87,7 @@ public class RecordControllerImpl implements RecordController {
 
     @Override
     public BaseResponse exit() {
+        log.info("REST-запрос ../record/exit");
         localStorage.invalidateLocalStorage();
         return removeHook()
                 ? ResponseBuilder.success()

@@ -42,7 +42,7 @@ public class RobotControllerImpl implements RobotController {
     @Override
     public RobotResponse start(RobotRequest robotRequest) {
         String testCaseName = robotRequest.getTestCase();
-        log.debug("REST-запрос ../robot/start со значением {}", testCaseName);
+        log.info("REST-запрос ../robot/start со значением {}", testCaseName);
         localStorage.invalidateLocalStorage();
         TestCase testCase = database.get(testCaseName);
         if (testCase == null) {
@@ -133,7 +133,7 @@ public class RobotControllerImpl implements RobotController {
 
     @Override
     public BaseResponse delete(RobotRequest robotRequest) {
-        log.debug("REST-запрос ../robot/delete со значением {}", robotRequest);
+        log.info("REST-запрос ../robot/delete со значением {}", robotRequest);
         database.delete(robotRequest.getTestCase());
         return ResponseBuilder.success();
     }
@@ -225,7 +225,7 @@ public class RobotControllerImpl implements RobotController {
 
     @Override
     public TestCasesResponse getAll() {
-        log.debug("REST-запрос ../robot/getAll");
+        log.info("REST-запрос ../robot/getAll");
         return ResponseBuilder.success(TestCasesResponse.builder()
                 .testCases(database.getAll())
                 .build());
