@@ -48,7 +48,6 @@
         <module>robot-impl</module>
         <module>robot-database</module>
         <module>robot-core</module>
-        <module>robot-gui</module>
     </modules>
     <repositories>
         <repository>

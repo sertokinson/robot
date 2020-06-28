@@ -34,12 +34,6 @@
             <version>0.4.11</version>
         </dependency>
         <dependency>
-            <groupId>ru.sertok.robot</groupId>
-            <artifactId>robot-gui</artifactId>
-            <version>0.20-alpha</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <scope>test</scope>

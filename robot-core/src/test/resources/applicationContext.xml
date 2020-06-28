@@ -9,12 +9,6 @@
     <bean id="environment" class="org.mockito.Mockito" factory-method="mock">
         <constructor-arg value="org.springframework.core.env.Environment" />
     </bean>
-    <bean id="translucentWindow" class="org.mockito.Mockito" factory-method="mock">
-        <constructor-arg value="ru.sertok.robot.gui.TranslucentWindow" />
-    </bean>
-    <bean id="screenShotButtons" class="org.mockito.Mockito" factory-method="mock">
-        <constructor-arg value="ru.sertok.robot.gui.ScreenShotButtons" />
-    </bean>
     <bean class="ru.sertok.robot.core.service.ScreenShot" id="screenShot">
         <constructor-arg ref="localStorage"/>
     </bean>
@@ -25,9 +19,6 @@
     <bean class="ru.sertok.robot.core.hook.EventListener" >
         <constructor-arg index="0" ref="localStorage"/>
         <constructor-arg index="1" ref="screenShot"/>
-        <constructor-arg index="2" ref="environment"/>
-        <constructor-arg index="3" ref="translucentWindow"/>
-        <constructor-arg index="4" ref="screenShotButtons"/>
-        <constructor-arg index="5" ref="keyEvents"/>
+        <constructor-arg index="2" ref="keyEvents"/>
     </bean>
 </beans>
