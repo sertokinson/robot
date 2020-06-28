@@ -1,7 +1,9 @@
 package ru.sertok.robot.app;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
@@ -17,6 +19,10 @@ import java.util.concurrent.Executor;
 @Configuration
 @EnableAsync
 public class Config {
+    private final String DB_PROPERTY = "hibernate.hbm2ddl.auto";
+
+    @Autowired
+    private Environment environment;
 
     @Bean(name = "threadPoolTaskExecutor")
     public Executor threadPoolTaskExecutor() {
@@ -34,19 +40,25 @@ public class Config {
 
         Properties properties = new Properties();
         properties.setProperty("hibernate.dialect", "org.hibernate.dialect.H2Dialect");
+        properties.setProperty(DB_PROPERTY, getDB_PROPERTY());
 
-        String pathName = System.getProperty("java.io.tmpdir") + "robot";
-        File file = new File(pathName, "0.20-alpha.txt");
-        if (!file.exists()) {
-            properties.setProperty("hibernate.hbm2ddl.auto", "create");
-            new File(pathName).mkdir();
-            file.createNewFile();
-        } else {
-            properties.setProperty("hibernate.hbm2ddl.auto", "update");
-        }
 
         em.setJpaProperties(properties);
 
         return em;
+    }
+
+    private String getDB_PROPERTY() throws IOException {
+        String[] activeProfiles = environment.getActiveProfiles();
+        if (activeProfiles.length > 0 && activeProfiles[0].equals("dev"))
+            return "create";
+        String pathName = System.getProperty("java.io.tmpdir") + "robot";
+        File file = new File(pathName, "0.20-alpha.txt");
+        if (!file.exists()) {
+            new File(pathName).mkdir();
+            file.createNewFile();
+            return "create";
+        }
+        return "update";
     }
 }

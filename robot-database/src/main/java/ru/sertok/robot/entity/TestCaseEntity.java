@@ -52,6 +52,7 @@ public class TestCaseEntity {
      * Статус выполнения теста
      */
     @Column(name = "STATUS")
+    @Enumerated(EnumType.STRING)
     private TestStatus status;
 
     /**

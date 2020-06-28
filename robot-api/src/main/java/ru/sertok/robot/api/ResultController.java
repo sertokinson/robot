@@ -18,7 +18,7 @@ public interface ResultController {
     ResultResponse get(@PathParam("testCase") String testCase);
 
     @GET
-    @Path("/get/{testCase}")
+    @Path("/toPath/{testCase}")
     @ApiResponse(description = "Выгрузить все изображения в папку")
     AppResponse toPath(@PathParam("testCase") String testCase);
 
