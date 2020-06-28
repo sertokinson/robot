@@ -35,6 +35,7 @@ public class RecordControllerImpl implements RecordController {
         log.debug("REST-запрос ../record/start с параметрами {}", recordRequest);
         localStorage.invalidateLocalStorage();
         TestCase testCase = testCaseMapper.toTestCase(recordRequest);
+        testCase.setAppName(getName(recordRequest.getPath()));
         localStorage.setTestCase(testCase);
         return record(testCase);
     }
@@ -65,6 +66,11 @@ public class RecordControllerImpl implements RecordController {
             GlobalScreen.addNativeMouseWheelListener(eventListener);
         }
         return ResponseBuilder.success();
+    }
+
+    private String getName(String path) {
+        String[] split = path.split("/");
+        return split[split.length - 1];
     }
 
     @Override

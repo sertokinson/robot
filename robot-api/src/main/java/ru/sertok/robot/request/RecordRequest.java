@@ -1,7 +1,6 @@
 package ru.sertok.robot.request;
 
 import lombok.*;
-import ru.sertok.robot.data.App;
 
 @Getter
 @ToString
@@ -20,9 +19,9 @@ public class RecordRequest {
     private Boolean isBrowser;
 
     /**
-     * Тестируемое приложение или браузер
+     * Путь до приложения или браузера
      */
-    private App app;
+    private String path;
 
     /**
      * Тестируемый url - адрес сайта

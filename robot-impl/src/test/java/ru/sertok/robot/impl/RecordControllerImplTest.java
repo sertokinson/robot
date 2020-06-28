@@ -6,7 +6,6 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import ru.sertok.robot.data.App;
 import ru.sertok.robot.data.TestCase;
 import ru.sertok.robot.data.enumerate.Status;
 import ru.sertok.robot.request.RecordRequest;
@@ -27,10 +26,7 @@ public class RecordControllerImplTest {
         assertEquals(Status.SUCCESS, recordController.start(new RecordRequest(
                 "test",
                 true,
-                new App() {{
-                    setName("chrome");
-                    setPath("/Applications/Google Chrome.app");
-                }},
+                "/Applications/Google Chrome.app",
                 "https://www.google.com/",
                 "Описание теста"
         )).getStatus());
@@ -38,7 +34,7 @@ public class RecordControllerImplTest {
                         .testCaseName("test")
                         .description("Описание теста")
                         .pathToApp("/Applications/Google Chrome.app")
-                        .appName("chrome")
+                        .appName("Google Chrome.app")
                         .url("https://www.google.com/")
                         .isBrowser(true)
                         .build(),
@@ -50,10 +46,7 @@ public class RecordControllerImplTest {
         assertEquals(Status.ERROR, recordController.start(
                 RecordRequest.builder()
                         .isBrowser(true)
-                        .app(new App() {{
-                            setName("chrome");
-                            setPath("/Applications/Google Chrome.app");
-                        }})
+                        .path("/Applications/Google Chrome.app")
                         .url("https://www.google.com/")
                         .description("Описание теста")
                         .build()
@@ -61,7 +54,7 @@ public class RecordControllerImplTest {
         assertEquals(TestCase.builder()
                         .description("Описание теста")
                         .pathToApp("/Applications/Google Chrome.app")
-                        .appName("chrome")
+                        .appName("Google Chrome.app")
                         .url("https://www.google.com/")
                         .isBrowser(true)
                         .build(),

@@ -20,8 +20,8 @@ public interface TestCaseMapper {
     @Mapping(target = "time", ignore = true)
     @Mapping(target = "status", ignore = true)
     @Mapping(target = "runDate", ignore = true)
-    @Mapping(target = "pathToApp", source = "app.path")
-    @Mapping(target = "appName", source = "app.name")
+    @Mapping(target = "appName", ignore = true)
+    @Mapping(target = "pathToApp", source = "path")
     TestCase toTestCase(RecordRequest recordRequest);
 
     @Mapping(target = "mouse", ignore = true)
