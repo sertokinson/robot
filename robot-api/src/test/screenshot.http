@@ -3,10 +3,12 @@ POST http://localhost:8080/autotest/screenshot/start
 Content-Type: application/json
 
 {
-  "x": 0,
-  "y": 0,
-  "width": 1920,
-  "height": 1080
+  "size": {
+    "x": 0,
+    "y": 0,
+    "width": 1920,
+    "height": 1080
+  }
 }
 
 ### Стоп записи скриншота
@@ -14,3 +16,5 @@ POST http://localhost:8080/autotest/screenshot/stop
 
 ### Нажатие на кнопку crop
 POST http://localhost:8080/autotest/screenshot/crop
+
+###

@@ -11,6 +11,7 @@ import org.jnativehook.mouse.NativeMouseWheelListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.sertok.robot.core.service.ScreenShot;
+import ru.sertok.robot.data.Image;
 import ru.sertok.robot.data.Keyboard;
 import ru.sertok.robot.data.Mouse;
 import ru.sertok.robot.data.enumerate.Type;
@@ -18,6 +19,8 @@ import ru.sertok.robot.data.enumerate.TypePressed;
 import ru.sertok.robot.storage.LocalStorage;
 
 import javax.annotation.PostConstruct;
+import java.util.List;
+import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
@@ -30,7 +33,7 @@ public class EventListener implements NativeMouseInputListener, NativeKeyListene
     private long screenShotTime;
 
     @PostConstruct
-    public void init(){
+    public void init() {
         currentTime = System.currentTimeMillis();
     }
 
@@ -109,11 +112,13 @@ public class EventListener implements NativeMouseInputListener, NativeKeyListene
     }
 
     private boolean makeScreenshot() {
-        boolean screenshot = localStorage.isScreenshotStart();
-        if (screenshot && getScreenShotTime() > 200) {
+        if (localStorage.isScreenshotStart() && getScreenShotTime() > 200) {
             screenShotTime = System.currentTimeMillis();
-            screenShot.make();
-            return true;
+            List<Image> images = localStorage.getImages();
+            Image image1 = images.get(images.size() - 1);
+            return Optional.ofNullable(screenShot.make())
+                    .map(image2 -> screenShot.compare(image1.getImage(), image2))
+                    .orElse(false);
         }
         return false;
     }

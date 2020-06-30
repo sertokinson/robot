@@ -10,5 +10,4 @@ import lombok.*;
 public class Image {
     private byte[] image;
     private boolean assertResult;
-    private int percent;
 }

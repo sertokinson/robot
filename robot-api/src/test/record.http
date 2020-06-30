@@ -6,7 +6,7 @@ Content-Type: application/json
   "testCaseName": "test",
   "isBrowser": true,
   "folderName":"folder",
-  "path": "/Applications/Google Chrome.app",
+  "path": "/Applications/Yandex.app",
   "url": "https://www.google.ru/"
 }
 
@@ -27,3 +27,5 @@ GET http://localhost:8080/autotest/record/stop
 
 ### Выход из записи теста
 POST http://localhost:8080/autotest/record/exit
+
+###

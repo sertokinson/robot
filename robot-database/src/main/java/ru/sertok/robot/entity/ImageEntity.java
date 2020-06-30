@@ -41,12 +41,6 @@ public class ImageEntity {
     private Boolean assertResult;
 
     /**
-     * Процент совпадения
-     */
-    @Column(name = "PERCENT")
-    private Integer percent;
-
-    /**
      * порядок в катором было событие
      */
     @Column(name = "position", nullable = false)

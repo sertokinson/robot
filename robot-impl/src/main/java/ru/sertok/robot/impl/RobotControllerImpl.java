@@ -20,12 +20,8 @@ import ru.sertok.robot.request.RobotRequest;
 import ru.sertok.robot.response.*;
 import ru.sertok.robot.storage.LocalStorage;
 
-import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.event.InputEvent;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -109,7 +105,7 @@ public class RobotControllerImpl implements RobotController {
                     }
                 }
                 if (baseData.isScreenshot())
-                    screenShot.make();
+                    screenShot.makeAsync();
                 if (i + 1 < data.size() && data.get(i + 1) != null) {
                     try {
                         robot.delay((data.get(i + 1)).getTime() - baseData.getTime());
@@ -158,62 +154,19 @@ public class RobotControllerImpl implements RobotController {
         int size = Math.min(expectedImages.size(), actualImages.size());
         for (int i = 0; i < size; i++) {
             Image actual = actualImages.get(i);
-            // вычесляем процент совпадения
-            int percent = compare(actual.getImage(), expectedImages.get(i).getImage());
-            // допускаем 2% не совпадение
-            if (percent > 2) {
+            boolean compare = screenShot.compare(actual.getImage(), expectedImages.get(i).getImage());
+            if (compare) {
+                actual.setAssertResult(true);
+            } else {
                 actual.setAssertResult(false);
                 countError++;
-            } else {
-                actual.setAssertResult(true);
             }
-            actual.setPercent(percent);
         }
         database.save(actualImages, testCaseName);
         // допускаем максимум 2% не совпадений
         return countError == 0;
     }
 
-    private int compare(byte[] actual, byte[] expected) {
-        try {
-            BufferedImage expectedImage = ImageIO.read(new ByteArrayInputStream(expected));
-            BufferedImage actualImage = ImageIO.read(new ByteArrayInputStream(actual));
-            if (actualImage.getWidth() != expectedImage.getWidth() || expectedImage.getHeight() != actualImage.getHeight()) {
-                log.error("Размеры фактического изображения width: {} height: {} не совпадают с размерами ожидаемого изображения width: {} height: {}",
-                        actualImage.getWidth(), actualImage.getHeight(), expectedImage.getWidth(), expectedImage.getHeight());
-                return 100;
-            }
-            // количество не идентичных пикселей
-            int countIsNotIdentic = 0;
-            for (int i = 0; i < actualImage.getWidth(); i++) {
-                for (int j = 0; j < actualImage.getHeight(); j++) {
-                    int actualRGB = actualImage.getRGB(i, j);
-                    int expectedRGB = expectedImage.getRGB(i, j);
-                    Color color1 = new Color((actualRGB >> 16) & 0xFF, (actualRGB >> 8) & 0xFF, (actualRGB) & 0xFF);
-                    Color color2 = new Color((expectedRGB >> 16) & 0xFF, (expectedRGB >> 8) & 0xFF, (expectedRGB) & 0xFF);
-                    if (!compareColor(color1, color2)) {
-                        countIsNotIdentic++;
-                    }
-                }
-            }
-            return (countIsNotIdentic * 100) / (actualImage.getWidth() * actualImage.getHeight());
-
-        } catch (IOException e) {
-            log.error("Не смог преобразовать изображение", e);
-            return 100;
-        }
-    }
-
-    private boolean compareColor(Color color1, Color color2) {
-        if (Math.abs(color1.getRed() - color2.getRed()) > 20) {
-            return false;
-        }
-        if (Math.abs(color1.getBlue() - color2.getBlue()) > 20) {
-            return false;
-        }
-        return Math.abs(color1.getGreen() - color2.getGreen()) <= 20;
-
-    }
 
     private int getButton(TypePressed type) {
         if (TypePressed.LEFT == type) {

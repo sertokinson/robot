@@ -130,7 +130,6 @@ public class Database {
                         Image image = images.get(i);
                         imageEntity.setPhotoActual(image.getImage());
                         imageEntity.setAssertResult(image.isAssertResult());
-                        imageEntity.setPercent(image.getPercent());
                     }
                     testCaseEntity.setImages(imageEntities);
                     testCaseService.save(testCaseEntity);

@@ -54,7 +54,7 @@ public class ResultControllerImpl implements ResultController {
         deleteFile(new File(path));
         log.debug("Выгружаем изображения по тест-кейсу: {}", testCase);
         List<ImageEntity> images = testCaseService.getTestCaseEntity(testCase).getImages();
-        if(CollectionUtils.isEmpty(images))
+        if (CollectionUtils.isEmpty(images))
             return ResponseBuilder.error(AppResponse.builder().error("Нет изображений").build());
         output(path, images, testCase);
         return ResponseBuilder.success(AppResponse.builder().result(path).build());
@@ -81,8 +81,7 @@ public class ResultControllerImpl implements ResultController {
             if (photoExpected != null) {
                 InputStream in = new ByteArrayInputStream(photoExpected);
                 try {
-                    Integer percent = images.get(i).getPercent();
-                    writePng(path, ImageIO.read(in), "recorder", testCase + i + "(" + (100 - (percent == null ? 0 : percent)) + "%" + ")");
+                    writePng(path, ImageIO.read(in), "recorder", testCase + i);
                 } catch (IOException e) {
                     log.error("Ошибка при выгрузке изображения", e);
                 }
@@ -93,7 +92,7 @@ public class ResultControllerImpl implements ResultController {
             if (photoActual != null) {
                 InputStream in = new ByteArrayInputStream(photoActual);
                 try {
-                    writePng(path, ImageIO.read(in), "robot", testCase + i + "(" + (100 - images.get(i).getPercent()) + "%" + ")");
+                    writePng(path, ImageIO.read(in), "robot", testCase + i);
                 } catch (IOException e) {
                     log.error("Ошибка при выгрузке изображения", e);
                 }
