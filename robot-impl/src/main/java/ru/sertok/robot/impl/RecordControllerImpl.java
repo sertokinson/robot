@@ -17,6 +17,7 @@ import ru.sertok.robot.mapper.TestCaseMapper;
 import ru.sertok.robot.request.RecordRequest;
 import ru.sertok.robot.response.BaseResponse;
 import ru.sertok.robot.response.ResponseBuilder;
+import ru.sertok.robot.service.SettingsService;
 import ru.sertok.robot.storage.LocalStorage;
 
 @Slf4j
@@ -29,14 +30,19 @@ public class RecordControllerImpl implements RecordController {
     private final Database database;
     private final TestCaseMapper testCaseMapper;
     private final ScreenShotControllerImpl screenShotController;
+    private final SettingsService settingsService;
 
     @Override
     public BaseResponse start(RecordRequest recordRequest) {
         log.info("REST-запрос ../record/start с параметрами {}", recordRequest);
         localStorage.invalidateLocalStorage();
         TestCase testCase = testCaseMapper.toTestCase(recordRequest);
-        if (recordRequest.getAppName() == null)
+        String appName = recordRequest.getAppName();
+        if (appName == null)
             testCase.setAppName(getName(recordRequest.getPath()));
+        else testCase.setPath(recordRequest.getIsBrowser()
+                ? settingsService.getBrowser(appName).getPath()
+                : settingsService.getDesktop(appName).getPath());
         localStorage.setTestCase(testCase);
         return record(testCase);
     }

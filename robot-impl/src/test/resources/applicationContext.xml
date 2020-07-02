@@ -13,6 +13,9 @@
     <bean id="appService" class="org.mockito.Mockito" factory-method="mock">
         <constructor-arg value="ru.sertok.robot.core.service.AppService" />
     </bean>
+    <bean id="settingsService" class="org.mockito.Mockito" factory-method="mock">
+        <constructor-arg value="ru.sertok.robot.service.SettingsService" />
+    </bean>
     <bean id="eventListener" class="org.mockito.Mockito" factory-method="mock">
         <constructor-arg value="ru.sertok.robot.core.hook.EventListener" />
     </bean>
@@ -31,6 +34,7 @@
         <constructor-arg index="3" ref="database"/>
         <constructor-arg index="4" ref="testCaseMapper"/>
         <constructor-arg index="5" ref="screenShootController"/>
+        <constructor-arg index="6" ref="settingsService"/>
     </bean>
 
     <bean class="ru.sertok.robot.impl.RobotControllerImpl" id="robotController">
