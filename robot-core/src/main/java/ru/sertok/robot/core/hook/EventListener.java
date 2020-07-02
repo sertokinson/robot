@@ -92,8 +92,6 @@ public class EventListener implements NativeMouseInputListener, NativeKeyListene
 
     private void key(Type type, NativeKeyEvent e) throws IllegalAccessException {
         String keyText = NativeKeyEvent.getKeyText(e.getKeyCode());
-        System.out.println(keyText);
-        System.out.println(keyEvents.getKey(keyText));
         if (keyEvents.getKey(keyText) != 0)
             localStorage.getSteps().add(getKeyboard(keyText, type));
     }
