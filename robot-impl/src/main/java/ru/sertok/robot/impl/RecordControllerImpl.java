@@ -38,7 +38,7 @@ public class RecordControllerImpl implements RecordController {
         localStorage.invalidateLocalStorage();
         TestCase testCase = testCaseMapper.toTestCase(recordRequest);
         String appName = recordRequest.getAppName();
-        if (appName == null)
+        if (StringUtils.isEmpty(appName))
             testCase.setAppName(getName(recordRequest.getPath()));
         else testCase.setPath(recordRequest.getIsBrowser()
                 ? settingsService.getBrowser(appName).getPath()
