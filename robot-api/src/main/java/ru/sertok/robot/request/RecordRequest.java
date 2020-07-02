@@ -5,13 +5,16 @@ import lombok.*;
 @Getter
 @ToString
 @Builder
-@AllArgsConstructor
-@NoArgsConstructor
 public class RecordRequest {
     /**
      * Название теста
      */
     private String testCaseName;
+
+    /**
+     * Название приложения или браузера
+     */
+    private String appName;
 
     /**
      * Имя папки

@@ -35,7 +35,8 @@ public class RecordControllerImpl implements RecordController {
         log.info("REST-запрос ../record/start с параметрами {}", recordRequest);
         localStorage.invalidateLocalStorage();
         TestCase testCase = testCaseMapper.toTestCase(recordRequest);
-        testCase.setAppName(getName(recordRequest.getPath()));
+        if (recordRequest.getAppName() == null)
+            testCase.setAppName(getName(recordRequest.getPath()));
         localStorage.setTestCase(testCase);
         return record(testCase);
     }
