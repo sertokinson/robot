@@ -5,6 +5,8 @@ import lombok.*;
 @Getter
 @ToString
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class RecordRequest {
     /**
      * Название теста
