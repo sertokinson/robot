@@ -19,6 +19,6 @@ public class AppControllerImplTest {
 
     @Test
     public void version() {
-        assertEquals("0.20-alpha", appController.version().getResult());
+        assertEquals("0.21", appController.version().getResult());
     }
 }
