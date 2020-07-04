@@ -9,5 +9,4 @@ import ru.sertok.robot.data.enumerate.Type;
 public class BaseData {
     private Type type;
     private int time;
-    private boolean screenshot;
 }

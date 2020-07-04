@@ -71,12 +71,6 @@ public class MouseEntity {
     private int position;
 
     /**
-     * Признак что есть скриншот у этого события
-     */
-    @Column(name = "screenshot", nullable = false)
-    private boolean screenshot;
-
-    /**
      * Тест кейс к которому относится данное событие
      */
     @ManyToOne
@@ -98,7 +92,6 @@ public class MouseEntity {
                 ", y=" + y +
                 ", time=" + time +
                 ", position=" + position +
-                ", screenshot=" + screenshot +
                 ", testCaseId=" + testCase.getId() +
                 '}';
     }

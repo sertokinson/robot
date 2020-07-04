@@ -51,51 +51,6 @@ public class LocalStorage {
      */
     private ScreenshotSize size;
 
-    /**
-     * Сработало предупреждение об наименовании теста
-     */
-    private boolean warningTestCaseName = false;
-
-    /**
-     * Сработало предупреждение об наименовании браузера
-     */
-    private boolean warningBrowser = false;
-
-    /**
-     * Сработало предупреждение об наименовании приложения
-     */
-    private boolean warningDesktop = false;
-
-    public boolean isWarningDesktop() {
-        log.debug("Вычитываем из локального хранилища предупреждение об наименовании приложения: {}", warningDesktop);
-        return warningDesktop;
-    }
-
-    public void setWarningDesktop(boolean warningDesktop) {
-        log.debug("Записываем в локальное хранилище предупреждение об наименовании приложения {}", warningDesktop);
-        this.warningDesktop = warningDesktop;
-    }
-
-    public boolean isWarningBrowser() {
-        log.debug("Вычитываем из локального хранилища предупреждение об наименовании браузера: {}", warningBrowser);
-        return warningBrowser;
-    }
-
-    public void setWarningBrowser(boolean warningBrowser) {
-        log.debug("Записываем в локальное хранилище предупреждение об наименовании браузера {}", warningBrowser);
-        this.warningBrowser = warningBrowser;
-    }
-
-    public boolean isWarningTestCaseName() {
-        log.debug("Вычитываем из локального хранилища предупреждение об наименовании теста: {}", warningTestCaseName);
-        return warningTestCaseName;
-    }
-
-    public void setWarningTestCaseName(boolean warningTestCaseName) {
-        log.debug("Записываем в локальное хранилище предупреждение об наименовании теста {}", warningTestCaseName);
-        this.warningTestCaseName = warningTestCaseName;
-    }
-
     public ScreenshotSize getSize() {
         log.debug("Вычитываем из локального хранилища размеры скриншота: {}", size);
         return size;
@@ -161,12 +116,9 @@ public class LocalStorage {
     }
 
     public void invalidateLocalStorage() {
-        warningTestCaseName = false;
-        warningBrowser = false;
-        warningDesktop = false;
         startTime = null;
         steps = new ArrayList<>();
-        images = null;
+        images = new ArrayList<>();
         screenshotStart = false;
         size = null;
         testCase = null;

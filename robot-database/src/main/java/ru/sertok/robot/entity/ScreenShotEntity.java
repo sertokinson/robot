@@ -24,16 +24,19 @@ public class ScreenShotEntity {
      */
     @Column(name = "X")
     private int x;
+
     /**
      * Координата изображения по y
      */
     @Column(name = "Y")
     private int y;
+
     /**
      * ширина
      */
     @Column(name = "WIDTH")
     private int width;
+
     /**
      * высота
      */

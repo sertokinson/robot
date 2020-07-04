@@ -104,8 +104,8 @@ public class RobotControllerImpl implements RobotController {
                         return ResponseBuilder.error(RobotResponse.builder().error("Ошибка при считывании клавиши").build());
                     }
                 }
-                if (baseData.isScreenshot())
-                    screenShot.makeAsync();
+                if (baseData instanceof Image)
+                   screenShot.makeOne();
                 if (i + 1 < data.size() && data.get(i + 1) != null) {
                     try {
                         robot.delay((data.get(i + 1)).getTime() - baseData.getTime());

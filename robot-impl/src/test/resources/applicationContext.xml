@@ -7,8 +7,10 @@
     <bean class="ru.sertok.robot.storage.LocalStorage" id="localStorage"/>
     <bean class="ru.sertok.robot.mapper.TestCaseMapperImpl" id="testCaseMapper"/>
     <bean class="ru.sertok.robot.core.hook.KeyEvents" id="keyEvents"/>
-    <bean class="ru.sertok.robot.core.service.ScreenShot" id="screenShot">
-        <constructor-arg ref="localStorage"/>
+
+
+    <bean id="screenShot" class="org.mockito.Mockito" factory-method="mock">
+        <constructor-arg value="ru.sertok.robot.core.service.ScreenShot" />
     </bean>
     <bean id="appService" class="org.mockito.Mockito" factory-method="mock">
         <constructor-arg value="ru.sertok.robot.core.service.AppService" />

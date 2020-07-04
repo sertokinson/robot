@@ -26,6 +26,7 @@ public class ScreenShotControllerImpl implements ScreenShotController {
         deleteLastMousePressed(localStorage.getSteps());
         screenShot.setSize(screenShotRequest.getSize());
         localStorage.setScreenshotStart(true);
+        screenShot.makeAll();
         return ResponseBuilder.success();
     }
 
@@ -34,6 +35,7 @@ public class ScreenShotControllerImpl implements ScreenShotController {
         log.info("REST-запрос ../screenshot/stop");
         deleteLastMousePressed(localStorage.getSteps());
         localStorage.setScreenshotStart(false);
+        screenShot.stop();
         return ResponseBuilder.success();
     }
 
