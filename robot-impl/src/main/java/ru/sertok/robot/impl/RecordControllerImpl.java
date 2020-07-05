@@ -55,7 +55,7 @@ public class RecordControllerImpl implements RecordController {
             return ResponseBuilder.error(error);
         }
         if (appService.execute(testCase) == Status.ERROR) {
-            String error = "Не удалось запустить приложение!";
+            String error = "Неверно указан путь до " + (testCase.getIsBrowser() ? "браузера" : "приложения");
             log.error(error);
             return ResponseBuilder.error(error);
         }
