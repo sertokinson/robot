@@ -19,6 +19,11 @@ public class TestCase {
     private String testCaseName;
 
     /**
+     * Имя папки
+     */
+    private String folderName;
+
+    /**
      * Описание теста
      */
     private String description;
@@ -26,7 +31,7 @@ public class TestCase {
     /**
      * Путь до приложения или браузера
      */
-    private String pathToApp;
+    private String path;
 
     /**
      * Название тестируемого приложения или браузера

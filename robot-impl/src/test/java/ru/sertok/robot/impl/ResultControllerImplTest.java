@@ -8,6 +8,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import ru.sertok.robot.data.enumerate.Status;
 import ru.sertok.robot.entity.TestCaseEntity;
+import ru.sertok.robot.response.ResultResponse;
 import ru.sertok.robot.service.TestCaseService;
 
 import java.util.ArrayList;
@@ -17,9 +18,9 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ImageControllerImplTest {
+public class ResultControllerImplTest {
     @InjectMocks
-    private ImageControllerImpl imageController;
+    private ResultControllerImpl resultController;
     @Mock
     private TestCaseService testCaseService;
 
@@ -30,11 +31,16 @@ public class ImageControllerImplTest {
 
     @Test
     public void getAll() {
-        assertEquals(Status.ERROR, imageController.getAll("").getStatus());
+        assertEquals(Status.ERROR, resultController.toPath("").getStatus());
+    }
+
+    @Test
+    public void get() {
+        assertEquals(Status.SUCCESS, resultController.get("").getStatus());
     }
 
     @Test
     public void getErrors() {
-        assertEquals(Status.ERROR, imageController.getErrors("").getStatus());
+        assertEquals(Status.ERROR, resultController.errors("").getStatus());
     }
 }

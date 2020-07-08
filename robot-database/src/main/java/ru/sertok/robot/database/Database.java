@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.util.CollectionUtils;
 import ru.sertok.robot.data.*;
 import ru.sertok.robot.data.enumerate.TestStatus;
 import ru.sertok.robot.entity.*;
@@ -42,6 +41,12 @@ public class Database {
         return testCases;
     }
 
+    public Map<String, List<TestCase>> getFolders() {
+        Map<String, List<TestCase>> folders = testCaseService.getFolders();
+        log.debug("Получаем все папки из БД {}", folders);
+        return folders;
+    }
+
     public void update(String testCase, TestStatus status) {
         TestCaseEntity testCaseEntity = testCaseService.getTestCaseEntity(testCase);
         testCaseEntity.setStatus(status);
@@ -57,6 +62,11 @@ public class Database {
         TestCaseEntity testCaseEntity = testCaseMapper.toTestCaseEntity(testCase);
         testCaseEntity.setStatus(TestStatus.NONE);
         testCaseEntity.setTime(System.currentTimeMillis() - localStorage.getStartTime());
+        String folderName = testCase.getFolderName();
+        FolderEntity folderEntity = settingsService.getFolder(folderName);
+        if (folderEntity != null)
+            testCaseEntity.setFolderId(folderEntity.getId());
+        else testCaseEntity.setFolderId(settingsService.saveFolder(folderName).getId());
         if (testCase.getIsBrowser()) {
             BrowserEntity browser = settingsService.getBrowser(testCase.getAppName());
             if (browser != null)
@@ -69,10 +79,10 @@ public class Database {
                 testCaseEntity.setUrlId(settingsService.saveUrl(testCase.getUrl()).getId());
         } else {
             DesktopEntity desktop = settingsService.getDesktop(testCase.getAppName());
-            if(desktop!=null)
+            if (desktop != null)
                 testCaseEntity.setDesktopId(desktop.getId());
             else
-                testCaseEntity.setDesktopId(settingsService.saveDesktop(testCase.getAppName(), testCase.getPathToApp()).getId());
+                testCaseEntity.setDesktopId(settingsService.saveDesktop(testCase.getAppName(), testCase.getPath()).getId());
         }
         testCaseService.save(testCaseEntity);
         Optional.ofNullable(localStorage.getSize())
@@ -96,14 +106,13 @@ public class Database {
                 keyboardEntity.setTestCase(testCaseEntity);
                 keyboardService.save(keyboardEntity);
             }
-        }
-        List<Image> images = localStorage.getImages();
-        if (!CollectionUtils.isEmpty(images)) {
-            for (int i = 0; i < images.size(); i++) {
+            if (steps.get(i) instanceof Image) {
+                Image image = (Image)steps.get(i);
                 imageService.save(ImageEntity.builder()
                         .testCase(testCaseEntity)
                         .position(i)
-                        .photoExpected(images.get(i).getImage())
+                        .time(image.getTime())
+                        .photoExpected(image.getImage())
                         .build());
             }
         }
@@ -119,7 +128,6 @@ public class Database {
                         Image image = images.get(i);
                         imageEntity.setPhotoActual(image.getImage());
                         imageEntity.setAssertResult(image.isAssertResult());
-                        imageEntity.setPercent(image.getPercent());
                     }
                     testCaseEntity.setImages(imageEntities);
                     testCaseService.save(testCaseEntity);
@@ -137,6 +145,7 @@ public class Database {
         return Optional.ofNullable(testCaseService.getTestCaseEntity(testCaseName)).map(testCaseEntity -> {
             steps.addAll(testCaseEntity.getMouse());
             steps.addAll(testCaseEntity.getKeyboard());
+            steps.addAll(testCaseEntity.getImages());
             BaseData[] stepsResult = new BaseData[steps.size() + 1];
             for (Object step : steps) {
                 if (step instanceof MouseEntity) {
@@ -146,6 +155,12 @@ public class Database {
                 if (step instanceof KeyboardEntity) {
                     KeyboardEntity keyboardEntity = (KeyboardEntity) step;
                     stepsResult[keyboardEntity.getPosition()] = keyboardMapper.toKeyboard(keyboardEntity);
+                }
+                if (step instanceof ImageEntity) {
+                    ImageEntity imageEntity = (ImageEntity) step;
+                    stepsResult[imageEntity.getPosition()] = Image.builder()
+                            .time(imageEntity.getTime())
+                            .build();
                 }
             }
             return Arrays.asList(stepsResult);

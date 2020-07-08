@@ -9,6 +9,6 @@ import java.util.List;
 @Getter
 @SuperBuilder
 @EqualsAndHashCode(callSuper = true)
-public class SettingsResponse extends BaseResponse{
+public class SettingsResponse extends BaseResponse {
     private List<String> values;
 }

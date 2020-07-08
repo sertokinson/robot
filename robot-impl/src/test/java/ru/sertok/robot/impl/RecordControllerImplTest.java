@@ -6,7 +6,6 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import ru.sertok.robot.data.App;
 import ru.sertok.robot.data.TestCase;
 import ru.sertok.robot.data.enumerate.Status;
 import ru.sertok.robot.request.RecordRequest;
@@ -21,24 +20,26 @@ public class RecordControllerImplTest {
     private RecordControllerImpl recordController;
     @Autowired
     private LocalStorage localStorage;
+    private final String path = getPath();
+    private final String appName = getAppName();
 
     @Test
     public void start() {
-        assertEquals(Status.SUCCESS, recordController.start(new RecordRequest(
-                "test",
-                true,
-                new App() {{
-                    setName("chrome");
-                    setPath("/Applications/Google Chrome.app");
-                }},
-                "https://www.google.com/",
-                "Описание теста"
-        )).getStatus());
+        assertEquals(Status.SUCCESS, recordController.start(RecordRequest.builder()
+                .testCaseName("test")
+                .folderName("folder")
+                .isBrowser(true)
+                .path(path)
+                .url("https://www.google.com/")
+                .description("Описание теста")
+                .build()
+        ).getStatus());
         assertEquals(TestCase.builder()
                         .testCaseName("test")
+                        .folderName("folder")
                         .description("Описание теста")
-                        .pathToApp("/Applications/Google Chrome.app")
-                        .appName("chrome")
+                        .path(path)
+                        .appName(appName)
                         .url("https://www.google.com/")
                         .isBrowser(true)
                         .build(),
@@ -50,20 +51,17 @@ public class RecordControllerImplTest {
         assertEquals(Status.ERROR, recordController.start(
                 RecordRequest.builder()
                         .isBrowser(true)
-                        .app(new App() {{
-                            setName("chrome");
-                            setPath("/Applications/Google Chrome.app");
-                        }})
+                        .path(path)
                         .url("https://www.google.com/")
                         .description("Описание теста")
                         .build()
         ).getStatus());
         assertEquals(TestCase.builder()
-                        .description("Описание теста")
-                        .pathToApp("/Applications/Google Chrome.app")
-                        .appName("chrome")
-                        .url("https://www.google.com/")
                         .isBrowser(true)
+                        .path(path)
+                        .appName(appName)
+                        .url("https://www.google.com/")
+                        .description("Описание теста")
                         .build(),
                 localStorage.getTestCase());
     }
@@ -79,7 +77,19 @@ public class RecordControllerImplTest {
     }
 
     @After
-    public void clear(){
+    public void clear() {
         localStorage.invalidateLocalStorage();
+    }
+
+    private String getPath() {
+        if (System.getProperty("os.name").toLowerCase().contains("mac"))
+            return "/Applications/Google Chrome.app";
+        return "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe";
+    }
+
+    private String getAppName() {
+        if (System.getProperty("os.name").toLowerCase().contains("mac"))
+            return "Google Chrome.app";
+        return "chrome.exe";
     }
 }

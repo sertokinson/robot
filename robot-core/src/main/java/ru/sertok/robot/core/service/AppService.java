@@ -16,7 +16,7 @@ public class AppService {
     private final SettingsService settingsService;
 
     public Status execute(TestCase testCase) {
-        String pathToApp = testCase.getPathToApp();
+        String pathToApp = testCase.getPath();
         String url = testCase.getUrl();
         if (StringUtils.isEmpty(pathToApp)) {
             pathToApp = settingsService.getPathToApp(testCase);

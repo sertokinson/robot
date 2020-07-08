@@ -1,3 +1,3 @@
-Если хотим локальный ui то запускать с профилем (устанавливаем VM options):
- -Dspring.profiles.active=local-gui
-Иначе запускать без профиля
+Для очистки БД при каждом запуске, запускайте с VM options:
+-Dspring.profiles.active=dev
+БД: http://localhost:8080/autotest/h2/

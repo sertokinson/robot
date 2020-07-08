@@ -55,12 +55,6 @@ public class KeyboardEntity {
     private int time;
 
     /**
-     * Признак что есть скриншот у этого события
-     */
-    @Column(name = "screenshot", nullable = false)
-    private boolean screenshot;
-
-    /**
      * Это переопределениме нужно чтоб получить только id тест-кейса
      * З.Ы.: Как это сделать через lombok не знаю
      * @return строку

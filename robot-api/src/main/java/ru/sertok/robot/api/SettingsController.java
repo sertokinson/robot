@@ -27,4 +27,9 @@ public interface SettingsController {
     @Path("/urls")
     @ApiResponse(description = "Получить все доступные urls")
     SettingsResponse urls();
+
+    @GET
+    @Path("/folders")
+    @ApiResponse(description = "Получить все доступные папки")
+    SettingsResponse folders();
 }

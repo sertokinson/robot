@@ -12,16 +12,16 @@ import ru.sertok.robot.request.RecordRequest;
 public interface TestCaseMapper {
 
     @Mapping(target = "url", ignore = true)
-    @Mapping(target = "pathToApp", ignore = true)
+    @Mapping(target = "path", ignore = true)
     @Mapping(target = "appName", ignore = true)
+    @Mapping(target = "folderName", ignore = true)
     @Mapping(target = "testCaseName", source = "name")
     TestCase toTestCase(TestCaseEntity testCaseEntity);
 
     @Mapping(target = "time", ignore = true)
     @Mapping(target = "status", ignore = true)
     @Mapping(target = "runDate", ignore = true)
-    @Mapping(target = "pathToApp", source = "app.path")
-    @Mapping(target = "appName", source = "app.name")
+    @Mapping(target = "appName", ignore = true)
     TestCase toTestCase(RecordRequest recordRequest);
 
     @Mapping(target = "mouse", ignore = true)
@@ -34,6 +34,7 @@ public interface TestCaseMapper {
     @Mapping(target = "browserId", ignore = true)
     @Mapping(target = "urlId", ignore = true)
     @Mapping(target = "desktopId", ignore = true)
+    @Mapping(target = "folderId", ignore = true)
     @Mapping(target = "name", source = "testCaseName")
     TestCaseEntity toTestCaseEntity(TestCase testCase);
 

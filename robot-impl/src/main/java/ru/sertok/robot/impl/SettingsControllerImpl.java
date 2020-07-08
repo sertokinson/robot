@@ -38,4 +38,12 @@ public class SettingsControllerImpl implements SettingsController {
                 .values(settingsService.getUrls())
                 .build());
     }
+
+    @Override
+    public SettingsResponse folders() {
+        log.debug("REST-запрос ../settings/folders");
+        return ResponseBuilder.success(SettingsResponse.builder()
+                .values(settingsService.getFolders())
+                .build());
+    }
 }

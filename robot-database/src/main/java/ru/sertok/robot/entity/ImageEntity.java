@@ -41,16 +41,16 @@ public class ImageEntity {
     private Boolean assertResult;
 
     /**
-     * Процент совпадения
-     */
-    @Column(name = "PERCENT")
-    private Integer percent;
-
-    /**
-     * порядок в катором было событие
+     * порядок в котором было событие
      */
     @Column(name = "position", nullable = false)
     private int position;
+
+    /**
+     *  Время начала записи скриншота
+     */
+    @Column(name = "TIME")
+    private int time;
 
     /**
      * Тест кейс к которому относится данное изображение

@@ -1,6 +1,7 @@
 package ru.sertok.robot.impl;
 
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,11 @@ public class ScreenShotControllerImplTest {
     @Autowired
     private LocalStorage localStorage;
 
+    @Before
+    public void init() {
+        localStorage.setStartTime(System.currentTimeMillis());
+    }
+
     @Test
     public void start() {
         assertEquals(Status.SUCCESS, screenShotController.start(new ScreenShotRequest(new ScreenshotSize())).getStatus());
@@ -40,7 +46,7 @@ public class ScreenShotControllerImplTest {
     }
 
     @After
-    public void clear(){
+    public void clear() {
         localStorage.invalidateLocalStorage();
     }
 }

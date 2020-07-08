@@ -1,7 +1,6 @@
 package ru.sertok.robot.request;
 
 import lombok.*;
-import ru.sertok.robot.data.App;
 
 @Getter
 @ToString
@@ -15,14 +14,24 @@ public class RecordRequest {
     private String testCaseName;
 
     /**
+     * Название приложения или браузера
+     */
+    private String appName;
+
+    /**
+     * Имя папки
+     */
+    private String folderName;
+
+    /**
      * Является ли приложение браузером
      */
     private Boolean isBrowser;
 
     /**
-     * Тестируемое приложение или браузер
+     * Путь до приложения или браузера
      */
-    private App app;
+    private String path;
 
     /**
      * Тестируемый url - адрес сайта

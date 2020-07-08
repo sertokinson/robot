@@ -28,6 +28,11 @@ public interface RobotController {
     TestCasesResponse getAll();
 
     @GET
+    @Path("/getFolders")
+    @ApiResponse(description = "Получить все тесты и папки")
+    FoldersResponse getFolders();
+
+    @GET
     @Path("/get/{testCase}")
     @ApiResponse(description = "Получить тест кейс")
     TestCaseResponse get(@PathParam("testCase") String testCase);

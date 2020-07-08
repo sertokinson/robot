@@ -5,7 +5,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class AppControllerImplTest {
-    private AppControllerImpl appController = new AppControllerImpl();
+    private final AppControllerImpl appController = new AppControllerImpl();
 
     @Test
     public void ping() {
@@ -19,6 +19,6 @@ public class AppControllerImplTest {
 
     @Test
     public void version() {
-        assertEquals("0.20-alpha", appController.version().getResult());
+        assertEquals("0.21-alpha", appController.version().getResult());
     }
 }
