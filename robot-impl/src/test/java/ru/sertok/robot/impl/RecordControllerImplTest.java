@@ -25,14 +25,15 @@ public class RecordControllerImplTest {
 
     @Test
     public void start() {
-        assertEquals(Status.SUCCESS, recordController.start(new RecordRequest(
-                "test",
-                "folder",
-                true,
-                path,
-                "https://www.google.com/",
-                "Описание теста"
-        )).getStatus());
+        assertEquals(Status.SUCCESS, recordController.start(RecordRequest.builder()
+                .testCaseName("test")
+                .folderName("folder")
+                .isBrowser(true)
+                .path(path)
+                .url("https://www.google.com/")
+                .description("Описание теста")
+                .build()
+        ).getStatus());
         assertEquals(TestCase.builder()
                         .testCaseName("test")
                         .folderName("folder")

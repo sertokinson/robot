@@ -3,10 +3,10 @@ POST http://localhost:8080/autotest/record/start/
 Content-Type: application/json
 
 {
-  "testCaseName": "test",
+  "testCaseName": "test2",
   "isBrowser": true,
   "folderName":"folder",
-  "path": "/Applications/Yandex.app",
+  "path": "/Applications/Google Chrome.app",
   "url": "https://www.google.ru/"
 }
 

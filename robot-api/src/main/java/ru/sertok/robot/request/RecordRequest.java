@@ -14,6 +14,11 @@ public class RecordRequest {
     private String testCaseName;
 
     /**
+     * Название приложения или браузера
+     */
+    private String appName;
+
+    /**
      * Имя папки
      */
     private String folderName;

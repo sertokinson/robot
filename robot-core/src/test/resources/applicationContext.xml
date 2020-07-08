@@ -6,19 +6,12 @@
 
     <bean class="ru.sertok.robot.storage.LocalStorage" id="localStorage"/>
     <bean class=" ru.sertok.robot.core.hook.KeyEvents" id="keyEvents"/>
-    <bean id="environment" class="org.mockito.Mockito" factory-method="mock">
-        <constructor-arg value="org.springframework.core.env.Environment" />
-    </bean>
     <bean class="ru.sertok.robot.core.service.ScreenShot" id="screenShot">
-        <constructor-arg ref="localStorage"/>
-    </bean>
-    <bean class="ru.sertok.robot.core.service.ScreenShot">
         <constructor-arg ref="localStorage"/>
     </bean>
 
     <bean class="ru.sertok.robot.core.hook.EventListener" >
         <constructor-arg index="0" ref="localStorage"/>
-        <constructor-arg index="1" ref="screenShot"/>
-        <constructor-arg index="2" ref="keyEvents"/>
+        <constructor-arg index="1" ref="keyEvents"/>
     </bean>
 </beans>

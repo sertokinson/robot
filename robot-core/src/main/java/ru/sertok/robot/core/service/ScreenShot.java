@@ -16,7 +16,6 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Optional;
 
 @Slf4j
@@ -27,35 +26,57 @@ public class ScreenShot {
 
     private Dimension dimension;
     private Point point;
+    private boolean stop = false;
 
     @Async
-    public void makeAsync() {
-        log.debug("Создаем скриншот асинхронно");
+    public void makeAll() {
+        stop = false;
+        Image prevImage = null;
+        while (!stop) {
+            log.debug("Создаем скриншот асинхронно");
+            if (dimension.width > 0 && dimension.height > 0) {
+                Image image = Optional.ofNullable(grabScreen())
+                        .map(i -> Image.builder()
+                                .image(resizePhoto(i))
+                                .time((int) (System.currentTimeMillis() - localStorage.getStartTime()))
+                                .build())
+                        .orElse(null);
+                if (prevImage != null && image != null && !compare(prevImage.getImage(), image.getImage()))
+                    continue;
+                prevImage = image;
+                localStorage.getImages().add(image);
+                localStorage.getSteps().add(image);
+
+            } else {
+                log.error("Не удалось сделать скриншот, т.к. ширина или высота равны нулю");
+            }
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                log.error("Ошибка в потоке", e);
+            }
+        }
+    }
+
+    @Async
+    public void makeOne() {
+        log.debug("Создаем один скриншот асинхронно");
         if (dimension.width > 0 && dimension.height > 0) {
-            Optional.ofNullable(grabScreen()).ifPresent(image ->
-                    localStorage.getImages().add(Image.builder().image(resizePhoto(image)).build()));
+            Image image = Optional.ofNullable(grabScreen())
+                    .map(i -> Image.builder().image(resizePhoto(i)).build())
+                    .orElse(null);
+            localStorage.getImages().add(image);
         } else {
             log.error("Не удалось сделать скриншот, т.к. ширина или высота равны нулю");
         }
     }
 
-    public byte[] make() {
-        log.debug("Создаем скриншот синхронно");
-        if (dimension.width > 0 && dimension.height > 0) {
-            return Optional.ofNullable(grabScreen()).map(image -> {
-                byte[] bytes = resizePhoto(image);
-                localStorage.getImages().add(Image.builder().image(bytes).build());
-                return bytes;
-            }).orElse(null);
-        } else {
-            log.error("Не удалось сделать скриншот, т.к. ширина или высота равны нулю");
-            return null;
-        }
+    public void stop() {
+        stop = true;
     }
 
     public void setSize(ScreenshotSize size) {
         localStorage.setSize(size);
-        localStorage.setImages(new ArrayList<>());
         this.point = new Point(size.getX(), size.getY());
         log.debug("Задаем начальную позицию скриншота x: {} y:{}", point.getX() + 1, point.getY() + 1);
         this.dimension = new Dimension(size.getWidth(), size.getHeight());
