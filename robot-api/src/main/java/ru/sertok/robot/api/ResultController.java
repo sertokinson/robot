@@ -1,6 +1,7 @@
 package ru.sertok.robot.api;
 
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import ru.sertok.robot.request.RobotRequest;
 import ru.sertok.robot.response.AppResponse;
 import ru.sertok.robot.response.ResultResponse;
 
@@ -13,17 +14,17 @@ import javax.ws.rs.core.MediaType;
 public interface ResultController {
 
     @GET
-    @Path("/get/{testCase}")
+    @Path("/get")
     @ApiResponse(description = "Выгрузить все изображения по данному тесту")
-    ResultResponse get(@PathParam("testCase") String testCase);
+    ResultResponse get(RobotRequest robotRequest);
 
     @GET
-    @Path("/toPath/{testCase}")
+    @Path("/toPath")
     @ApiResponse(description = "Выгрузить все изображения в папку")
-    AppResponse toPath(@PathParam("testCase") String testCase);
+    AppResponse toPath(RobotRequest robotRequest);
 
     @GET
-    @Path("/errors/{testCase}")
+    @Path("/errors")
     @ApiResponse(description = "Выгрузить все ошибочные изображения по данному тесту")
-    AppResponse errors(@PathParam("testCase") String testCase);
+    AppResponse errors(RobotRequest robotRequest);
 }

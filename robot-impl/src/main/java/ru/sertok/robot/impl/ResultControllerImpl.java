@@ -8,6 +8,7 @@ import org.springframework.util.CollectionUtils;
 import ru.sertok.robot.api.ResultController;
 import ru.sertok.robot.data.Result;
 import ru.sertok.robot.entity.ImageEntity;
+import ru.sertok.robot.request.RobotRequest;
 import ru.sertok.robot.response.AppResponse;
 import ru.sertok.robot.response.ResponseBuilder;
 import ru.sertok.robot.response.ResultResponse;
@@ -33,7 +34,8 @@ public class ResultControllerImpl implements ResultController {
     private final TestCaseService testCaseService;
 
     @Override
-    public ResultResponse get(String testCase) {
+    public ResultResponse get(RobotRequest robotRequest) {
+        String testCase = robotRequest.getTestCase();
         log.debug("Выгружаем изображения по тест-кейсу: {}", testCase);
         Base64.Encoder encoder = Base64.getEncoder();
         return ResponseBuilder.success(ResultResponse.builder()
@@ -49,7 +51,8 @@ public class ResultControllerImpl implements ResultController {
     }
 
     @Override
-    public AppResponse toPath(String testCase) {
+    public AppResponse toPath(RobotRequest robotRequest) {
+        String testCase = robotRequest.getTestCase();
         String path = System.getProperty("java.io.tmpdir") + "images";
         deleteFile(new File(path));
         log.debug("Выгружаем изображения по тест-кейсу: {}", testCase);
@@ -61,7 +64,8 @@ public class ResultControllerImpl implements ResultController {
     }
 
     @Override
-    public AppResponse errors(String testCase) {
+    public AppResponse errors(RobotRequest robotRequest) {
+        String testCase = robotRequest.getTestCase();
         String path = System.getProperty("java.io.tmpdir") + "errorImages";
         deleteFile(new File(path));
         log.debug("Выгружаем ошибочные изображения по тест-кейсу: {}", testCase);

@@ -8,6 +8,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import ru.sertok.robot.data.enumerate.Status;
 import ru.sertok.robot.entity.TestCaseEntity;
+import ru.sertok.robot.request.RobotRequest;
 import ru.sertok.robot.response.ResultResponse;
 import ru.sertok.robot.service.TestCaseService;
 
@@ -31,16 +32,16 @@ public class ResultControllerImplTest {
 
     @Test
     public void getAll() {
-        assertEquals(Status.ERROR, resultController.toPath("").getStatus());
+        assertEquals(Status.ERROR, resultController.toPath(new RobotRequest()).getStatus());
     }
 
     @Test
     public void get() {
-        assertEquals(Status.SUCCESS, resultController.get("").getStatus());
+        assertEquals(Status.SUCCESS, resultController.get(new RobotRequest()).getStatus());
     }
 
     @Test
     public void getErrors() {
-        assertEquals(Status.ERROR, resultController.errors("").getStatus());
+        assertEquals(Status.ERROR, resultController.errors(new RobotRequest()).getStatus());
     }
 }
