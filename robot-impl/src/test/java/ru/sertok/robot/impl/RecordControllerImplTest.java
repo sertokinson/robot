@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import ru.sertok.robot.data.TestCase;
+import ru.sertok.robot.data.enumerate.Platform;
 import ru.sertok.robot.data.enumerate.Status;
 import ru.sertok.robot.request.RecordRequest;
 import ru.sertok.robot.storage.LocalStorage;
@@ -28,7 +29,7 @@ public class RecordControllerImplTest {
         assertEquals(Status.SUCCESS, recordController.start(RecordRequest.builder()
                 .testCaseName("test")
                 .folderName("folder")
-                .isBrowser(true)
+                .platform("WEB")
                 .path(path)
                 .url("https://www.google.com/")
                 .description("Описание теста")
@@ -41,7 +42,7 @@ public class RecordControllerImplTest {
                         .path(path)
                         .appName(appName)
                         .url("https://www.google.com/")
-                        .isBrowser(true)
+                        .platform(Platform.WEB)
                         .build(),
                 localStorage.getTestCase());
     }
@@ -50,14 +51,14 @@ public class RecordControllerImplTest {
     public void error() {
         assertEquals(Status.ERROR, recordController.start(
                 RecordRequest.builder()
-                        .isBrowser(true)
+                        .platform("WEB")
                         .path(path)
                         .url("https://www.google.com/")
                         .description("Описание теста")
                         .build()
         ).getStatus());
         assertEquals(TestCase.builder()
-                        .isBrowser(true)
+                        .platform(Platform.WEB)
                         .path(path)
                         .appName(appName)
                         .url("https://www.google.com/")

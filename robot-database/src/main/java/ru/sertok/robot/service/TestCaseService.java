@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.sertok.robot.data.TestCase;
+import ru.sertok.robot.data.enumerate.Platform;
 import ru.sertok.robot.entity.BrowserEntity;
 import ru.sertok.robot.entity.DesktopEntity;
 import ru.sertok.robot.entity.TestCaseEntity;
@@ -41,7 +42,7 @@ public class TestCaseService {
     public TestCase get(TestCaseEntity testCaseEntity) {
         TestCase testCase = testCaseMapper.toTestCase(testCaseEntity);
         testCase.setFolderName(settingsService.getFolder(testCaseEntity.getFolderId()).getName());
-        if (testCase.getIsBrowser()) {
+        if (testCase.getPlatform() == Platform.WEB) {
             BrowserEntity browser = settingsService.getBrowser(testCaseEntity.getBrowserId());
             testCase.setAppName(browser.getName());
             testCase.setPath(browser.getPath());

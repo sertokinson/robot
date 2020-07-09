@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.sertok.robot.data.*;
+import ru.sertok.robot.data.enumerate.Platform;
 import ru.sertok.robot.data.enumerate.TestStatus;
 import ru.sertok.robot.entity.*;
 import ru.sertok.robot.mapper.KeyboardMapper;
@@ -67,7 +68,7 @@ public class Database {
         if (folderEntity != null)
             testCaseEntity.setFolderId(folderEntity.getId());
         else testCaseEntity.setFolderId(settingsService.saveFolder(folderName).getId());
-        if (testCase.getIsBrowser()) {
+        if (testCase.getPlatform() == Platform.WEB) {
             BrowserEntity browser = settingsService.getBrowser(testCase.getAppName());
             if (browser != null)
                 testCaseEntity.setBrowserId(browser.getId());
@@ -107,7 +108,7 @@ public class Database {
                 keyboardService.save(keyboardEntity);
             }
             if (steps.get(i) instanceof Image) {
-                Image image = (Image)steps.get(i);
+                Image image = (Image) steps.get(i);
                 imageService.save(ImageEntity.builder()
                         .testCase(testCaseEntity)
                         .position(i)
