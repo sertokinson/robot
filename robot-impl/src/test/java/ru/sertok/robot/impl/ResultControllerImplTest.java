@@ -9,12 +9,11 @@ import org.mockito.junit.MockitoJUnitRunner;
 import ru.sertok.robot.data.enumerate.Status;
 import ru.sertok.robot.entity.TestCaseEntity;
 import ru.sertok.robot.request.RobotRequest;
-import ru.sertok.robot.response.ResultResponse;
 import ru.sertok.robot.service.TestCaseService;
 
 import java.util.ArrayList;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 

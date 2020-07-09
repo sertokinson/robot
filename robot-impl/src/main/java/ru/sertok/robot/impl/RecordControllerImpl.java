@@ -11,6 +11,7 @@ import ru.sertok.robot.api.RecordController;
 import ru.sertok.robot.core.hook.EventListener;
 import ru.sertok.robot.core.service.AppService;
 import ru.sertok.robot.data.TestCase;
+import ru.sertok.robot.data.enumerate.Platform;
 import ru.sertok.robot.data.enumerate.Status;
 import ru.sertok.robot.database.Database;
 import ru.sertok.robot.mapper.TestCaseMapper;
@@ -38,16 +39,14 @@ public class RecordControllerImpl implements RecordController {
         localStorage.invalidateLocalStorage();
         TestCase testCase = testCaseMapper.toTestCase(recordRequest);
         String appName = recordRequest.getAppName();
+        boolean isWeb = Platform.valueOf(recordRequest.getPlatform()) == Platform.WEB;
         if (StringUtils.isEmpty(appName))
             testCase.setAppName(getName(recordRequest.getPath()));
-        else testCase.setPath(recordRequest.getIsBrowser()
+        else testCase.setPath(isWeb
                 ? settingsService.getBrowser(appName).getPath()
                 : settingsService.getDesktop(appName).getPath());
         localStorage.setTestCase(testCase);
-        return record(testCase);
-    }
 
-    private BaseResponse record(TestCase testCase) {
         String testCaseName = testCase.getTestCaseName();
         if (StringUtils.isEmpty(testCaseName)) {
             String error = "Пустое название тест кейса!";
@@ -55,7 +54,7 @@ public class RecordControllerImpl implements RecordController {
             return ResponseBuilder.error(error);
         }
         if (appService.execute(testCase) == Status.ERROR) {
-            String error = "Неверно указан путь до " + (testCase.getIsBrowser() ? "браузера" : "приложения");
+            String error = "Неверно указан путь до " + (isWeb ? "браузера" : "приложения");
             log.error(error);
             return ResponseBuilder.error(error);
         }

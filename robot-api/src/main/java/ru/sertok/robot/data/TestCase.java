@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import ru.sertok.robot.data.enumerate.Platform;
 import ru.sertok.robot.data.enumerate.TestStatus;
 
 import java.util.Date;
@@ -59,7 +60,7 @@ public class TestCase {
     private Date runDate;
 
     /**
-     * Является ли приложение браузером
+     * Платформа тестируемого приложения
      */
-    private Boolean isBrowser;
+    private Platform platform;
 }
