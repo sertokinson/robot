@@ -13,17 +13,17 @@ import javax.ws.rs.core.MediaType;
 @Produces(MediaType.APPLICATION_JSON)
 public interface ResultController {
 
-    @GET
+    @POST
     @Path("/get")
     @ApiResponse(description = "Выгрузить все изображения по данному тесту")
     ResultResponse get(RobotRequest robotRequest);
 
-    @GET
+    @POST
     @Path("/toPath")
     @ApiResponse(description = "Выгрузить все изображения в папку")
     AppResponse toPath(RobotRequest robotRequest);
 
-    @GET
+    @POST
     @Path("/errors")
     @ApiResponse(description = "Выгрузить все ошибочные изображения по данному тесту")
     AppResponse errors(RobotRequest robotRequest);
