@@ -1,10 +1,5 @@
 ### Выгрузить все изображения по данному тесту
-POST http://localhost:8080/autotest/result/toPath
-Content-Type: application/json
-
-{
-  "testCase": "test7"
-}
+GET http://localhost:8080/autotest/result/get?testCase=test2
 
 ### Выгрузка ошибочных изображений
 GET http://localhost:8080/autotest/image/getErrors/test

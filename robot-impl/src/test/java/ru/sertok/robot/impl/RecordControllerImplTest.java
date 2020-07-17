@@ -69,7 +69,7 @@ public class RecordControllerImplTest {
 
     @Test
     public void stop() {
-        assertEquals(Status.SUCCESS, recordController.stop("").getStatus());
+        assertEquals(Status.SUCCESS, recordController.stop().getStatus());
     }
 
     @Test

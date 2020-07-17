@@ -83,7 +83,7 @@ public class RecordControllerImpl implements RecordController {
     }
 
     @Override
-    public BaseResponse stop(String userAgent) {
+    public BaseResponse stop() {
         log.info("REST-запрос ../record/stop");
         if (localStorage.isScreenshotStart())
             screenShotController.stop();

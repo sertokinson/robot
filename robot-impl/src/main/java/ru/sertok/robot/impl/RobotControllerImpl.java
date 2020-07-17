@@ -42,7 +42,7 @@ public class RobotControllerImpl implements RobotController {
         localStorage.invalidateLocalStorage();
         TestCase testCase = database.get(testCaseName);
         if (testCase == null) {
-            String error = "Не найден testCast по наименованию: " + testCaseName;
+            String error = "Не найден testCase по наименованию: " + testCaseName;
             log.error(error);
             return ResponseBuilder.error(RobotResponse.builder().error(error).build());
         }
