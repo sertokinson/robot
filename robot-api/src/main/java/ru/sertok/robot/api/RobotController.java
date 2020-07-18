@@ -37,9 +37,4 @@ public interface RobotController {
     @ApiResponse(description = "Получить тест кейс")
     TestCaseResponse get(@QueryParam("testCase") String testCase);
 
-    @GET
-    @Path("/getAll")
-    @ApiResponse(description = "Получить тест кейс по имени")
-    TestCaseResponse getAll(@QueryParam("testCase") String testCase);
-
 }

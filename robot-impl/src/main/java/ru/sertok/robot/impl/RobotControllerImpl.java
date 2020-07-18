@@ -193,14 +193,6 @@ public class RobotControllerImpl implements RobotController {
     }
 
     @Override
-    public TestCaseResponse getAll(String testCase) {
-        log.debug("REST-запрос ../robot/getAll/{}", testCase);
-        return ResponseBuilder.success(TestCaseResponse.builder()
-                .testCase(database.get(testCase))
-                .build());
-    }
-
-    @Override
     public TestCaseResponse get(String testCase) {
         log.debug("REST-запрос ../robot/get/{}", testCase);
         return ResponseBuilder.success(TestCaseResponse.builder()
