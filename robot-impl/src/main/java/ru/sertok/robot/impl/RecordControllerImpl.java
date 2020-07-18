@@ -14,6 +14,8 @@ import ru.sertok.robot.data.TestCase;
 import ru.sertok.robot.data.enumerate.Platform;
 import ru.sertok.robot.data.enumerate.Status;
 import ru.sertok.robot.database.Database;
+import ru.sertok.robot.entity.BrowserEntity;
+import ru.sertok.robot.entity.DesktopEntity;
 import ru.sertok.robot.mapper.TestCaseMapper;
 import ru.sertok.robot.request.RecordRequest;
 import ru.sertok.robot.response.BaseResponse;
@@ -42,11 +44,18 @@ public class RecordControllerImpl implements RecordController {
         boolean isWeb = Platform.valueOf(recordRequest.getPlatform()) == Platform.WEB;
         if (StringUtils.isEmpty(appName))
             testCase.setAppName(getName(recordRequest.getPath()));
-        else testCase.setPath(isWeb
-                ? settingsService.getBrowser(appName).getPath()
-                : settingsService.getDesktop(appName).getPath());
+        else {
+            if (isWeb) {
+                BrowserEntity browser = settingsService.getBrowser(appName);
+                localStorage.setBrowserId(browser.getId());
+                testCase.setPath(browser.getPath());
+            } else {
+                DesktopEntity desktop = settingsService.getDesktop(appName);
+                localStorage.setDesktopId(desktop.getId());
+                testCase.setPath(desktop.getPath());
+            }
+        }
         localStorage.setTestCase(testCase);
-
         String testCaseName = testCase.getTestCaseName();
         if (StringUtils.isEmpty(testCaseName)) {
             String error = "Пустое название тест кейса!";

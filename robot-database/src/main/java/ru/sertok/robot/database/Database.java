@@ -69,9 +69,9 @@ public class Database {
             testCaseEntity.setFolderId(folderEntity.getId());
         else testCaseEntity.setFolderId(settingsService.saveFolder(folderName).getId());
         if (testCase.getPlatform() == Platform.WEB) {
-            BrowserEntity browser = settingsService.getBrowser(testCase.getAppName());
-            if (browser != null)
-                testCaseEntity.setBrowserId(browser.getId());
+            Long browserId = localStorage.getBrowserId();
+            if (browserId != null)
+                testCaseEntity.setBrowserId(browserId);
             else testCaseEntity.setBrowserId(settingsService.saveBrowser(testCase).getId());
             UrlEntity url = settingsService.getUrl(testCase.getUrl());
             if (url != null)
@@ -79,9 +79,9 @@ public class Database {
             else
                 testCaseEntity.setUrlId(settingsService.saveUrl(testCase.getUrl()).getId());
         } else {
-            DesktopEntity desktop = settingsService.getDesktop(testCase.getAppName());
-            if (desktop != null)
-                testCaseEntity.setDesktopId(desktop.getId());
+            Long desktopId = localStorage.getDesktopId();
+            if (desktopId != null)
+                testCaseEntity.setDesktopId(desktopId);
             else
                 testCaseEntity.setDesktopId(settingsService.saveDesktop(testCase.getAppName(), testCase.getPath()).getId());
         }
