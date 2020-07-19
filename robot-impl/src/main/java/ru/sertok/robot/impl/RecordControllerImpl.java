@@ -11,8 +11,11 @@ import ru.sertok.robot.api.RecordController;
 import ru.sertok.robot.core.hook.EventListener;
 import ru.sertok.robot.core.service.AppService;
 import ru.sertok.robot.data.TestCase;
+import ru.sertok.robot.data.enumerate.Platform;
 import ru.sertok.robot.data.enumerate.Status;
 import ru.sertok.robot.database.Database;
+import ru.sertok.robot.entity.BrowserEntity;
+import ru.sertok.robot.entity.DesktopEntity;
 import ru.sertok.robot.mapper.TestCaseMapper;
 import ru.sertok.robot.request.RecordRequest;
 import ru.sertok.robot.response.BaseResponse;
@@ -38,16 +41,21 @@ public class RecordControllerImpl implements RecordController {
         localStorage.invalidateLocalStorage();
         TestCase testCase = testCaseMapper.toTestCase(recordRequest);
         String appName = recordRequest.getAppName();
+        boolean isWeb = Platform.valueOf(recordRequest.getPlatform()) == Platform.WEB;
         if (StringUtils.isEmpty(appName))
             testCase.setAppName(getName(recordRequest.getPath()));
-        else testCase.setPath(recordRequest.getIsBrowser()
-                ? settingsService.getBrowser(appName).getPath()
-                : settingsService.getDesktop(appName).getPath());
+        else {
+            if (isWeb) {
+                BrowserEntity browser = settingsService.getBrowser(appName);
+                localStorage.setBrowserId(browser.getId());
+                testCase.setPath(browser.getPath());
+            } else {
+                DesktopEntity desktop = settingsService.getDesktop(appName);
+                localStorage.setDesktopId(desktop.getId());
+                testCase.setPath(desktop.getPath());
+            }
+        }
         localStorage.setTestCase(testCase);
-        return record(testCase);
-    }
-
-    private BaseResponse record(TestCase testCase) {
         String testCaseName = testCase.getTestCaseName();
         if (StringUtils.isEmpty(testCaseName)) {
             String error = "Пустое название тест кейса!";
@@ -55,7 +63,7 @@ public class RecordControllerImpl implements RecordController {
             return ResponseBuilder.error(error);
         }
         if (appService.execute(testCase) == Status.ERROR) {
-            String error = "Неверно указан путь до " + (testCase.getIsBrowser() ? "браузера" : "приложения");
+            String error = "Неверно указан путь до " + (isWeb ? "браузера" : "приложения");
             log.error(error);
             return ResponseBuilder.error(error);
         }
@@ -84,7 +92,7 @@ public class RecordControllerImpl implements RecordController {
     }
 
     @Override
-    public BaseResponse stop(String userAgent) {
+    public BaseResponse stop() {
         log.info("REST-запрос ../record/stop");
         if (localStorage.isScreenshotStart())
             screenShotController.stop();

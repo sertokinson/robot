@@ -3,6 +3,7 @@ package ru.sertok.robot.entity;
 import lombok.*;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
+import ru.sertok.robot.data.enumerate.Platform;
 import ru.sertok.robot.data.enumerate.TestStatus;
 
 import javax.persistence.*;
@@ -56,21 +57,34 @@ public class TestCaseEntity {
     private TestStatus status;
 
     /**
-     * Является ли приложение браузером
+     * Платформа тестируемого приложения
      */
-    @Column(name = "IS_BROWSER")
-    private Boolean isBrowser;
+    @Column(name = "PLATFORM", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private Platform platform;
 
+    /**
+     * Ссылка на браузер, если есть
+     */
     @Column(name = "BROWSER_ID")
     private Long browserId;
 
+    /**
+     * Ссылка на url, если есть
+     */
     @Column(name = "URL_ID")
     private Long urlId;
 
+    /**
+     * Ссылка на desktop, если есть
+     */
     @Column(name = "DESKTOP_ID")
     private Long desktopId;
 
-    @Column(name = "FOLDER_ID")
+    /**
+     * Ссылка на папку
+     */
+    @Column(name = "FOLDER_ID", nullable = false)
     private Long folderId;
 
     /**

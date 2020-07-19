@@ -33,13 +33,8 @@ public interface RobotController {
     FoldersResponse getFolders();
 
     @GET
-    @Path("/get/{testCase}")
+    @Path("/get")
     @ApiResponse(description = "Получить тест кейс")
-    TestCaseResponse get(@PathParam("testCase") String testCase);
-
-    @GET
-    @Path("/getAll/{testCase}")
-    @ApiResponse(description = "Получить тест кейс по имени")
-    TestCaseResponse getAll(@PathParam("testCase") String testCase);
+    TestCaseResponse get(@QueryParam("testCase") String testCase);
 
 }

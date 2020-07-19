@@ -6,6 +6,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import ru.sertok.robot.data.TestCase;
+import ru.sertok.robot.data.enumerate.Platform;
 import ru.sertok.robot.entity.DesktopEntity;
 import ru.sertok.robot.entity.FolderEntity;
 import ru.sertok.robot.entity.TestCaseEntity;
@@ -80,17 +81,17 @@ public class TestCaseServiceTest {
         when(testCaseMapper.toTestCase(test1)).thenReturn(TestCase.builder()
                 .testCaseName("test1")
                 .folderName("folder1")
-                .isBrowser(false)
+                .platform(Platform.DESKTOP)
                 .build());
         when(testCaseMapper.toTestCase(test2)).thenReturn(TestCase.builder()
                 .testCaseName("test2")
                 .folderName("folder1")
-                .isBrowser(false)
+                .platform(Platform.DESKTOP)
                 .build());
         when(testCaseMapper.toTestCase(test3)).thenReturn(TestCase.builder()
                 .testCaseName("test3")
                 .folderName("folder2")
-                .isBrowser(false)
+                .platform(Platform.DESKTOP)
                 .build());
         Map<String, List<TestCase>> result = testCaseService.getFolders();
         assertEquals(2, result.get("folder1").size());

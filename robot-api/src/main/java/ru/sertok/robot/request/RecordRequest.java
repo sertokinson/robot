@@ -24,9 +24,9 @@ public class RecordRequest {
     private String folderName;
 
     /**
-     * Является ли приложение браузером
+     * Платформа тестируемого приложения
      */
-    private Boolean isBrowser;
+    private String platform;
 
     /**
      * Путь до приложения или браузера

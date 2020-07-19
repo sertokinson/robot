@@ -1,6 +1,5 @@
 package ru.sertok.robot.api;
 
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import ru.sertok.robot.request.RecordRequest;
 import ru.sertok.robot.response.BaseResponse;
@@ -16,12 +15,12 @@ public interface RecordController {
     @POST
     @Path("/start")
     @ApiResponse(description = "Старт записи теста")
-    BaseResponse start(@RequestBody(required = true) RecordRequest recordRequest);
+    BaseResponse start(RecordRequest recordRequest);
 
     @GET
     @Path("/stop")
     @ApiResponse(description = "Стоп записи теста")
-    BaseResponse stop(@HeaderParam("user-agent") String userAgent);
+    BaseResponse stop();
 
     @POST
     @Path("/exit")

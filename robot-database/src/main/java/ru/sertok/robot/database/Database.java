@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.sertok.robot.data.*;
+import ru.sertok.robot.data.enumerate.Platform;
 import ru.sertok.robot.data.enumerate.TestStatus;
 import ru.sertok.robot.entity.*;
 import ru.sertok.robot.mapper.KeyboardMapper;
@@ -67,10 +68,10 @@ public class Database {
         if (folderEntity != null)
             testCaseEntity.setFolderId(folderEntity.getId());
         else testCaseEntity.setFolderId(settingsService.saveFolder(folderName).getId());
-        if (testCase.getIsBrowser()) {
-            BrowserEntity browser = settingsService.getBrowser(testCase.getAppName());
-            if (browser != null)
-                testCaseEntity.setBrowserId(browser.getId());
+        if (testCase.getPlatform() == Platform.WEB) {
+            Long browserId = localStorage.getBrowserId();
+            if (browserId != null)
+                testCaseEntity.setBrowserId(browserId);
             else testCaseEntity.setBrowserId(settingsService.saveBrowser(testCase).getId());
             UrlEntity url = settingsService.getUrl(testCase.getUrl());
             if (url != null)
@@ -78,9 +79,9 @@ public class Database {
             else
                 testCaseEntity.setUrlId(settingsService.saveUrl(testCase.getUrl()).getId());
         } else {
-            DesktopEntity desktop = settingsService.getDesktop(testCase.getAppName());
-            if (desktop != null)
-                testCaseEntity.setDesktopId(desktop.getId());
+            Long desktopId = localStorage.getDesktopId();
+            if (desktopId != null)
+                testCaseEntity.setDesktopId(desktopId);
             else
                 testCaseEntity.setDesktopId(settingsService.saveDesktop(testCase.getAppName(), testCase.getPath()).getId());
         }
@@ -107,7 +108,7 @@ public class Database {
                 keyboardService.save(keyboardEntity);
             }
             if (steps.get(i) instanceof Image) {
-                Image image = (Image)steps.get(i);
+                Image image = (Image) steps.get(i);
                 imageService.save(ImageEntity.builder()
                         .testCase(testCaseEntity)
                         .position(i)

@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.sertok.robot.data.TestCase;
+import ru.sertok.robot.data.enumerate.Platform;
 import ru.sertok.robot.entity.*;
 import ru.sertok.robot.repository.*;
 
@@ -82,7 +83,7 @@ public class SettingsService {
 
     public String getPathToApp(TestCase testCase) {
         String appName = testCase.getAppName();
-        if (testCase.getIsBrowser())
+        if (testCase.getPlatform() == Platform.WEB)
             return browserRepository.findByName(appName).map(BrowserEntity::getPath).orElse(null);
         return desktopRepository.findByName(appName).map(DesktopEntity::getPath).orElse(null);
     }
@@ -101,7 +102,7 @@ public class SettingsService {
     }
 
     public DesktopEntity saveDesktop(String name, String path) {
-       return desktopRepository.save(DesktopEntity.builder()
+        return desktopRepository.save(DesktopEntity.builder()
                 .name(name)
                 .path(path)
                 .build());
