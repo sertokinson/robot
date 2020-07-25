@@ -6,11 +6,19 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.sertok.robot.data.TestCase;
 import ru.sertok.robot.data.enumerate.Platform;
-import ru.sertok.robot.entity.*;
-import ru.sertok.robot.repository.*;
+import ru.sertok.robot.entity.BrowserEntity;
+import ru.sertok.robot.entity.DesktopEntity;
+import ru.sertok.robot.entity.FolderEntity;
+import ru.sertok.robot.entity.UrlEntity;
+import ru.sertok.robot.repository.BrowserRepository;
+import ru.sertok.robot.repository.DesktopRepository;
+import ru.sertok.robot.repository.FolderRepository;
+import ru.sertok.robot.repository.UrlRepository;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static ru.sertok.robot.data.enumerate.Browser.CHROME_PORTABLE;
 
 @Service
 @Transactional
@@ -36,10 +44,13 @@ public class SettingsService {
     }
 
     public List<String> getBrowsers() {
-        return browserRepository.findAll()
+        List<String> browsers = browserRepository.findAll()
                 .stream()
                 .map(BrowserEntity::getName)
                 .collect(Collectors.toList());
+        browsers.add(CHROME_PORTABLE.getName());
+        return browsers;
+
     }
 
     public List<String> getFolders() {
@@ -50,6 +61,11 @@ public class SettingsService {
     }
 
     public BrowserEntity getBrowser(String name) {
+        if(name.equals(CHROME_PORTABLE.getName()))
+            return BrowserEntity.builder()
+                    .id(-1L)
+                    .path("chrome/Google Chrome Portable.exe")
+                    .build();
         return browserRepository.findByName(name).orElse(null);
     }
 
