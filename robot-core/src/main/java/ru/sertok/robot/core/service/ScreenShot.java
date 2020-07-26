@@ -46,7 +46,6 @@ public class ScreenShot {
                 prevImage = image;
                 localStorage.getImages().add(image);
                 localStorage.getSteps().add(image);
-
             } else {
                 log.error("Не удалось сделать скриншот, т.к. ширина или высота равны нулю");
             }
@@ -119,6 +118,9 @@ public class ScreenShot {
                     int expectedRGB = expectedImage.getRGB(i, j);
                     Color color1 = new Color((actualRGB >> 16) & 0xFF, (actualRGB >> 8) & 0xFF, (actualRGB) & 0xFF);
                     Color color2 = new Color((expectedRGB >> 16) & 0xFF, (expectedRGB >> 8) & 0xFF, (expectedRGB) & 0xFF);
+
+                    if(((actualRGB >> 16) & 0xFF)>200)
+                        localStorage.setClick(true);
                     if (!compareColor(color1, color2)) {
                         countIsNotIdentic++;
                     }

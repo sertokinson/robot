@@ -40,14 +40,6 @@ public class RobotControllerImpl implements RobotController {
         String testCaseName = robotRequest.getTestCase();
         log.info("REST-запрос ../robot/start со значением {}", testCaseName);
         localStorage.invalidateLocalStorage();
-        TestCase testCase = database.get(testCaseName);
-        if (testCase == null) {
-            String error = "Не найден testCase по наименованию: " + testCaseName;
-            log.error(error);
-            return ResponseBuilder.error(RobotResponse.builder().error(error).build());
-        }
-        List<BaseData> data = database.getSteps(testCaseName);
-        Optional.ofNullable(database.getScreenshotSize(testCaseName)).ifPresent(screenShot::setSize);
         Robot robot;
         try {
             robot = new Robot();
@@ -56,12 +48,19 @@ public class RobotControllerImpl implements RobotController {
             log.error(error, e);
             return ResponseBuilder.error(RobotResponse.builder().error(error).build());
         }
-        if (appService.execute(testCase) == Status.ERROR) {
-            String error = "Не удалось запустить приложение!";
-            log.error(error);
-            return ResponseBuilder.error(RobotResponse.builder().error(error).build());
+        screenShot.setSize(new ScreenshotSize(100,100,1000,1000));
+        screenShot.makeAll();
+
+        while(true){
+            if(localStorage.getClick()){
+                robot.mouseMove(100, 100);
+                robot.mousePress(InputEvent.BUTTON1_MASK);
+                robot.mouseRelease(InputEvent.BUTTON1_MASK);
+                localStorage.setClick(false);
+            }
         }
-        for (int i = 0; i < data.size(); i++) {
+
+        /*for (int i = 0; i < data.size(); i++) {
             BaseData baseData = data.get(i);
             if (baseData != null) {
                 if (i == 0)
@@ -121,10 +120,7 @@ public class RobotControllerImpl implements RobotController {
                     .testStatus(TestStatus.SUCCESS)
                     .build());
         }
-        database.update(testCaseName, TestStatus.ERROR);
-        return ResponseBuilder.success(RobotResponse.builder()
-                .testStatus(TestStatus.ERROR)
-                .build());
+        database.update(testCaseName, TestStatus.ERROR);*/
     }
 
     @Override

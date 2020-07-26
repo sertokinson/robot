@@ -61,6 +61,16 @@ public class LocalStorage {
      */
     private Long desktopId;
 
+    private Boolean click = false;
+
+    public Boolean getClick() {
+        return click;
+    }
+
+    public void setClick(Boolean click) {
+        this.click = click;
+    }
+
     public Long getBrowserId() {
         log.debug("Вычитываем из локального хранилища браузер: {}", browserId);
         return browserId;
