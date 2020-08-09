@@ -106,6 +106,8 @@ public class ScreenShot {
         try {
             BufferedImage expectedImage = ImageIO.read(new ByteArrayInputStream(expected));
             BufferedImage actualImage = ImageIO.read(new ByteArrayInputStream(actual));
+            if (expectedImage == null || actualImage == null)
+                return false;
             if (actualImage.getWidth() != expectedImage.getWidth() || expectedImage.getHeight() != actualImage.getHeight()) {
                 log.error("Размеры фактического изображения width: {} height: {} не совпадают с размерами ожидаемого изображения width: {} height: {}",
                         actualImage.getWidth(), actualImage.getHeight(), expectedImage.getWidth(), expectedImage.getHeight());
