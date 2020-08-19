@@ -126,8 +126,8 @@ public class ScreenShot {
                     }
                 }
             }
-            // допускаем 2% не совпадение
-            return (countIsNotIdentic * 100) / (actualImage.getWidth() * actualImage.getHeight()) <= 2;
+            // TODO 7% не совпадение
+            return (countIsNotIdentic * 100) / (actualImage.getWidth() * actualImage.getHeight()) <= 7;
 
         } catch (IOException e) {
             log.error("Не смог преобразовать изображение", e);
