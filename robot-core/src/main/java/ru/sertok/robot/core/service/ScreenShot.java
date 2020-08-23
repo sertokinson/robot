@@ -106,6 +106,8 @@ public class ScreenShot {
         try {
             BufferedImage expectedImage = ImageIO.read(new ByteArrayInputStream(expected));
             BufferedImage actualImage = ImageIO.read(new ByteArrayInputStream(actual));
+            if (expectedImage == null || actualImage == null)
+                return false;
             if (actualImage.getWidth() != expectedImage.getWidth() || expectedImage.getHeight() != actualImage.getHeight()) {
                 log.error("Размеры фактического изображения width: {} height: {} не совпадают с размерами ожидаемого изображения width: {} height: {}",
                         actualImage.getWidth(), actualImage.getHeight(), expectedImage.getWidth(), expectedImage.getHeight());
@@ -124,8 +126,8 @@ public class ScreenShot {
                     }
                 }
             }
-            // допускаем 2% не совпадение
-            return (countIsNotIdentic * 100) / (actualImage.getWidth() * actualImage.getHeight()) <= 2;
+            // TODO 7% не совпадение
+            return (countIsNotIdentic * 100) / (actualImage.getWidth() * actualImage.getHeight()) <= 7;
 
         } catch (IOException e) {
             log.error("Не смог преобразовать изображение", e);
