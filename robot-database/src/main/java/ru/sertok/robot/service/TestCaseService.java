@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.sertok.robot.data.TestCase;
+import ru.sertok.robot.data.enumerate.Browser;
 import ru.sertok.robot.data.enumerate.Platform;
 import ru.sertok.robot.entity.BrowserEntity;
 import ru.sertok.robot.entity.DesktopEntity;
@@ -18,6 +19,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import static ru.sertok.robot.data.enumerate.Browser.CHROME_PORTABLE;
 
 @Service
 @Slf4j
@@ -43,9 +46,15 @@ public class TestCaseService {
         TestCase testCase = testCaseMapper.toTestCase(testCaseEntity);
         testCase.setFolderName(settingsService.getFolder(testCaseEntity.getFolderId()).getName());
         if (testCase.getPlatform() == Platform.WEB) {
-            BrowserEntity browser = settingsService.getBrowser(testCaseEntity.getBrowserId());
-            testCase.setAppName(browser.getName());
-            testCase.setPath(browser.getPath());
+            Long browserId = testCaseEntity.getBrowserId();
+            if (!browserId.equals(-1L)) {
+                BrowserEntity browser = settingsService.getBrowser(browserId);
+                testCase.setAppName(browser.getName());
+                testCase.setPath(browser.getPath());
+            } else {
+                testCase.setAppName(CHROME_PORTABLE.getName());
+                testCase.setPath(CHROME_PORTABLE.getPath());
+            }
             testCase.setUrl(settingsService.getUrl(testCaseEntity.getUrlId()).getUrl());
         } else {
             DesktopEntity desktop = settingsService.getDesktop(testCaseEntity.getDesktopId());

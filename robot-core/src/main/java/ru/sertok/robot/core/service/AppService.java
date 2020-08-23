@@ -9,6 +9,8 @@ import ru.sertok.robot.data.TestCase;
 import ru.sertok.robot.data.enumerate.Status;
 import ru.sertok.robot.service.SettingsService;
 
+import static ru.sertok.robot.data.enumerate.Browser.CHROME_PORTABLE;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
@@ -30,9 +32,11 @@ public class AppService {
             if (System.getProperty("os.name").toLowerCase().contains("mac"))
                 Runtime.getRuntime().exec(new String[]{"/usr/bin/open", "-a", pathToApp, url});
             else {
-                if (!StringUtils.isEmpty(url))
-                    new ProcessBuilder(pathToApp, url).start();
-                else {
+                if (!StringUtils.isEmpty(url)) {
+                    if (pathToApp.equals(CHROME_PORTABLE.getName()))
+                        new ProcessBuilder("chrome/Google Chrome Portable.exe", url).start();
+                    else new ProcessBuilder(pathToApp, url).start();
+                } else {
                     new ProcessBuilder(pathToApp).start();
                 }
             }
