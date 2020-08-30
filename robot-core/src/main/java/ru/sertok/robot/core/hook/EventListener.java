@@ -13,8 +13,9 @@ import org.springframework.stereotype.Component;
 import ru.sertok.robot.data.Keyboard;
 import ru.sertok.robot.data.Mouse;
 import ru.sertok.robot.data.enumerate.Type;
+import ru.sertok.robot.data.enumerate.TypeAction;
 import ru.sertok.robot.data.enumerate.TypePressed;
-import ru.sertok.robot.storage.LocalStorage;
+import ru.sertok.robot.data.storage.LocalStorage;
 
 import javax.annotation.PostConstruct;
 
@@ -77,6 +78,7 @@ public class EventListener implements NativeMouseInputListener, NativeKeyListene
     public void nativeMouseWheelMoved(NativeMouseWheelEvent e) {
         if (!localStorage.isActiveCrop() || localStorage.isScreenshotStart())
             localStorage.getSteps().add(Mouse.builder()
+                    .typeAction(TypeAction.MOUSE)
                     .type(Type.WHEEL)
                     .wheel(e.getWheelRotation())
                     .time(getTime())
@@ -92,6 +94,7 @@ public class EventListener implements NativeMouseInputListener, NativeKeyListene
     private void click(Type type, NativeMouseEvent e) {
         if (!localStorage.isActiveCrop() || localStorage.isScreenshotStart())
             localStorage.getSteps().add(Mouse.builder()
+                    .typeAction(TypeAction.MOUSE)
                     .x(e.getX())
                     .y(e.getY())
                     .typePressed(TypePressed.getType(e.getButton()))
@@ -113,6 +116,7 @@ public class EventListener implements NativeMouseInputListener, NativeKeyListene
 
     private Keyboard getKeyboard(String key, Type type) {
         return Keyboard.builder()
+                .typeAction(TypeAction.KEYBOARD)
                 .type(type)
                 .time(getTime())
                 .key(key)
@@ -121,6 +125,7 @@ public class EventListener implements NativeMouseInputListener, NativeKeyListene
 
     private Mouse getMouse(NativeMouseEvent e) {
         return Mouse.builder()
+                .typeAction(TypeAction.MOUSE)
                 .x(e.getX())
                 .y(e.getY())
                 .type(Type.MOVED)

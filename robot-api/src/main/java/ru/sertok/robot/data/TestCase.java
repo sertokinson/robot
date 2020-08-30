@@ -1,9 +1,6 @@
 package ru.sertok.robot.data;
 
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import ru.sertok.robot.data.enumerate.Platform;
 import ru.sertok.robot.data.enumerate.TestStatus;
 
@@ -13,6 +10,8 @@ import java.util.Date;
 @Getter
 @Builder
 @EqualsAndHashCode
+@NoArgsConstructor
+@AllArgsConstructor
 public class TestCase {
     /**
      * Название теста

@@ -1,4 +1,4 @@
-package ru.sertok.robot.storage;
+package ru.sertok.robot.data.storage;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;

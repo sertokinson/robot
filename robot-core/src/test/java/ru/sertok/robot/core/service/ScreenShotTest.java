@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import ru.sertok.robot.data.ScreenshotSize;
-import ru.sertok.robot.storage.LocalStorage;
+import ru.sertok.robot.data.storage.LocalStorage;
 
 import static org.junit.Assert.*;
 

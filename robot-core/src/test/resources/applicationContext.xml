@@ -4,7 +4,7 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans
     http://www.springframework.org/schema/beans/spring-beans-4.1.xsd">
 
-    <bean class="ru.sertok.robot.storage.LocalStorage" id="localStorage"/>
+    <bean class="ru.sertok.robot.data.storage.LocalStorage" id="localStorage"/>
     <bean class=" ru.sertok.robot.core.hook.KeyEvents" id="keyEvents"/>
     <bean class="ru.sertok.robot.core.service.ScreenShot" id="screenShot">
         <constructor-arg ref="localStorage"/>

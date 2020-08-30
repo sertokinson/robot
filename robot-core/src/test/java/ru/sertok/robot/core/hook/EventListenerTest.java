@@ -13,7 +13,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import ru.sertok.robot.data.Mouse;
 import ru.sertok.robot.data.enumerate.Type;
 import ru.sertok.robot.data.enumerate.TypePressed;
-import ru.sertok.robot.storage.LocalStorage;
+import ru.sertok.robot.data.storage.LocalStorage;
 
 import static org.junit.Assert.assertEquals;
 

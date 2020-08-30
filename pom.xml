@@ -7,10 +7,9 @@
     <groupId>ru.sertok.robot</groupId>
     <artifactId>robot</artifactId>
     <packaging>pom</packaging>
-    <version>0.23-alpha</version>
+    <version>0.24</version>
     <properties>
         <lombok.version>1.18.4</lombok.version>
-        <mapstruct.version>1.3.0.Beta2</mapstruct.version>
     </properties>
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -28,11 +27,6 @@
                     <target>8</target>
                     <annotationProcessorPaths>
                         <path>
-                            <groupId>org.mapstruct</groupId>
-                            <artifactId>mapstruct-processor</artifactId>
-                            <version>${mapstruct.version}</version>
-                        </path>
-                        <path>
                             <groupId>org.projectlombok</groupId>
                             <artifactId>lombok</artifactId>
                             <version>${lombok.version}</version>
@@ -46,7 +40,6 @@
         <module>robot-app</module>
         <module>robot-api</module>
         <module>robot-impl</module>
-        <module>robot-database</module>
         <module>robot-core</module>
     </modules>
     <repositories>

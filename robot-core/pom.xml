@@ -5,7 +5,7 @@
     <parent>
         <artifactId>robot</artifactId>
         <groupId>ru.sertok.robot</groupId>
-        <version>0.23-alpha</version>
+        <version>0.24</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -14,12 +14,6 @@
         <dependency>
             <groupId>ru.sertok.robot</groupId>
             <artifactId>robot-api</artifactId>
-            <version>${project.version}</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>ru.sertok.robot</groupId>
-            <artifactId>robot-database</artifactId>
             <version>${project.version}</version>
             <scope>compile</scope>
         </dependency>
@@ -52,6 +46,21 @@
         <dependency>
             <groupId>javax.annotation</groupId>
             <artifactId>javax.annotation-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-beans</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+            <version>${spring.version}</version>
         </dependency>
     </dependencies>
 

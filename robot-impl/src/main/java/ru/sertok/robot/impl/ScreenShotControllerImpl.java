@@ -9,7 +9,7 @@ import ru.sertok.robot.core.service.ScreenShot;
 import ru.sertok.robot.request.ScreenShotRequest;
 import ru.sertok.robot.response.BaseResponse;
 import ru.sertok.robot.response.ResponseBuilder;
-import ru.sertok.robot.storage.LocalStorage;
+import ru.sertok.robot.data.storage.LocalStorage;
 
 import static ru.sertok.robot.utils.Utils.deleteLastMousePressed;
 

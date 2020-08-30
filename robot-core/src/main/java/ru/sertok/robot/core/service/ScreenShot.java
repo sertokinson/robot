@@ -8,7 +8,8 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import ru.sertok.robot.data.Image;
 import ru.sertok.robot.data.ScreenshotSize;
-import ru.sertok.robot.storage.LocalStorage;
+import ru.sertok.robot.data.enumerate.TypeAction;
+import ru.sertok.robot.data.storage.LocalStorage;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -38,6 +39,7 @@ public class ScreenShot {
                 Image image = Optional.ofNullable(grabScreen())
                         .map(i -> Image.builder()
                                 .image(resizePhoto(i))
+                                .typeAction(TypeAction.IMAGE)
                                 .time((int) (System.currentTimeMillis() - localStorage.getStartTime()))
                                 .build())
                         .orElse(null);
@@ -50,19 +52,6 @@ public class ScreenShot {
             } else {
                 log.error("Не удалось сделать скриншот, т.к. ширина или высота равны нулю");
             }
-        }
-    }
-
-    @Async
-    public void makeOne() {
-        log.debug("Создаем один скриншот асинхронно");
-        if (dimension.width > 0 && dimension.height > 0) {
-            Image image = Optional.ofNullable(grabScreen())
-                    .map(i -> Image.builder().image(resizePhoto(i)).build())
-                    .orElse(null);
-            localStorage.getImages().add(image);
-        } else {
-            log.error("Не удалось сделать скриншот, т.к. ширина или высота равны нулю");
         }
     }
 
@@ -102,7 +91,7 @@ public class ScreenShot {
         return baos.toByteArray();
     }
 
-    public boolean compare(byte[] actual, byte[] expected) {
+    private boolean compare(byte[] actual, byte[] expected) {
         try {
             BufferedImage expectedImage = ImageIO.read(new ByteArrayInputStream(expected));
             BufferedImage actualImage = ImageIO.read(new ByteArrayInputStream(actual));

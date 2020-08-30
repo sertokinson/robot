@@ -5,23 +5,22 @@ import lombok.extern.slf4j.Slf4j;
 import org.jnativehook.GlobalScreen;
 import org.jnativehook.NativeHookException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
+import org.springframework.web.client.RestTemplate;
 import ru.sertok.robot.api.RecordController;
 import ru.sertok.robot.core.hook.EventListener;
 import ru.sertok.robot.core.service.AppService;
 import ru.sertok.robot.data.TestCase;
 import ru.sertok.robot.data.enumerate.Platform;
 import ru.sertok.robot.data.enumerate.Status;
-import ru.sertok.robot.database.Database;
+import ru.sertok.robot.data.storage.LocalStorage;
 import ru.sertok.robot.entity.BrowserEntity;
 import ru.sertok.robot.entity.DesktopEntity;
-import ru.sertok.robot.mapper.TestCaseMapper;
 import ru.sertok.robot.request.RecordRequest;
 import ru.sertok.robot.response.BaseResponse;
 import ru.sertok.robot.response.ResponseBuilder;
-import ru.sertok.robot.service.SettingsService;
-import ru.sertok.robot.storage.LocalStorage;
 
 @Slf4j
 @Controller
@@ -30,27 +29,38 @@ public class RecordControllerImpl implements RecordController {
     private final LocalStorage localStorage;
     private final AppService appService;
     private final EventListener eventListener;
-    private final Database database;
-    private final TestCaseMapper testCaseMapper;
     private final ScreenShotControllerImpl screenShotController;
-    private final SettingsService settingsService;
 
     @Override
     public BaseResponse start(RecordRequest recordRequest) {
         log.info("REST-запрос ../record/start с параметрами {}", recordRequest);
         localStorage.invalidateLocalStorage();
-        TestCase testCase = testCaseMapper.toTestCase(recordRequest);
+        TestCase testCase = new TestCase();
+        testCase.setPath(recordRequest.getPath());
+        testCase.setAppName(recordRequest.getAppName());
+        testCase.setDescription(recordRequest.getDescription());
+        testCase.setFolderName(recordRequest.getFolderName());
+        testCase.setPlatform(Platform.valueOf(recordRequest.getPlatform()));
+        testCase.setTestCaseName(recordRequest.getTestCaseName());
+        testCase.setUrl(recordRequest.getUrl());
         String appName = recordRequest.getAppName();
         boolean isWeb = Platform.valueOf(recordRequest.getPlatform()) == Platform.WEB;
         if (StringUtils.isEmpty(appName))
             testCase.setAppName(getName(recordRequest.getPath()));
         else {
             if (isWeb) {
-                BrowserEntity browser = settingsService.getBrowser(appName);
+                BrowserEntity browser = new RestTemplate().getForObject(
+                        "http://192.168.1.67:8080/autotest/settings/browser/{appName}",
+                        BrowserEntity.class,
+                        appName);
                 localStorage.setBrowserId(browser.getId());
                 testCase.setPath(browser.getPath());
             } else {
-                DesktopEntity desktop = settingsService.getDesktop(appName);
+                DesktopEntity desktop = new RestTemplate().getForObject(
+                        "http://192.168.1.67:8080/autotest/settings/desktop/{appName}",
+                        DesktopEntity.class,
+                        appName
+                );
                 localStorage.setDesktopId(desktop.getId());
                 testCase.setPath(desktop.getPath());
             }
@@ -94,11 +104,14 @@ public class RecordControllerImpl implements RecordController {
     @Override
     public BaseResponse stop() {
         log.info("REST-запрос ../record/stop");
+        appService.stop();
         if (localStorage.isScreenshotStart())
             screenShotController.stop();
         if (!removeHook())
             return ResponseBuilder.error("Проблемы с остановкой слушателя устройства мыши или клавиатуры");
-        database.save();
+        new RestTemplate().postForLocation(
+                "http://192.168.1.67:8080/autotest/record/stop",
+                new HttpEntity<>(localStorage));
         localStorage.invalidateLocalStorage();
         return ResponseBuilder.success();
     }
