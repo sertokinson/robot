@@ -18,6 +18,7 @@ import ru.sertok.robot.data.enumerate.Status;
 import ru.sertok.robot.data.storage.LocalStorage;
 import ru.sertok.robot.entity.BrowserEntity;
 import ru.sertok.robot.entity.DesktopEntity;
+import ru.sertok.robot.mapper.TestCaseMapper;
 import ru.sertok.robot.request.RecordRequest;
 import ru.sertok.robot.response.BaseResponse;
 import ru.sertok.robot.response.ResponseBuilder;
@@ -29,20 +30,14 @@ public class RecordControllerImpl implements RecordController {
     private final LocalStorage localStorage;
     private final AppService appService;
     private final EventListener eventListener;
+    private final TestCaseMapper testCaseMapper;
     private final ScreenShotControllerImpl screenShotController;
 
     @Override
     public BaseResponse start(RecordRequest recordRequest) {
         log.info("REST-запрос ../record/start с параметрами {}", recordRequest);
         localStorage.invalidateLocalStorage();
-        TestCase testCase = new TestCase();
-        testCase.setPath(recordRequest.getPath());
-        testCase.setAppName(recordRequest.getAppName());
-        testCase.setDescription(recordRequest.getDescription());
-        testCase.setFolderName(recordRequest.getFolderName());
-        testCase.setPlatform(Platform.valueOf(recordRequest.getPlatform()));
-        testCase.setTestCaseName(recordRequest.getTestCaseName());
-        testCase.setUrl(recordRequest.getUrl());
+        TestCase testCase = testCaseMapper.toTestCase(recordRequest);
         String appName = recordRequest.getAppName();
         boolean isWeb = Platform.valueOf(recordRequest.getPlatform()) == Platform.WEB;
         if (StringUtils.isEmpty(appName))
