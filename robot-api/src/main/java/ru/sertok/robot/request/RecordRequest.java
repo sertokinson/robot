@@ -43,4 +43,9 @@ public class RecordRequest {
      */
     private String description;
 
+    /**
+     * Хост сервера
+     */
+    private String host;
+
 }

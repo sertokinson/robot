@@ -45,14 +45,14 @@ public class RecordControllerImpl implements RecordController {
         else {
             if (isWeb) {
                 BrowserEntity browser = new RestTemplate().getForObject(
-                        "http://192.168.1.67:8080/autotest/settings/browser/{appName}",
+                        recordRequest.getHost()+"/autotest/settings/browser/{appName}",
                         BrowserEntity.class,
                         appName);
                 localStorage.setBrowserId(browser.getId());
                 testCase.setPath(browser.getPath());
             } else {
                 DesktopEntity desktop = new RestTemplate().getForObject(
-                        "http://192.168.1.67:8080/autotest/settings/desktop/{appName}",
+                        recordRequest.getHost()+"/autotest/settings/desktop/{appName}",
                         DesktopEntity.class,
                         appName
                 );
@@ -105,7 +105,7 @@ public class RecordControllerImpl implements RecordController {
         if (!removeHook())
             return ResponseBuilder.error("Проблемы с остановкой слушателя устройства мыши или клавиатуры");
         new RestTemplate().postForLocation(
-                "http://192.168.1.67:8080/autotest/record/stop",
+                localStorage.getTestCase().getHost()+"/autotest/record/stop",
                 new HttpEntity<>(localStorage));
         localStorage.invalidateLocalStorage();
         return ResponseBuilder.success();

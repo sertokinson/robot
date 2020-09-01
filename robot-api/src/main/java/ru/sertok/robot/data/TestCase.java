@@ -62,4 +62,9 @@ public class TestCase {
      * Платформа тестируемого приложения
      */
     private Platform platform;
+
+    /**
+     * Хост сервера
+     */
+    private String host;
 }

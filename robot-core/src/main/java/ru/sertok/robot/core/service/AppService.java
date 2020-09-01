@@ -19,7 +19,7 @@ public class AppService {
         String url = testCase.getUrl();
         if (StringUtils.isEmpty(pathToApp)) {
             pathToApp = new RestTemplate().postForObject(
-                    "http://192.168.1.67:8080/autotest/settings/pathToApp",
+                    testCase.getHost()+"/autotest/settings/pathToApp",
                     new HttpEntity<>(testCase), String.class);
         }
         log.debug("Запускаем приложение: {}", pathToApp);
