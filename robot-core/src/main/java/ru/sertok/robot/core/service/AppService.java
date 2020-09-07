@@ -28,7 +28,7 @@ public class AppService {
                 Runtime.getRuntime().exec(new String[]{"/usr/bin/open", "-a", pathToApp, url});
             else {
                 if (!StringUtils.isEmpty(url))
-                    new ProcessBuilder(pathToApp, "--kiosk", url).start();
+                    new ProcessBuilder(pathToApp, url, "--kiosk").start();
                 else
                     new ProcessBuilder(pathToApp).start();
             }
