@@ -1,16 +1,17 @@
 package ru.sertok.robot.data;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.experimental.SuperBuilder;
 
-@Getter
 @Setter
-@SuperBuilder
-@AllArgsConstructor
+@Getter
 @NoArgsConstructor
 public class Keyboard extends BaseData {
     private String key;
+
+    public Keyboard(String key) {
+        super(Type.KEYBOARD);
+        this.key = key;
+    }
 }

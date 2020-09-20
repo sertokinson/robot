@@ -53,7 +53,7 @@ public class Config {
         if (activeProfiles.length > 0 && activeProfiles[0].equals("dev"))
             return "create";
         String pathName = System.getProperty("java.io.tmpdir") + "robot";
-        File file = new File(pathName, "0.24.txt");
+        File file = new File(pathName, "0.24.1-alpha.txt");
         if (!file.exists()) {
             new File(pathName).mkdir();
             file.createNewFile();

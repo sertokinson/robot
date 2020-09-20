@@ -1,7 +1,7 @@
 package ru.sertok.robot.response;
 
 import org.junit.Test;
-import ru.sertok.robot.data.enumerate.Status;
+import ru.sertok.robot.data.Status;
 
 import static org.junit.Assert.*;
 

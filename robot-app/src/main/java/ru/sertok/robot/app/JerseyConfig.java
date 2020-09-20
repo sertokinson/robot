@@ -9,7 +9,6 @@ import ru.sertok.robot.api.*;
 public class JerseyConfig extends ResourceConfig {
     public JerseyConfig() {
         register(RecordController.class);
-        register(ScreenShotController.class);
         register(AppController.class);
         property(ServletProperties.FILTER_FORWARD_ON_404, true);
     }
