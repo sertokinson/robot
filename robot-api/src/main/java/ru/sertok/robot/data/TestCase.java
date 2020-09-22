@@ -1,18 +1,13 @@
 package ru.sertok.robot.data;
 
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import ru.sertok.robot.data.enumerate.Platform;
-import ru.sertok.robot.data.enumerate.TestStatus;
-
-import java.util.Date;
+import lombok.*;
 
 @Setter
 @Getter
 @Builder
 @EqualsAndHashCode
+@NoArgsConstructor
+@AllArgsConstructor
 public class TestCase {
     /**
      * Название теста
@@ -30,37 +25,13 @@ public class TestCase {
     private String description;
 
     /**
-     * Путь до приложения или браузера
-     */
-    private String path;
-
-    /**
-     * Название тестируемого приложения или браузера
-     */
-    private String appName;
-
-    /**
      * Тестируемый url - адрес сайта
      */
     private String url;
 
-    /**
-     * Длительность теста
-     */
-    private Integer time;
 
     /**
-     * Статус выполнения теста
+     * Хост сервера
      */
-    private TestStatus status;
-
-    /**
-     * Дата последнего запуска теста
-     */
-    private Date runDate;
-
-    /**
-     * Платформа тестируемого приложения
-     */
-    private Platform platform;
+    private String host;
 }

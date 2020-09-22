@@ -2,7 +2,6 @@ package ru.sertok.robot.app;
 
 import org.jnativehook.GlobalScreen;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
@@ -20,6 +19,10 @@ public class RobotApp {
 
     public static void main(String[] args) {
         logger.setLevel(Level.OFF);
+        String driverPath = "driver/chromedriver";
+        if(System.getProperty("os.name").toLowerCase().contains("windows"))
+            driverPath = "driver/chromedriver.exe";
+        System.setProperty("webdriver.chrome.driver", driverPath);
         SpringApplicationBuilder builder = new SpringApplicationBuilder(RobotApp.class);
         builder.headless(false);
         builder.run(args);

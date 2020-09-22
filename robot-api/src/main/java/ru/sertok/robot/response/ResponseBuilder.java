@@ -1,6 +1,6 @@
 package ru.sertok.robot.response;
 
-import ru.sertok.robot.data.enumerate.Status;
+import ru.sertok.robot.data.Status;
 
 public class ResponseBuilder {
 
