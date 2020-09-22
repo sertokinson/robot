@@ -19,7 +19,10 @@ public class RobotApp {
 
     public static void main(String[] args) {
         logger.setLevel(Level.OFF);
-        System.setProperty("webdriver.chrome.driver", "driver/chromedriver");
+        String driverPath = "driver/chromedriver";
+        if(System.getProperty("os.name").toLowerCase().contains("windows"))
+            driverPath = "driver/chromedriver.exe";
+        System.setProperty("webdriver.chrome.driver", driverPath);
         SpringApplicationBuilder builder = new SpringApplicationBuilder(RobotApp.class);
         builder.headless(false);
         builder.run(args);
