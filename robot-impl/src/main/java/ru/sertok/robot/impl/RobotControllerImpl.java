@@ -42,7 +42,7 @@ public class RobotControllerImpl implements RobotController {
         localStorage.invalidateLocalStorage();
         TestCase testCase = database.get(testCaseName);
         if (testCase == null) {
-            String error = "Не найден testCast по наименованию: " + testCaseName;
+            String error = "Не найден testCase по наименованию: " + testCaseName;
             log.error(error);
             return ResponseBuilder.error(RobotResponse.builder().error(error).build());
         }
@@ -189,14 +189,6 @@ public class RobotControllerImpl implements RobotController {
         log.debug("REST-запрос ../robot/getFolders");
         return ResponseBuilder.success(FoldersResponse.builder()
                 .folders(database.getFolders())
-                .build());
-    }
-
-    @Override
-    public TestCaseResponse getAll(String testCase) {
-        log.debug("REST-запрос ../robot/getAll/{}", testCase);
-        return ResponseBuilder.success(TestCaseResponse.builder()
-                .testCase(database.get(testCase))
                 .build());
     }
 

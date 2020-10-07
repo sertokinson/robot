@@ -20,7 +20,7 @@ public interface RecordController {
     @GET
     @Path("/stop")
     @ApiResponse(description = "Стоп записи теста")
-    BaseResponse stop(@HeaderParam("user-agent") String userAgent);
+    BaseResponse stop();
 
     @POST
     @Path("/exit")

@@ -41,7 +41,7 @@ public class ScreenShot {
                                 .time((int) (System.currentTimeMillis() - localStorage.getStartTime()))
                                 .build())
                         .orElse(null);
-                if (prevImage != null && image != null && !compare(prevImage.getImage(), image.getImage()))
+                if (prevImage != null && image != null && compare(prevImage.getImage(), image.getImage()))
                     continue;
                 prevImage = image;
                 localStorage.getImages().add(image);
@@ -49,11 +49,6 @@ public class ScreenShot {
 
             } else {
                 log.error("Не удалось сделать скриншот, т.к. ширина или высота равны нулю");
-            }
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                log.error("Ошибка в потоке", e);
             }
         }
     }
@@ -94,9 +89,12 @@ public class ScreenShot {
 
     private byte[] resizePhoto(BufferedImage bufferedImage) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        if (bufferedImage.getHeight() > 100 || bufferedImage.getWidth() > 100)
+        int height = bufferedImage.getHeight();
+        int width = bufferedImage.getWidth();
+        log.debug("Высота: {} и ширина: {} исходного изображения", height, width);
+        if (height > 400 || width > 400)
             try {
-                ImageIO.write(Thumbnails.of(bufferedImage).size(100, 100).asBufferedImage(), "png", baos);
+                ImageIO.write(Thumbnails.of(bufferedImage).size(400, 400).asBufferedImage(), "png", baos);
                 baos.flush();
             } catch (IOException e) {
                 log.error("ошибка при создании скриншота", e);
@@ -108,6 +106,8 @@ public class ScreenShot {
         try {
             BufferedImage expectedImage = ImageIO.read(new ByteArrayInputStream(expected));
             BufferedImage actualImage = ImageIO.read(new ByteArrayInputStream(actual));
+            if (expectedImage == null || actualImage == null)
+                return false;
             if (actualImage.getWidth() != expectedImage.getWidth() || expectedImage.getHeight() != actualImage.getHeight()) {
                 log.error("Размеры фактического изображения width: {} height: {} не совпадают с размерами ожидаемого изображения width: {} height: {}",
                         actualImage.getWidth(), actualImage.getHeight(), expectedImage.getWidth(), expectedImage.getHeight());
@@ -126,8 +126,8 @@ public class ScreenShot {
                     }
                 }
             }
-            // допускаем 2% не совпадение
-            return (countIsNotIdentic * 100) / (actualImage.getWidth() * actualImage.getHeight()) <= 2;
+            // TODO 7% не совпадение
+            return (countIsNotIdentic * 100) / (actualImage.getWidth() * actualImage.getHeight()) <= 7;
 
         } catch (IOException e) {
             log.error("Не смог преобразовать изображение", e);

@@ -1,0 +1,11 @@
+{
+   "browser": {
+      "check_default_browser": false
+   },
+   "download": {
+      "prompt_for_download": true
+   },
+   "safebrowsing": {
+      "enabled": false
+   }
+}

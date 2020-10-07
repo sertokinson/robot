@@ -8,7 +8,7 @@ import org.springframework.util.CollectionUtils;
 import ru.sertok.robot.api.ResultController;
 import ru.sertok.robot.data.Result;
 import ru.sertok.robot.entity.ImageEntity;
-import ru.sertok.robot.request.RobotRequest;
+import ru.sertok.robot.entity.TestCaseEntity;
 import ru.sertok.robot.response.AppResponse;
 import ru.sertok.robot.response.ResponseBuilder;
 import ru.sertok.robot.response.ResultResponse;
@@ -34,12 +34,14 @@ public class ResultControllerImpl implements ResultController {
     private final TestCaseService testCaseService;
 
     @Override
-    public ResultResponse get(RobotRequest robotRequest) {
-        String testCase = robotRequest.getTestCase();
+    public ResultResponse get(String testCase) {
         log.debug("Выгружаем изображения по тест-кейсу: {}", testCase);
         Base64.Encoder encoder = Base64.getEncoder();
+        TestCaseEntity testCaseEntity = testCaseService.getTestCaseEntity(testCase);
+        if (testCaseEntity == null)
+            return ResponseBuilder.error(ResultResponse.builder().error("Нет такого теста!").build());
         return ResponseBuilder.success(ResultResponse.builder()
-                .results(testCaseService.getTestCaseEntity(testCase).getImages()
+                .results(testCaseEntity.getImages()
                         .stream()
                         .map(imageEntity -> new Result(
                                 encoder.encodeToString(imageEntity.getPhotoExpected()),
@@ -51,30 +53,13 @@ public class ResultControllerImpl implements ResultController {
     }
 
     @Override
-    public AppResponse toPath(RobotRequest robotRequest) {
-        String testCase = robotRequest.getTestCase();
+    public AppResponse toPath(String testCase) {
         String path = System.getProperty("java.io.tmpdir") + "images";
         deleteFile(new File(path));
         log.debug("Выгружаем изображения по тест-кейсу: {}", testCase);
         List<ImageEntity> images = testCaseService.getTestCaseEntity(testCase).getImages();
         if (CollectionUtils.isEmpty(images))
             return ResponseBuilder.error(AppResponse.builder().error("Нет изображений").build());
-        output(path, images, testCase);
-        return ResponseBuilder.success(AppResponse.builder().result(path).build());
-    }
-
-    @Override
-    public AppResponse errors(RobotRequest robotRequest) {
-        String testCase = robotRequest.getTestCase();
-        String path = System.getProperty("java.io.tmpdir") + "errorImages";
-        deleteFile(new File(path));
-        log.debug("Выгружаем ошибочные изображения по тест-кейсу: {}", testCase);
-        List<ImageEntity> images = testCaseService.getTestCaseEntity(testCase).getImages().stream()
-                .filter(imageEntity -> imageEntity.getAssertResult() != null && !imageEntity.getAssertResult())
-                .collect(Collectors.toList());
-        if (images.isEmpty()) {
-            return ResponseBuilder.error(AppResponse.builder().error("Нет ошибочных изображений").build());
-        }
         output(path, images, testCase);
         return ResponseBuilder.success(AppResponse.builder().result(path).build());
     }

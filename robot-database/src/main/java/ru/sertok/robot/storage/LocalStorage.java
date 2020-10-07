@@ -51,6 +51,36 @@ public class LocalStorage {
      */
     private ScreenshotSize size;
 
+    /**
+     * Идентификатор браузера
+     */
+    private Long browserId;
+
+    /**
+     * Идентификатор приложения
+     */
+    private Long desktopId;
+
+    public Long getBrowserId() {
+        log.debug("Вычитываем из локального хранилища браузер: {}", browserId);
+        return browserId;
+    }
+
+    public void setBrowserId(Long browserId) {
+        log.debug("Записываем в локальное хранилище браузер: {}", browserId);
+        this.browserId = browserId;
+    }
+
+    public Long getDesktopId() {
+        log.debug("Вычитываем из локального хранилища приложение: {}", desktopId);
+        return desktopId;
+    }
+
+    public void setDesktopId(Long desktopId) {
+        log.debug("Записываем в локальное хранилище приложение: {}", desktopId);
+        this.desktopId = desktopId;
+    }
+
     public ScreenshotSize getSize() {
         log.debug("Вычитываем из локального хранилища размеры скриншота: {}", size);
         return size;
@@ -64,11 +94,6 @@ public class LocalStorage {
     public void setStartTime(Long startTime) {
         log.debug("Записываем в локальное хранилище время начала {}", startTime);
         this.startTime = startTime;
-    }
-
-    public void setImages(List<Image> images) {
-        log.debug("Записываем в локальное хранилище информацию о изображениях: {}", images);
-        this.images = images;
     }
 
     public void setScreenshotStart(boolean start) {

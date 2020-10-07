@@ -4,7 +4,7 @@ Content-Type: application/json
 
 {
   "testCaseName": "test2",
-  "isBrowser": true,
+  "platform": "WEB",
   "folderName":"folder",
   "path": "/Applications/Google Chrome.app",
   "url": "https://www.google.ru/"
