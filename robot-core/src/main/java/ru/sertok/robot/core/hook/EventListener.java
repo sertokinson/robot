@@ -10,6 +10,7 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.sertok.robot.core.service.AppService;
@@ -48,7 +49,7 @@ public class EventListener implements NativeMouseInputListener, NativeKeyListene
                     WebElement webElement = (WebElement) el;
                     localStorage.getSteps().add(new Mouse(getElementXPath(driver, webElement)));
                     localStorage.getImages().add(webElement.getScreenshotAs(OutputType.BASE64));
-                    webElement.click();
+                    new Actions(driver).moveToElement(webElement).click().perform();
                 });
     }
 
