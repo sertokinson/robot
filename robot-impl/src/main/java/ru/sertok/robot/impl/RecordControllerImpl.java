@@ -5,91 +5,56 @@ import lombok.extern.slf4j.Slf4j;
 import org.jnativehook.GlobalScreen;
 import org.jnativehook.NativeHookException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.StringUtils;
+import org.springframework.web.client.RestTemplate;
 import ru.sertok.robot.api.RecordController;
 import ru.sertok.robot.core.hook.EventListener;
 import ru.sertok.robot.core.service.AppService;
+import ru.sertok.robot.core.storage.LocalStorage;
 import ru.sertok.robot.data.TestCase;
-import ru.sertok.robot.data.enumerate.Platform;
-import ru.sertok.robot.data.enumerate.Status;
-import ru.sertok.robot.database.Database;
 import ru.sertok.robot.mapper.TestCaseMapper;
 import ru.sertok.robot.request.RecordRequest;
 import ru.sertok.robot.response.BaseResponse;
 import ru.sertok.robot.response.ResponseBuilder;
-import ru.sertok.robot.service.SettingsService;
-import ru.sertok.robot.storage.LocalStorage;
 
 @Slf4j
 @Controller
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class RecordControllerImpl implements RecordController {
-    private final LocalStorage localStorage;
     private final AppService appService;
-    private final EventListener eventListener;
-    private final Database database;
     private final TestCaseMapper testCaseMapper;
-    private final ScreenShotControllerImpl screenShotController;
-    private final SettingsService settingsService;
+    private final LocalStorage localStorage;
+    private final EventListener eventListener;
 
     @Override
     public BaseResponse start(RecordRequest recordRequest) {
         log.info("REST-запрос ../record/start с параметрами {}", recordRequest);
         localStorage.invalidateLocalStorage();
         TestCase testCase = testCaseMapper.toTestCase(recordRequest);
-        String appName = recordRequest.getAppName();
-        boolean isWeb = Platform.valueOf(recordRequest.getPlatform()) == Platform.WEB;
-        if (StringUtils.isEmpty(appName))
-            testCase.setAppName(getName(recordRequest.getPath()));
-        else testCase.setPath(isWeb
-                ? settingsService.getBrowser(appName).getPath()
-                : settingsService.getDesktop(appName).getPath());
-        localStorage.setTestCase(testCase);
-
-        String testCaseName = testCase.getTestCaseName();
-        if (StringUtils.isEmpty(testCaseName)) {
-            String error = "Пустое название тест кейса!";
-            log.error(error);
-            return ResponseBuilder.error(error);
-        }
-        if (appService.execute(testCase) == Status.ERROR) {
-            String error = "Неверно указан путь до " + (isWeb ? "браузера" : "приложения");
-            log.error(error);
-            return ResponseBuilder.error(error);
-        }
         localStorage.setStartTime(System.currentTimeMillis());
+        appService.execute(testCase.getUrl());
         if (!GlobalScreen.isNativeHookRegistered()) {
             try {
                 GlobalScreen.registerNativeHook();
+                GlobalScreen.addNativeMouseListener(eventListener);
+                GlobalScreen.addNativeKeyListener(eventListener);
             } catch (NativeHookException e) {
                 log.error("There was a problem registering the native ru.sertok.hook.", e);
-                return ResponseBuilder.error("Проблемы со считывания устройства мыши или клавиатуры");
             }
-            GlobalScreen.addNativeMouseListener(eventListener);
-            GlobalScreen.addNativeMouseMotionListener(eventListener);
-            GlobalScreen.addNativeKeyListener(eventListener);
-            GlobalScreen.addNativeMouseWheelListener(eventListener);
         }
+        localStorage.setTestCase(testCase);
         return ResponseBuilder.success();
     }
 
-    private String getName(String path) {
-        String regex = "\\\\";
-        if (System.getProperty("os.name").toLowerCase().contains("mac"))
-            regex = "/";
-        String[] split = path.split(regex);
-        return split[split.length - 1];
-    }
-
     @Override
-    public BaseResponse stop(String userAgent) {
+    public BaseResponse stop() {
         log.info("REST-запрос ../record/stop");
-        if (localStorage.isScreenshotStart())
-            screenShotController.stop();
-        if (!removeHook())
-            return ResponseBuilder.error("Проблемы с остановкой слушателя устройства мыши или клавиатуры");
-        database.save();
+        removeHook();
+        appService.stop();
+        new RestTemplate().postForLocation(
+                localStorage.getTestCase().getHost()+"/autotest/record/stop",
+                new HttpEntity<>(localStorage));
         localStorage.invalidateLocalStorage();
         return ResponseBuilder.success();
     }
@@ -98,22 +63,16 @@ public class RecordControllerImpl implements RecordController {
     public BaseResponse exit() {
         log.info("REST-запрос ../record/exit");
         localStorage.invalidateLocalStorage();
-        return removeHook()
-                ? ResponseBuilder.success()
-                : ResponseBuilder.error("Проблемы с остановкой слушателя устройства мыши или клавиатуры");
+        return ResponseBuilder.success();
     }
 
-    private boolean removeHook() {
+    private void removeHook() {
         try {
             GlobalScreen.unregisterNativeHook();
-            GlobalScreen.removeNativeKeyListener(eventListener);
             GlobalScreen.removeNativeMouseListener(eventListener);
-            GlobalScreen.removeNativeMouseMotionListener(eventListener);
-            GlobalScreen.removeNativeMouseWheelListener(eventListener);
-            return true;
+            GlobalScreen.removeNativeKeyListener(eventListener);
         } catch (NativeHookException e) {
             log.error("There was a problem unregistering the native ru.sertok.hook.", e);
-            return false;
         }
     }
 }
