@@ -1,25 +1,12 @@
-### Запись тест кейса mac
+### Запись тест кейса
 POST http://localhost:8080/autotest/record/start/
 Content-Type: application/json
 
 {
-  "testCaseName": "test2",
-  "platform": "WEB",
+  "testCaseName": "test1",
   "folderName":"folder",
-  "path": "/Applications/Google Chrome.app",
-  "url": "https://www.google.ru/"
-}
-
-### Запись тест кейса windows
-POST http://localhost:8080/autotest/record/start/
-Content-Type: application/json
-
-{
-  "testCaseName": "test",
-  "isBrowser": true,
-  "folderName":"folder",
-  "path": "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe",
-  "url": "https://www.google.ru/"
+  "url": "https://www.google.ru/",
+  "host": "http://localhost:8090"
 }
 
 ### Стоп записи теста

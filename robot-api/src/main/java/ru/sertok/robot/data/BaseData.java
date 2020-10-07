@@ -1,12 +1,14 @@
 package ru.sertok.robot.data;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.experimental.SuperBuilder;
-import ru.sertok.robot.data.enumerate.Type;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
-@SuperBuilder
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class BaseData {
     private Type type;
-    private int time;
 }

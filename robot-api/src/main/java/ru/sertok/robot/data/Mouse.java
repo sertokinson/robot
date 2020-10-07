@@ -1,17 +1,17 @@
 package ru.sertok.robot.data;
 
 import lombok.Getter;
-import lombok.ToString;
-import lombok.experimental.SuperBuilder;
-import ru.sertok.robot.data.enumerate.TypePressed;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
-@ToString
-@SuperBuilder
+@Setter
+@NoArgsConstructor
 public class Mouse extends BaseData {
-    private TypePressed typePressed;
-    private int x;
-    private int y;
-    private int wheel;
-    private int count;
+    private String xpath;
+
+    public Mouse(String xpath) {
+        super(Type.MOUSE);
+        this.xpath = xpath;
+    }
 }

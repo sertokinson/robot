@@ -2,7 +2,7 @@ package ru.sertok.robot.response;
 
 import lombok.*;
 import lombok.experimental.SuperBuilder;
-import ru.sertok.robot.data.enumerate.Status;
+import ru.sertok.robot.data.Status;
 
 @Setter
 @Getter

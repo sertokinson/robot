@@ -14,24 +14,9 @@ public class RecordRequest {
     private String testCaseName;
 
     /**
-     * Название приложения или браузера
-     */
-    private String appName;
-
-    /**
      * Имя папки
      */
     private String folderName;
-
-    /**
-     * Платформа тестируемого приложения
-     */
-    private String platform;
-
-    /**
-     * Путь до приложения или браузера
-     */
-    private String path;
 
     /**
      * Тестируемый url - адрес сайта
@@ -42,5 +27,10 @@ public class RecordRequest {
      * Описание теста
      */
     private String description;
+
+    /**
+     * Хост сервера
+     */
+    private String host;
 
 }
