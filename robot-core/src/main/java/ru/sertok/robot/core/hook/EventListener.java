@@ -2,24 +2,32 @@ package ru.sertok.robot.core.hook;
 
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
+import net.coobird.thumbnailator.Thumbnails;
 import org.jnativehook.keyboard.NativeKeyEvent;
 import org.jnativehook.keyboard.NativeKeyListener;
 import org.jnativehook.mouse.NativeMouseEvent;
 import org.jnativehook.mouse.NativeMouseInputListener;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.OutputType;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.sertok.robot.core.service.AppService;
 import ru.sertok.robot.core.storage.LocalStorage;
+import ru.sertok.robot.data.Image;
 import ru.sertok.robot.data.Keyboard;
 import ru.sertok.robot.data.Mouse;
 
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.Base64;
 import java.util.Optional;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class EventListener implements NativeMouseInputListener, NativeKeyListener {
@@ -31,7 +39,7 @@ public class EventListener implements NativeMouseInputListener, NativeKeyListene
     public void nativeMousePressed(NativeMouseEvent e) {
         ((JavascriptExecutor) appService.getDriver())
                 .executeScript("(function() { " +
-                        "var element;" +
+                        "var element = null;" +
                         "window.addEventListener('click', function(e) {" +
                         "element = document.elementFromPoint(e.clientX, e.clientY);" +
                         "}, true);" +
@@ -48,7 +56,10 @@ public class EventListener implements NativeMouseInputListener, NativeKeyListene
                 .ifPresent(el -> {
                     WebElement webElement = (WebElement) el;
                     localStorage.getSteps().add(new Mouse(getElementXPath(driver, webElement)));
-                    localStorage.getImages().add(webElement.getScreenshotAs(OutputType.BASE64));
+                    Image image = new Image(
+                            resizePhoto(((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES)),
+                            resizePhoto(webElement.getScreenshotAs(OutputType.BYTES)));
+                    localStorage.getImages().add(image);
                     new Actions(driver).moveToElement(webElement).click().perform();
                 });
     }
@@ -81,6 +92,29 @@ public class EventListener implements NativeMouseInputListener, NativeKeyListene
     @Override
     public void nativeKeyTyped(NativeKeyEvent nativeKeyEvent) {
 
+    }
+
+    private String resizePhoto(byte[] bytes) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
+        BufferedImage bufferedImage;
+        try {
+            bufferedImage = ImageIO.read(bais);
+        } catch (IOException e) {
+            log.error("ошибка при сжатии размера изображения", e);
+            return Base64.getEncoder().encodeToString(bytes);
+        }
+        int height = bufferedImage.getHeight();
+        int width = bufferedImage.getWidth();
+        if (height > 500 || width > 500)
+            try {
+                ImageIO.write(Thumbnails.of(bufferedImage).size(500, 500).asBufferedImage(), "png", baos);
+                baos.flush();
+                return Base64.getEncoder().encodeToString(baos.toByteArray());
+            } catch (IOException e) {
+                log.error("ошибка при сжатии размера изображения", e);
+            }
+        return Base64.getEncoder().encodeToString(bytes);
     }
 
     private String getElementXPath(WebDriver driver, WebElement element) {

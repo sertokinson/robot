@@ -34,7 +34,7 @@ public class AppControllerImpl implements AppController {
     @Override
     public AppResponse version() {
         return ResponseBuilder.success(AppResponse.builder()
-                .result("0.25")
+                .result("0.25-alpha")
                 .build());
     }
 
