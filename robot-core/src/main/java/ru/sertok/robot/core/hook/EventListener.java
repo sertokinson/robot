@@ -14,12 +14,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.sertok.robot.core.service.AppService;
 import ru.sertok.robot.core.storage.LocalStorage;
-import ru.sertok.robot.data.Image;
 import ru.sertok.robot.data.Keyboard;
 import ru.sertok.robot.data.Mouse;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -56,10 +54,7 @@ public class EventListener implements NativeMouseInputListener, NativeKeyListene
                 .ifPresent(el -> {
                     WebElement webElement = (WebElement) el;
                     localStorage.getSteps().add(new Mouse(getElementXPath(driver, webElement)));
-                    Image image = new Image(
-                            resizePhoto(((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES)),
-                            resizePhoto(webElement.getScreenshotAs(OutputType.BYTES)));
-                    localStorage.getImages().add(image);
+                    localStorage.getImages().add(resizePhoto(((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES)));
                     new Actions(driver).moveToElement(webElement).click().perform();
                 });
     }

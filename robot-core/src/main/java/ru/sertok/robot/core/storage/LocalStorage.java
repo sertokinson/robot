@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.stereotype.Component;
 import ru.sertok.robot.data.BaseData;
-import ru.sertok.robot.data.Image;
 import ru.sertok.robot.data.TestCase;
 
 import java.util.ArrayList;
@@ -17,7 +16,7 @@ public class LocalStorage {
     private String host;
     private List<BaseData> steps;
     private TestCase testCase;
-    private List<Image> images;
+    private List<String> images;
 
     /**
      * Время начала записи теста
