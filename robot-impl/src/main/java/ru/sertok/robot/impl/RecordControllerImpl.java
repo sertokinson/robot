@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jnativehook.GlobalScreen;
 import org.jnativehook.NativeHookException;
+import org.openqa.selenium.InvalidArgumentException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.stereotype.Controller;
@@ -33,14 +34,20 @@ public class RecordControllerImpl implements RecordController {
         localStorage.invalidateLocalStorage();
         TestCase testCase = testCaseMapper.toTestCase(recordRequest);
         localStorage.setStartTime(System.currentTimeMillis());
-        appService.execute(testCase.getUrl());
+        try {
+            appService.execute(testCase.getUrl());
+        } catch (InvalidArgumentException e){
+            return ResponseBuilder.error("Введите url - адрес полностью");
+        }
         if (!GlobalScreen.isNativeHookRegistered()) {
             try {
                 GlobalScreen.registerNativeHook();
                 GlobalScreen.addNativeMouseListener(eventListener);
                 GlobalScreen.addNativeKeyListener(eventListener);
             } catch (NativeHookException e) {
-                log.error("There was a problem registering the native ru.sertok.hook.", e);
+                String error = "There was a problem registering the native ru.sertok.hook";
+                log.error(error, e);
+                return ResponseBuilder.error(error);
             }
         }
         localStorage.setTestCase(testCase);
