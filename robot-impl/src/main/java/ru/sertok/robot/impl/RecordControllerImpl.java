@@ -69,6 +69,8 @@ public class RecordControllerImpl implements RecordController {
     @Override
     public BaseResponse exit() {
         log.info("REST-запрос ../record/exit");
+        removeHook();
+        appService.stop();
         localStorage.invalidateLocalStorage();
         return ResponseBuilder.success();
     }

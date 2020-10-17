@@ -7,7 +7,7 @@ import java.lang.reflect.Field;
 
 @Component
 public class KeyEvents {
-    public int getKey(String key) throws IllegalAccessException {
+    public String getKey(String key) {
         String newKey;
         switch (key) {
             case "⏎":
@@ -16,28 +16,9 @@ public class KeyEvents {
             case "␣":
                 newKey = "Space";
                 break;
-            case "Left Control":
-            case "Right Control":
-                newKey = "Control";
-                break;
-            case "Backspace":
-                newKey = "BACK_SPACE";
-                break;
-            case "Left Alt":
-                newKey = "Alt";
-                break;
-            case "Left Shift":
-                newKey = "Shift";
-                break;
             default:
                 newKey = key;
         }
-        for (Field field : KeyEvent.class.getFields()) {
-            String keyboard = field.getName().replace("VK_", "");
-            if (keyboard.equalsIgnoreCase(newKey)) {
-                return (int) field.get(field.getName());
-            }
-        }
-        return 0;
+        return newKey;
     }
 }

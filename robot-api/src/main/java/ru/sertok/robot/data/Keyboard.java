@@ -10,8 +10,8 @@ import lombok.Setter;
 public class Keyboard extends BaseData {
     private String key;
 
-    public Keyboard(String key) {
-        super(Type.KEYBOARD);
+    public Keyboard(String key, String xpath) {
+        super(Type.KEYBOARD, xpath);
         this.key = key;
     }
 }

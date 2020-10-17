@@ -9,7 +9,6 @@ import org.jnativehook.keyboard.NativeKeyListener;
 import org.jnativehook.mouse.NativeMouseEvent;
 import org.jnativehook.mouse.NativeMouseInputListener;
 import org.openqa.selenium.*;
-import org.openqa.selenium.interactions.Actions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.sertok.robot.core.service.AppService;
@@ -35,16 +34,6 @@ public class EventListener implements NativeMouseInputListener, NativeKeyListene
 
     @Override
     public void nativeMousePressed(NativeMouseEvent e) {
-        ((JavascriptExecutor) appService.getDriver())
-                .executeScript("(function() { " +
-                        "var element = null;" +
-                        "window.addEventListener('click', function(e) {" +
-                        "element = document.elementFromPoint(e.clientX, e.clientY);" +
-                        "}, true);" +
-                        "window._getElement = function() {" +
-                        "  return element;" +
-                        " };" +
-                        "})(); ");
     }
 
     @Override
@@ -55,7 +44,6 @@ public class EventListener implements NativeMouseInputListener, NativeKeyListene
                     WebElement webElement = (WebElement) el;
                     localStorage.getSteps().add(new Mouse(getElementXPath(driver, webElement)));
                     localStorage.getImages().add(resizePhoto(((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES)));
-                    new Actions(driver).moveToElement(webElement).click().perform();
                 });
     }
 
@@ -73,15 +61,25 @@ public class EventListener implements NativeMouseInputListener, NativeKeyListene
 
     @Override
     public void nativeKeyPressed(NativeKeyEvent nativeKeyEvent) {
-
+        ((JavascriptExecutor) appService.getDriver())
+                .executeScript("(function() { " +
+                        "window._getElementKey = function() {" +
+                        "  return document.activeElement;" +
+                        " };" +
+                        "})(); ");
     }
 
     @Override
     @SneakyThrows
     public void nativeKeyReleased(NativeKeyEvent e) {
         String keyText = NativeKeyEvent.getKeyText(e.getKeyCode());
-        if (keyEvents.getKey(keyText) != 0)
-            localStorage.getSteps().add(new Keyboard(keyText));
+        WebDriver driver = appService.getDriver();
+        Optional.ofNullable(((JavascriptExecutor) driver).executeScript("return window._getElementKey();"))
+                .ifPresent(el -> {
+                    WebElement webElement = (WebElement) el;
+                    localStorage.getSteps().add(new Keyboard(keyEvents.getKey(keyText), getElementXPath(driver, webElement)));
+                    localStorage.getImages().add(resizePhoto(((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES)));
+                });
     }
 
     @Override
