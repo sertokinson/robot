@@ -10,9 +10,9 @@ import lombok.*;
 @AllArgsConstructor
 public class TestCase {
     /**
-     * Название теста
+     * Название
      */
-    private String testCaseName;
+    private String name;
 
     /**
      * Имя папки
@@ -20,7 +20,7 @@ public class TestCase {
     private String folderName;
 
     /**
-     * Описание теста
+     * Описание
      */
     private String description;
 
@@ -28,7 +28,6 @@ public class TestCase {
      * Тестируемый url - адрес сайта
      */
     private String url;
-
 
     /**
      * Хост сервера

@@ -11,7 +11,7 @@ public class RecordRequest {
     /**
      * Название теста
      */
-    private String testCaseName;
+    private String name;
 
     /**
      * Имя папки
