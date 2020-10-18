@@ -61,12 +61,6 @@ public class EventListener implements NativeMouseInputListener, NativeKeyListene
 
     @Override
     public void nativeKeyPressed(NativeKeyEvent nativeKeyEvent) {
-        ((JavascriptExecutor) appService.getDriver())
-                .executeScript("(function() { " +
-                        "window._getElementKey = function() {" +
-                        "  return document.activeElement;" +
-                        " };" +
-                        "})(); ");
     }
 
     @Override
@@ -74,7 +68,7 @@ public class EventListener implements NativeMouseInputListener, NativeKeyListene
     public void nativeKeyReleased(NativeKeyEvent e) {
         String keyText = NativeKeyEvent.getKeyText(e.getKeyCode());
         WebDriver driver = appService.getDriver();
-        Optional.ofNullable(((JavascriptExecutor) driver).executeScript("return window._getElementKey();"))
+        Optional.ofNullable(((JavascriptExecutor) driver).executeScript("return document.activeElement;"))
                 .ifPresent(el -> {
                     WebElement webElement = (WebElement) el;
                     localStorage.getSteps().add(new Keyboard(keyEvents.getKey(keyText), getElementXPath(driver, webElement)));

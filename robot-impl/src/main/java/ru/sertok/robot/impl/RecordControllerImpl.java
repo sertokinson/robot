@@ -36,7 +36,7 @@ public class RecordControllerImpl implements RecordController {
         localStorage.setStartTime(System.currentTimeMillis());
         try {
             appService.execute(testCase.getUrl());
-        } catch (InvalidArgumentException e){
+        } catch (InvalidArgumentException e) {
             return ResponseBuilder.error("Введите url - адрес полностью");
         }
         if (!GlobalScreen.isNativeHookRegistered()) {
@@ -55,12 +55,19 @@ public class RecordControllerImpl implements RecordController {
     }
 
     @Override
-    public BaseResponse stop() {
+    public BaseResponse stop() throws InterruptedException {
         log.info("REST-запрос ../record/stop");
+        // ждем пока сохранится скриншот
+        for (int i = 0; i < 100; i++) {
+            if (localStorage.getSteps().size() == localStorage.getImages().size()) {
+                break;
+            }
+            Thread.sleep(100);
+        }
         removeHook();
         appService.stop();
         new RestTemplate().postForLocation(
-                localStorage.getTestCase().getHost()+"/autotest/record/stop",
+                localStorage.getTestCase().getHost() + "/autotest/record/stop",
                 new HttpEntity<>(localStorage));
         localStorage.invalidateLocalStorage();
         return ResponseBuilder.success();
