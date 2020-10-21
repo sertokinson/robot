@@ -55,15 +55,8 @@ public class RecordControllerImpl implements RecordController {
     }
 
     @Override
-    public BaseResponse stop() throws InterruptedException {
+    public BaseResponse stop() {
         log.info("REST-запрос ../record/stop");
-        // ждем пока сохранится скриншот
-        for (int i = 0; i < 100; i++) {
-            if (localStorage.getSteps().size() == localStorage.getImages().size()) {
-                break;
-            }
-            Thread.sleep(100);
-        }
         removeHook();
         appService.stop();
         new RestTemplate().postForLocation(

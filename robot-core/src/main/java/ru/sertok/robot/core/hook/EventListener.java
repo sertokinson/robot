@@ -3,7 +3,6 @@ package ru.sertok.robot.core.hook;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import net.coobird.thumbnailator.Thumbnails;
 import org.jnativehook.keyboard.NativeKeyEvent;
 import org.jnativehook.keyboard.NativeKeyListener;
 import org.jnativehook.mouse.NativeMouseEvent;
@@ -16,12 +15,6 @@ import ru.sertok.robot.core.storage.LocalStorage;
 import ru.sertok.robot.data.Keyboard;
 import ru.sertok.robot.data.Mouse;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.util.Base64;
 import java.util.Optional;
 
 @Slf4j
@@ -40,11 +33,7 @@ public class EventListener implements NativeMouseInputListener, NativeKeyListene
     public void nativeMouseReleased(NativeMouseEvent e) {
         WebDriver driver = appService.getDriver();
         Optional.ofNullable(((JavascriptExecutor) driver).executeScript("return window._getElement();"))
-                .ifPresent(el -> {
-                    WebElement webElement = (WebElement) el;
-                    localStorage.getSteps().add(new Mouse(getElementXPath(driver, webElement)));
-                    localStorage.getImages().add(resizePhoto(((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES)));
-                });
+                .ifPresent(el -> localStorage.getSteps().add(new Mouse(getElementXPath(driver, (WebElement) el))));
     }
 
     @Override
@@ -69,39 +58,14 @@ public class EventListener implements NativeMouseInputListener, NativeKeyListene
         String keyText = NativeKeyEvent.getKeyText(e.getKeyCode());
         WebDriver driver = appService.getDriver();
         Optional.ofNullable(((JavascriptExecutor) driver).executeScript("return document.activeElement;"))
-                .ifPresent(el -> {
-                    WebElement webElement = (WebElement) el;
-                    localStorage.getSteps().add(new Keyboard(keyEvents.getKey(keyText), getElementXPath(driver, webElement)));
-                    localStorage.getImages().add(resizePhoto(((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES)));
-                });
+                .ifPresent(el -> localStorage.getSteps()
+                        .add(new Keyboard(keyEvents.getKey(keyText), getElementXPath(driver, (WebElement) el)))
+                );
     }
 
     @Override
     public void nativeKeyTyped(NativeKeyEvent nativeKeyEvent) {
 
-    }
-
-    private String resizePhoto(byte[] bytes) {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
-        BufferedImage bufferedImage;
-        try {
-            bufferedImage = ImageIO.read(bais);
-        } catch (IOException e) {
-            log.error("ошибка при сжатии размера изображения", e);
-            return Base64.getEncoder().encodeToString(bytes);
-        }
-        int height = bufferedImage.getHeight();
-        int width = bufferedImage.getWidth();
-        if (height > 500 || width > 500)
-            try {
-                ImageIO.write(Thumbnails.of(bufferedImage).size(500, 500).asBufferedImage(), "png", baos);
-                baos.flush();
-                return Base64.getEncoder().encodeToString(baos.toByteArray());
-            } catch (IOException e) {
-                log.error("ошибка при сжатии размера изображения", e);
-            }
-        return Base64.getEncoder().encodeToString(bytes);
     }
 
     private String getElementXPath(WebDriver driver, WebElement element) {
