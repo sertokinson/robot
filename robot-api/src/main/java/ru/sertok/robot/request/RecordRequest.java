@@ -19,6 +19,11 @@ public class RecordRequest {
     private String folderName;
 
     /**
+     * Наименование браузера
+     */
+    private String browserName;
+
+    /**
      * Тестируемый url - адрес сайта
      */
     private String url;
@@ -32,5 +37,4 @@ public class RecordRequest {
      * Хост сервера
      */
     private String host;
-
 }

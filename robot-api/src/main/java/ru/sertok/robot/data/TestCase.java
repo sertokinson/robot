@@ -20,6 +20,11 @@ public class TestCase {
     private String folderName;
 
     /**
+     * Наименование браузера
+     */
+    private String browserName;
+
+    /**
      * Описание
      */
     private String description;

@@ -17,15 +17,10 @@ import java.util.logging.Logger;
 @ComponentScan("ru.sertok.robot")
 @EnableJpaRepositories(basePackages = "ru.sertok.robot.repository")
 public class RobotApp {
-    private static Logger logger = Logger.getLogger(GlobalScreen.class.getPackage().getName());
+    private static final Logger logger = Logger.getLogger(GlobalScreen.class.getPackage().getName());
 
     public static void main(String[] args) {
         logger.setLevel(Level.OFF);
-        String path = "chromedriver.exe";
-        if (System.getProperty("os.name").toLowerCase().contains("mac"))
-            path = "chromedriver";
-
-        System.setProperty("webdriver.chrome.driver", path);
         SpringApplicationBuilder builder = new SpringApplicationBuilder(RobotApp.class);
         builder.headless(false);
         builder.run(args);

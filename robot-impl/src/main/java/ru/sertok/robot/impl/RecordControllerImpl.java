@@ -35,7 +35,7 @@ public class RecordControllerImpl implements RecordController {
         TestCase testCase = testCaseMapper.toTestCase(recordRequest);
         localStorage.setStartTime(System.currentTimeMillis());
         try {
-            appService.execute(testCase.getUrl());
+            appService.execute(testCase);
         } catch (InvalidArgumentException e) {
             return ResponseBuilder.error("Введите url - адрес полностью");
         }
