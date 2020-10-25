@@ -15,6 +15,7 @@ import ru.sertok.robot.core.storage.LocalStorage;
 import ru.sertok.robot.data.Keyboard;
 import ru.sertok.robot.data.Mouse;
 
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -27,13 +28,14 @@ public class EventListener implements NativeMouseInputListener, NativeKeyListene
 
     @Override
     public void nativeMousePressed(NativeMouseEvent e) {
+        WebDriver driver = appService.getDriver();
+        Optional.ofNullable(((JavascriptExecutor) driver).executeScript("return document.elementFromPoint(" + e.getX() + "," + e.getY() + ")"))
+                .ifPresent(el -> localStorage.getSteps().add(new Mouse(getElementXPath(driver, (WebElement) el))));
     }
 
     @Override
     public void nativeMouseReleased(NativeMouseEvent e) {
-        WebDriver driver = appService.getDriver();
-        Optional.ofNullable(((JavascriptExecutor) driver).executeScript("return window._getElement();"))
-                .ifPresent(el -> localStorage.getSteps().add(new Mouse(getElementXPath(driver, (WebElement) el))));
+
     }
 
     @Override
@@ -69,6 +71,17 @@ public class EventListener implements NativeMouseInputListener, NativeKeyListene
     }
 
     private String getElementXPath(WebDriver driver, WebElement element) {
-        return (String) ((JavascriptExecutor) driver).executeScript("gPt=function(c){if(c.id!==''){return'id(\"'+c.id+'\")'}if(c===document.body){return c.tagName}var a=0;var e=c.parentNode.childNodes;for(var b=0;b<e.length;b++){var d=e[b];if(d===c){return gPt(c.parentNode)+'/'+c.tagName+'['+(a+1)+']'}if(d.nodeType===1&&d.tagName===c.tagName){a++}}};return gPt(arguments[0]).toLowerCase();", element);
+        String text = element.getText();
+        String xpath = (String) ((JavascriptExecutor) driver).executeScript("gPt=function(c){if(c.id!==''){return'id(\"'+c.id+'\")'}if(c===document.body){return c.tagName}var a=0;var e=c.parentNode.childNodes;for(var b=0;b<e.length;b++){var d=e[b];if(d===c){return gPt(c.parentNode)+'/'+c.tagName+'['+(a+1)+']'}if(d.nodeType===1&&d.tagName===c.tagName){a++}}};return gPt(arguments[0]).toLowerCase();", element);
+        if (text.isEmpty())
+            return xpath;
+        try {
+            List<WebElement> elements = driver.findElements(By.xpath("//*[contains(text(),'" + text + "')]"));
+            if (elements.size() == 1)
+                return "//*[contains(text(),'" + text + "')]";
+            return xpath;
+        } catch (Exception e) {
+            return xpath;
+        }
     }
 }

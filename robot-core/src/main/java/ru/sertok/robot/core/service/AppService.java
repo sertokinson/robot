@@ -2,10 +2,11 @@ package ru.sertok.robot.core.service;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,6 +23,7 @@ public class AppService {
 
     private WebDriver driver;
 
+    @SneakyThrows
     public void execute(TestCase testCase) {
         Driver driver = Driver.valueOf(testCase.getBrowserName().toUpperCase());
         String path = "driver/" + driver.getName() + "driver";
@@ -30,23 +32,17 @@ public class AppService {
         System.setProperty("webdriver." + driver.getName() + ".driver", path);
         switch (driver) {
             case CHROME:
-                this.driver = new ChromeDriver();
+                ChromeOptions chromeOptions = new ChromeOptions();
+                chromeOptions.setExperimentalOption("excludeSwitches", new String[]{"enable-automation"});
+                chromeOptions.addArguments("--kiosk");
+                this.driver = new ChromeDriver(chromeOptions);
                 break;
             case FIREFOX:
                 this.driver = new FirefoxDriver();
         }
         this.driver.get(testCase.getUrl());
-        ((JavascriptExecutor) this.driver)
-                .executeScript("(function() { " +
-                        "var element = null;" +
-                        "window.addEventListener('click', function(e) {" +
-                        "element = document.elementFromPoint(e.clientX, e.clientY);" +
-                        "}, true);" +
-                        "window._getElement = function() {" +
-                        "  return element;" +
-                        " };" +
-                        "})(); ");
     }
+
 
     public void stop() {
         driver.quit();
