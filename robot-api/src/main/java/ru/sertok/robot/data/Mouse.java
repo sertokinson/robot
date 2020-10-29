@@ -8,10 +8,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class Mouse extends BaseData {
-    private String xpath;
-
     public Mouse(String xpath) {
-        super(Type.MOUSE);
-        this.xpath = xpath;
+        super(Type.MOUSE, xpath);
     }
 }

@@ -16,7 +16,6 @@ public class LocalStorage {
     private String host;
     private List<BaseData> steps;
     private TestCase testCase;
-    private List<String> images;
 
     /**
      * Время начала записи теста
@@ -27,7 +26,6 @@ public class LocalStorage {
         host = null;
         testCase = null;
         steps = new ArrayList<>();
-        images = new ArrayList<>();
         startTime = null;
     }
 }

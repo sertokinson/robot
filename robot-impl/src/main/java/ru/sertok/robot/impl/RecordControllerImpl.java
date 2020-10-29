@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jnativehook.GlobalScreen;
 import org.jnativehook.NativeHookException;
+import org.openqa.selenium.InvalidArgumentException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.stereotype.Controller;
@@ -33,14 +34,21 @@ public class RecordControllerImpl implements RecordController {
         localStorage.invalidateLocalStorage();
         TestCase testCase = testCaseMapper.toTestCase(recordRequest);
         localStorage.setStartTime(System.currentTimeMillis());
-        appService.execute(testCase.getUrl());
+        try {
+            appService.execute(testCase);
+        } catch (InvalidArgumentException e) {
+            return ResponseBuilder.error("Введите url - адрес полностью");
+        }
         if (!GlobalScreen.isNativeHookRegistered()) {
             try {
                 GlobalScreen.registerNativeHook();
+                GlobalScreen.addNativeMouseListener(eventListener);
+                GlobalScreen.addNativeKeyListener(eventListener);
             } catch (NativeHookException e) {
-                log.error("There was a problem registering the native ru.sertok.hook.", e);
+                String error = "There was a problem registering the native ru.sertok.hook";
+                log.error(error, e);
+                return ResponseBuilder.error(error);
             }
-            GlobalScreen.addNativeMouseListener(eventListener);
         }
         localStorage.setTestCase(testCase);
         return ResponseBuilder.success();
@@ -52,7 +60,7 @@ public class RecordControllerImpl implements RecordController {
         removeHook();
         appService.stop();
         new RestTemplate().postForLocation(
-                localStorage.getTestCase().getHost()+"/autotest/record/stop",
+                localStorage.getTestCase().getHost() + "/autotest/record/stop",
                 new HttpEntity<>(localStorage));
         localStorage.invalidateLocalStorage();
         return ResponseBuilder.success();
@@ -61,6 +69,8 @@ public class RecordControllerImpl implements RecordController {
     @Override
     public BaseResponse exit() {
         log.info("REST-запрос ../record/exit");
+        removeHook();
+        appService.stop();
         localStorage.invalidateLocalStorage();
         return ResponseBuilder.success();
     }
@@ -69,6 +79,7 @@ public class RecordControllerImpl implements RecordController {
         try {
             GlobalScreen.unregisterNativeHook();
             GlobalScreen.removeNativeMouseListener(eventListener);
+            GlobalScreen.removeNativeKeyListener(eventListener);
         } catch (NativeHookException e) {
             log.error("There was a problem unregistering the native ru.sertok.hook.", e);
         }

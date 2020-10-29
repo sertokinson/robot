@@ -34,14 +34,14 @@ public class AppControllerImpl implements AppController {
     @Override
     public AppResponse version() {
         return ResponseBuilder.success(AppResponse.builder()
-                .result("0.24.1-alpha")
+                .result("0.25-alpha")
                 .build());
     }
 
     @Override
     public AppResponse settings() {
         List<SettingsEntity> settings = settingsRepository.findAll();
-        String host = "http://192.168.1.67:8080";
+        String host = "http://localhost:8090";
         if (!settings.isEmpty())
             host = settings.get(0).getHost();
         return ResponseBuilder.success(AppResponse.builder()

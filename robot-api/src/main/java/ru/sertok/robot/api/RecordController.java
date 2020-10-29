@@ -20,7 +20,7 @@ public interface RecordController {
     @GET
     @Path("/stop")
     @ApiResponse(description = "Стоп записи теста")
-    BaseResponse stop();
+    BaseResponse stop() throws InterruptedException;
 
     @POST
     @Path("/exit")

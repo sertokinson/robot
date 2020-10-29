@@ -11,12 +11,17 @@ public class RecordRequest {
     /**
      * Название теста
      */
-    private String testCaseName;
+    private String name;
 
     /**
      * Имя папки
      */
     private String folderName;
+
+    /**
+     * Наименование браузера
+     */
+    private String browserName;
 
     /**
      * Тестируемый url - адрес сайта
@@ -32,5 +37,4 @@ public class RecordRequest {
      * Хост сервера
      */
     private String host;
-
 }

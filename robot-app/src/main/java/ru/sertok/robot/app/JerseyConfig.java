@@ -10,6 +10,7 @@ public class JerseyConfig extends ResourceConfig {
     public JerseyConfig() {
         register(RecordController.class);
         register(AppController.class);
+        register(CorsFilter.class);
         property(ServletProperties.FILTER_FORWARD_ON_404, true);
     }
 }
