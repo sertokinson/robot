@@ -14,7 +14,6 @@ import ru.sertok.robot.core.storage.LocalStorage;
 import ru.sertok.robot.data.Driver;
 import ru.sertok.robot.data.TestCase;
 
-@Slf4j
 @Service
 @Getter
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))

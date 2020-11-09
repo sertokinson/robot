@@ -1,41 +1,39 @@
 package ru.sertok.robot.data;
 
-import lombok.*;
 
-@Setter
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
 @Getter
-@Builder
-@EqualsAndHashCode
 @NoArgsConstructor
-@AllArgsConstructor
 public class TestCase {
     /**
      * Название
      */
-    private String name;
+    String name;
 
     /**
      * Имя папки
      */
-    private String folderName;
+    String folderName;
 
     /**
      * Наименование браузера
      */
-    private String browserName;
+    String browserName;
 
     /**
      * Описание
      */
-    private String description;
+    String description;
 
     /**
      * Тестируемый url - адрес сайта
      */
-    private String url;
+    String url;
 
     /**
      * Хост сервера
      */
-    private String host;
+    String host;
 }

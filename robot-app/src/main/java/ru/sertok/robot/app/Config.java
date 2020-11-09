@@ -16,8 +16,8 @@ import java.io.IOException;
 import java.util.Properties;
 import java.util.concurrent.Executor;
 
-@Configuration
 @EnableAsync
+@Configuration
 public class Config {
     private final String DB_PROPERTY = "hibernate.hbm2ddl.auto";
 
@@ -42,7 +42,6 @@ public class Config {
         properties.setProperty("hibernate.dialect", "org.hibernate.dialect.H2Dialect");
         properties.setProperty(DB_PROPERTY, getDB_PROPERTY());
 
-
         em.setJpaProperties(properties);
 
         return em;
@@ -53,7 +52,7 @@ public class Config {
         if (activeProfiles.length > 0 && activeProfiles[0].equals("dev"))
             return "create";
         String pathName = System.getProperty("java.io.tmpdir") + "robot";
-        File file = new File(pathName, "0.25-alpha.txt");
+        File file = new File(pathName, "0.26.txt");
         if (!file.exists()) {
             new File(pathName).mkdir();
             file.createNewFile();

@@ -3,6 +3,6 @@ package ru.sertok.robot.response;
 import lombok.Value;
 
 @Value
-public class AppResponse {
-    String result;
+public class ErrorResponse {
+    String error;
 }

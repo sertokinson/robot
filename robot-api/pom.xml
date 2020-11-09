@@ -5,36 +5,11 @@
     <parent>
         <artifactId>robot</artifactId>
         <groupId>ru.sertok.robot</groupId>
-        <version>0.25-alpha</version>
+        <version>0.26</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>robot-api</artifactId>
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>io.swagger.core.v3</groupId>
-                <artifactId>swagger-maven-plugin</artifactId>
-                <version>2.1.1</version>
-                <configuration>
-                    <outputFileName>openapi</outputFileName>
-                    <outputPath>${project.build.directory}/generated-api-description</outputPath>
-                    <outputFormat>YAML</outputFormat>
-                    <resourcePackages>
-                        <package>ru.sertok.robot.api</package>
-                    </resourcePackages>
-                </configuration>
-                <executions>
-                    <execution>
-                        <phase>compile</phase>
-                        <goals>
-                            <goal>resolve</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
 
     <dependencies>
         <dependency>
@@ -42,19 +17,8 @@
             <artifactId>lombok</artifactId>
         </dependency>
         <dependency>
-            <groupId>javax.ws.rs</groupId>
-            <artifactId>javax.ws.rs-api</artifactId>
-            <version>2.1</version>
-        </dependency>
-        <dependency>
-            <groupId>io.swagger.core.v3</groupId>
-            <artifactId>swagger-jaxrs2</artifactId>
-            <version>2.0.9</version>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
         </dependency>
     </dependencies>
 </project>

@@ -1,56 +1,49 @@
 package ru.sertok.robot.impl;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RestController;
 import ru.sertok.robot.api.AppController;
 import ru.sertok.robot.entity.SettingsEntity;
 import ru.sertok.robot.repository.SettingsRepository;
 import ru.sertok.robot.request.SettingsRequest;
 import ru.sertok.robot.response.AppResponse;
-import ru.sertok.robot.response.BaseResponse;
 import ru.sertok.robot.response.ResponseBuilder;
 
 import java.util.List;
 
-@Controller
+@RestController
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class AppControllerImpl implements AppController {
-    @Autowired
-    private SettingsRepository settingsRepository;
+    private final SettingsRepository settingsRepository;
 
     @Override
-    public AppResponse ping() {
-        return ResponseBuilder.success(AppResponse.builder()
-                .result("PONG")
-                .build());
+    public ResponseEntity<AppResponse> ping() {
+        return ResponseEntity.ok(new AppResponse("PONG"));
     }
 
     @Override
-    public AppResponse pathToLog() {
-        return ResponseBuilder.success(AppResponse.builder()
-                .result(System.getProperty("java.io.tmpdir") + "robot.log")
-                .build());
+    public ResponseEntity<AppResponse> pathToLog() {
+        return ResponseEntity.ok(new AppResponse(System.getProperty("java.io.tmpdir") + "robot.log"));
     }
 
     @Override
-    public AppResponse version() {
-        return ResponseBuilder.success(AppResponse.builder()
-                .result("0.25-alpha")
-                .build());
+    public ResponseEntity<AppResponse> version() {
+        return ResponseEntity.ok(new AppResponse("0.26"));
     }
 
     @Override
-    public AppResponse settings() {
+    public ResponseEntity<AppResponse> settings() {
         List<SettingsEntity> settings = settingsRepository.findAll();
         String host = "http://localhost:8090";
         if (!settings.isEmpty())
             host = settings.get(0).getHost();
-        return ResponseBuilder.success(AppResponse.builder()
-                .result(host)
-                .build());
+        return ResponseEntity.ok(new AppResponse(host));
     }
 
     @Override
-    public BaseResponse saveSetting(SettingsRequest settingsRequest) {
+    public ResponseEntity saveSetting(SettingsRequest settingsRequest) {
         settingsRepository.deleteAll();
         settingsRepository.save(SettingsEntity.builder()
                 .host(settingsRequest.getHost())

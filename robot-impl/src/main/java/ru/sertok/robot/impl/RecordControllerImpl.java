@@ -7,33 +7,28 @@ import org.jnativehook.NativeHookException;
 import org.openqa.selenium.InvalidArgumentException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
-import org.springframework.stereotype.Controller;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 import ru.sertok.robot.api.RecordController;
 import ru.sertok.robot.core.hook.EventListener;
 import ru.sertok.robot.core.service.AppService;
 import ru.sertok.robot.core.storage.LocalStorage;
 import ru.sertok.robot.data.TestCase;
-import ru.sertok.robot.mapper.TestCaseMapper;
-import ru.sertok.robot.request.RecordRequest;
-import ru.sertok.robot.response.BaseResponse;
 import ru.sertok.robot.response.ResponseBuilder;
 
 @Slf4j
-@Controller
+@RestController
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class RecordControllerImpl implements RecordController {
     private final AppService appService;
-    private final TestCaseMapper testCaseMapper;
     private final LocalStorage localStorage;
     private final EventListener eventListener;
 
     @Override
-    public BaseResponse start(RecordRequest recordRequest) {
-        log.info("REST-запрос ../record/start с параметрами {}", recordRequest);
+    public ResponseEntity start(TestCase testCase) {
+        log.info("REST-запрос ../record/start с параметрами {}", testCase);
         localStorage.invalidateLocalStorage();
-        TestCase testCase = testCaseMapper.toTestCase(recordRequest);
-        localStorage.setStartTime(System.currentTimeMillis());
         try {
             appService.execute(testCase);
         } catch (InvalidArgumentException e) {
@@ -55,7 +50,7 @@ public class RecordControllerImpl implements RecordController {
     }
 
     @Override
-    public BaseResponse stop() {
+    public ResponseEntity stop() {
         log.info("REST-запрос ../record/stop");
         removeHook();
         appService.stop();
@@ -67,7 +62,7 @@ public class RecordControllerImpl implements RecordController {
     }
 
     @Override
-    public BaseResponse exit() {
+    public ResponseEntity exit() {
         log.info("REST-запрос ../record/exit");
         removeHook();
         appService.stop();

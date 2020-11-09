@@ -1,33 +1,14 @@
 package ru.sertok.robot.response;
 
-import ru.sertok.robot.data.Status;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 public class ResponseBuilder {
-
-    private ResponseBuilder() {
-        throw new IllegalStateException("Utility class");
+    public static ResponseEntity success(){
+        return ResponseEntity.ok().build();
     }
 
-    public static BaseResponse success() {
-        return BaseResponse.builder()
-                .status(Status.SUCCESS)
-                .build();
-    }
-
-    public static <T extends BaseResponse> T success(T response) {
-        response.setStatus(Status.SUCCESS);
-        return response;
-    }
-
-    public static <T extends BaseResponse> T error(T response) {
-        response.setStatus(Status.ERROR);
-        return response;
-    }
-
-    public static BaseResponse error(String error) {
-        return BaseResponse.builder()
-                .status(Status.ERROR)
-                .error(error)
-                .build();
+    public static ResponseEntity<ErrorResponse> error(String error){
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ErrorResponse(error));
     }
 }

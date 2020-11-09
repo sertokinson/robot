@@ -17,15 +17,9 @@ public class LocalStorage {
     private List<BaseData> steps;
     private TestCase testCase;
 
-    /**
-     * Время начала записи теста
-     */
-    private Long startTime;
-
     public void invalidateLocalStorage() {
         host = null;
         testCase = null;
         steps = new ArrayList<>();
-        startTime = null;
     }
 }

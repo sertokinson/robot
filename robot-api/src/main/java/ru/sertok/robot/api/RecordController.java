@@ -1,29 +1,19 @@
 package ru.sertok.robot.api;
 
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import ru.sertok.robot.request.RecordRequest;
-import ru.sertok.robot.response.BaseResponse;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import ru.sertok.robot.data.TestCase;
 
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
-
-@Path("/record")
-@Produces(MediaType.APPLICATION_JSON)
-@Consumes(MediaType.APPLICATION_JSON)
+@CrossOrigin
+@RequestMapping("/record")
 public interface RecordController {
 
-    @POST
-    @Path("/start")
-    @ApiResponse(description = "Старт записи теста")
-    BaseResponse start(RecordRequest recordRequest);
+    @PostMapping("/start")
+    ResponseEntity start(@RequestBody TestCase testCase);
 
-    @GET
-    @Path("/stop")
-    @ApiResponse(description = "Стоп записи теста")
-    BaseResponse stop() throws InterruptedException;
+    @GetMapping("/stop")
+    ResponseEntity stop() throws InterruptedException;
 
-    @POST
-    @Path("/exit")
-    @ApiResponse(description = "Выход из записи теста")
-    BaseResponse exit();
+    @GetMapping("/exit")
+    ResponseEntity exit();
 }

@@ -2,7 +2,6 @@ package ru.sertok.robot.core.hook;
 
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
 import org.jnativehook.keyboard.NativeKeyEvent;
 import org.jnativehook.keyboard.NativeKeyListener;
 import org.jnativehook.mouse.NativeMouseEvent;
@@ -18,7 +17,6 @@ import ru.sertok.robot.data.Mouse;
 import java.util.List;
 import java.util.Optional;
 
-@Slf4j
 @Component
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class EventListener implements NativeMouseInputListener, NativeKeyListener {
